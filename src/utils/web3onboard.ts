@@ -1,13 +1,19 @@
 import { init } from '@web3-onboard/react'
-import whiteFuseLogo from '../assets/fuse-staking-logo-white.svg'
+import fuseLogo from '../assets/fuselogo.svg'
+import whiteFuseLogo from '../assets/fuse-logo-white.svg'
 import fuseIcon from '../assets/fuse.png'
-import fuseToken from '../assets/fuseToken.svg'
+import fuseToken from '../assets/tokenLogo'
 import coinbaseWalletModule from '@web3-onboard/coinbase'
 import ledgerModule from '@web3-onboard/ledger'
 import torusModule from '@web3-onboard/torus'
 import trezorModule from '@web3-onboard/trezor'
 import walletConnectModule from '@web3-onboard/walletconnect'
+import transactionPreviewModule from '@web3-onboard/transaction-preview'
 import injectedModule from '@web3-onboard/injected-wallets'
+
+const transactionPreview = transactionPreviewModule({
+    requireTransactionApproval: true
+})
 
 const walletConnect = walletConnectModule({
     version: 2,
@@ -46,11 +52,12 @@ const wallets = [
 
 export const web3Onboard = init({
     theme: 'dark',
+    transactionPreview,
     apiKey: import.meta.env.VITE_BLOCKNATIVE_API_KEY as string,
     wallets,
     chains,
     appMetadata: {
-        name: "Fuse Staking",
+        name: "Fuse Bridge",
         icon: fuseIcon,
         logo: whiteFuseLogo,
         description: "The Fuse Staking Dapp enables users to participate in the Fuse network's consensus by staking FUSE tokens.",
@@ -68,7 +75,4 @@ export const web3Onboard = init({
         disableUDResolution: true,
         autoConnectLastWallet: true,
     },
-    containerElements: {
-        accountCenter: '#onboard-container'
-    }
 })

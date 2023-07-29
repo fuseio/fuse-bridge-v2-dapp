@@ -1,3 +1,18 @@
 @import "tailwindcss/base";
 @import "tailwindcss/components";
 @import "tailwindcss/utilities";
+
+@font-face {
+  font-family: "Mona-Sans";
+  src: url("./fonts/MonaSans.woff2") format("woff2");
+}
+
+/* :root {
+	
+  --account-center-position-right:0px;
+} */
+
+@font-face {
+  font-family: "Mona-Sans";
+  src: url("./fonts/MonaSans.woff2") format("woff2");
+}

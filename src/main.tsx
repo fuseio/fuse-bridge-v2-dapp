@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import React from "react";
 import ReactDOM from "react-dom/client";
 import App from "./App";
@@ -8,10 +7,12 @@ import store from "./store/store";
 import { Web3OnboardProvider } from "@web3-onboard/react";
 import { web3Onboard } from "./utils/web3onboard";
 import { BrowserRouter } from "react-router-dom";
+import ReactGA from "react-ga4";
 
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
 );
+ReactGA.initialize(import.meta.env.VITE_GOOGLE_ANALYTICS_ID as string);
 root.render(
   <React.StrictMode>
     <BrowserRouter>
