@@ -56,7 +56,7 @@ const Dropdown = ({
   return (
     <div
       className={
-        "flex bg-white p-2 w-full rounded-md cursor-pointer items-center border-border-gray border-[1px] relative " +
+        "flex bg-white p-3 w-full rounded-md cursor-pointer items-center border-border-gray border-[1px] relative " +
         className
       }
       ref={ref}
@@ -78,7 +78,7 @@ const Dropdown = ({
         initial="closed"
         exit="closed"
         variants={menu}
-        className="absolute top-[120%] left-0 bg-white rounded-md shadow-xl px-4 pb-3 w-full z-50"
+        className="absolute top-[120%] left-0 bg-white rounded-md shadow-xl px-4 pb-3 w-full z-50 max-h-[360px] overflow-y-scroll"
       >
         {items.map((section, index) => (
           <div className="w-full">

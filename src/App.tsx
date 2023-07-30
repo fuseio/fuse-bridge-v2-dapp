@@ -5,8 +5,8 @@ import Home from "./features/bridge/Home";
 
 const App = () => {
   return (
-    <div className="w-full font-mona justify-end">
-      <div className="flex-col flex items-center bg-light-gray">
+    <div className="w-full font-mona justify-end h-screen">
+      <div className="flex-col flex items-center bg-light-gray h-full">
         <Topbar />
         <Routes>
           <Route path="/" element={<Home />} />
