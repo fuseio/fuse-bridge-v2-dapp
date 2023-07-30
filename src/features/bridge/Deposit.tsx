@@ -38,11 +38,16 @@ const Deposit = () => {
             ]}
             selectedSection={0}
             selectedItem={0}
+            className="w-full"
           />
         </div>
         <div className="flex w-full items-center mt-3">
-          <div className="bg-white w-2/3 p-4 rounded-s-md border-[1px] border-border-gray">
-            000
+          <div className="bg-white p-4 rounded-s-md border-[1px] border-border-gray w-2/3">
+            <input
+              type="text"
+              className="w-full bg-transparent focus:outline-none"
+              placeholder="0.00"
+            />
           </div>
           <Dropdown
             items={[
@@ -59,7 +64,7 @@ const Deposit = () => {
             ]}
             selectedSection={0}
             selectedItem={0}
-            className="w-1/3 rounded-e-md rounded-s-none border-s-0"
+            className="rounded-e-md rounded-s-none border-s-0 w-1/3"
           />
         </div>
         <span className="mt-3 text-sm font-medium">Balance: 6940568098</span>

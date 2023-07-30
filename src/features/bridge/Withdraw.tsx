@@ -14,7 +14,11 @@ const Withdraw = () => {
         <span className="font-semibold text-lg">From Fuse Network</span>
         <div className="flex w-full items-center mt-3">
           <div className="bg-white w-2/3 p-4 rounded-s-md border-[1px] border-border-gray">
-            000
+            <input
+              type="text"
+              className="w-full bg-transparent focus:outline-none"
+              placeholder="0.00"
+            />
           </div>
           <Dropdown
             items={[
@@ -67,9 +71,15 @@ const Withdraw = () => {
             ]}
             selectedSection={0}
             selectedItem={0}
-            className="w-[90%]"
+            className="w-9/10"
           />
         </div>
+      </div>
+      <div className="flex justify-between mt-4">
+        <span className="text-black/50 font-medium">You will receive</span>
+        <span className="font-medium">
+          0.000003458748567 <span className="font-bold">USDC</span>
+        </span>
       </div>
     </>
   );

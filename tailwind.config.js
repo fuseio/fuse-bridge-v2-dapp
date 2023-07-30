@@ -18,6 +18,7 @@ module.exports = {
       "light-gray": "#F3F3F3",
       "bg-dark-gray": "#F3F3F3",
       "modal-bg": "#F2F2F2",
+      "transaction-bg": "#F7F7F7",
       lightBlue: "#063B64",
       purple: "#7A159A",
       gray: "#BABABA",

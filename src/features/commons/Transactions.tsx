@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import cross from "../../assets/cross.svg";
+import Transaction from "./Transaction";
 
 interface TransactionProps {
   delegators?: Array<Array<string>> | undefined;
@@ -38,7 +39,7 @@ const Transactions = ({
             transition={{
               duration: 0.3,
             }}
-            className="bg-white h-screen w-[50%] right-0 absolute p-6"
+            className="bg-white h-screen w-[50%] right-0 absolute p-6 flex flex-col items-start overflow-y-auto"
           >
             <img
               src={cross}
@@ -48,6 +49,10 @@ const Transactions = ({
                 onToggle(false);
               }}
             />
+            <span className="text-2xl font-semibold mt-4 mb-2">
+              Transactions History
+            </span>
+            <Transaction />
           </motion.div>
         </motion.div>
       )}
