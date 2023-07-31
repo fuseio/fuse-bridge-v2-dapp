@@ -9,6 +9,20 @@ import Transactions from "../commons/Transactions";
 
 const Home = () => {
   const [selected, setSelected] = useState(0);
+  const [depositSelectedChainSection, setDepositSelectedChainSection] =
+    useState(0);
+  const [depositSelectedChainItem, setDepositSelectedChainItem] = useState(0);
+  const [depositSelectedTokenSection, setDepositSelectedTokenSection] =
+    useState(0);
+  const [depositSelectedTokenItem, setDepositSelectedTokenItem] = useState(0);
+
+  const [withdrawSelectedChainSection, setWithdrawSelectedChainSection] =
+    useState(0);
+  const [withdrawSelectedChainItem, setWithdrawSelectedChainItem] = useState(0);
+  const [withdrawSelectedTokenSection, setWithdrawSelectedTokenSection] =
+    useState(0);
+  const [withdrawSelectedTokenItem, setWithdrawSelectedTokenItem] = useState(0);
+
   const filters = ["Deposit", "Withdraw"];
   const [isOpen, setIsOpen] = useState(false);
   return (
@@ -46,7 +60,43 @@ const Home = () => {
               );
             })}
           </div>
-          {selected === 0 ? <Deposit /> : <Withdraw />}
+          {selected === 0 ? (
+            <Deposit
+              selectedChainItem={depositSelectedChainItem}
+              selectedChainSection={depositSelectedChainSection}
+              setSelectedChainItem={setDepositSelectedChainItem}
+              setSelectedChainSection={setDepositSelectedChainSection}
+              selectedTokenItem={depositSelectedTokenItem}
+              selectedTokenSection={depositSelectedTokenSection}
+              setSelectedTokenItem={setDepositSelectedTokenItem}
+              setSelectedTokenSection={setDepositSelectedTokenSection}
+              onSwitch={(tokenSection, tokenItem, chainSection, chainItem) => {
+                setWithdrawSelectedChainSection(chainSection);
+                setWithdrawSelectedChainItem(chainItem);
+                setWithdrawSelectedTokenSection(tokenSection);
+                setWithdrawSelectedTokenItem(tokenItem);
+                setSelected(1);
+              }}
+            />
+          ) : (
+            <Withdraw
+              selectedChainItem={withdrawSelectedChainItem}
+              selectedChainSection={withdrawSelectedChainSection}
+              setSelectedChainItem={setWithdrawSelectedChainItem}
+              setSelectedChainSection={setWithdrawSelectedChainSection}
+              selectedTokenItem={depositSelectedTokenItem}
+              selectedTokenSection={depositSelectedTokenSection}
+              setSelectedTokenItem={setDepositSelectedTokenItem}
+              setSelectedTokenSection={setDepositSelectedTokenSection}
+              onSwitch={(tokenSection, tokenItem, chainSection, chainItem) => {
+                setDepositSelectedChainSection(chainSection);
+                setDepositSelectedChainItem(chainItem);
+                setDepositSelectedTokenSection(tokenSection);
+                setDepositSelectedTokenItem(tokenItem);
+                setSelected(0);
+              }}
+            />
+          )}
           <ConnectWallet className="mt-6 py-4 " />
         </motion.div>
         <motion.div className="flex bg-white w-[30%] mt-2 rounded-lg px-8 py-5 flex-col font-medium">

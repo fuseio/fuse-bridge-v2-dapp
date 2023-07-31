@@ -7,7 +7,34 @@ import {
 import Dropdown from "../commons/Dropdown";
 import switchImg from "../../assets/switch.svg";
 
-const Withdraw = () => {
+type WithdrawProps = {
+  selectedChainSection: number;
+  selectedChainItem: number;
+  setSelectedChainSection: (section: number) => void;
+  setSelectedChainItem: (item: number) => void;
+  selectedTokenSection: number;
+  selectedTokenItem: number;
+  setSelectedTokenSection: (section: number) => void;
+  setSelectedTokenItem: (item: number) => void;
+  onSwitch: (
+    tokenSection: number,
+    tokenItem: number,
+    chainSection: number,
+    chainItem: number
+  ) => void;
+};
+
+const Withdraw = ({
+  selectedChainSection,
+  selectedChainItem,
+  setSelectedChainSection,
+  setSelectedChainItem,
+  selectedTokenSection,
+  selectedTokenItem,
+  setSelectedTokenSection,
+  setSelectedTokenItem,
+  onSwitch,
+}: WithdrawProps) => {
   return (
     <>
       <div className="flex bg-modal-bg rounded-md p-4 mt-3 w-full flex-col">
@@ -33,15 +60,31 @@ const Withdraw = () => {
                 }),
               },
             ]}
-            selectedSection={0}
-            selectedItem={0}
+            selectedSection={selectedTokenSection}
+            selectedItem={selectedTokenItem}
             className="rounded-e-md rounded-s-none border-s-0 w-1/3"
+            onClick={(section, item) => {
+              setSelectedTokenSection(section);
+              setSelectedTokenItem(item);
+            }}
           />
         </div>
         <span className="mt-3 text-sm font-medium">Balance: 6940568098</span>
       </div>
       <div className="flex justify-center">
-        <img src={switchImg} alt="switch" className="mt-4 cursor-pointer" />
+        <img
+          src={switchImg}
+          alt="switch"
+          className="mt-4 cursor-pointer"
+          onClick={() => {
+            onSwitch(
+              selectedTokenSection,
+              selectedTokenItem,
+              selectedChainSection,
+              selectedChainItem
+            );
+          }}
+        />
       </div>
       <div className="flex bg-modal-bg rounded-md px-4 py-6 mt-3 w-full flex-col">
         <div className="flex w-full items-center justify-between">
@@ -69,9 +112,13 @@ const Withdraw = () => {
                 }),
               },
             ]}
-            selectedSection={0}
-            selectedItem={0}
+            selectedSection={selectedChainSection}
+            selectedItem={selectedChainItem}
             className="w-9/10"
+            onClick={(section, item) => {
+              setSelectedChainSection(section);
+              setSelectedChainItem(item);
+            }}
           />
         </div>
       </div>

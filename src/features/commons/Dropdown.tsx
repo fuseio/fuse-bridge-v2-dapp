@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 
 type DropdownProps = {
   className?: string;
-  onClick?: () => void;
+  onClick?: (section: number, item: number) => void;
   items: DropdownSectionType[];
   selectedSection: number;
   selectedItem: number;
@@ -85,9 +85,14 @@ const Dropdown = ({
             <p className="font-semibold cursor-default py-3">
               {section.heading}
             </p>
-            {items[index].items.map((item, index) => {
+            {items[index].items.map((item, i) => {
               return (
-                <div className="flex items-center py-2">
+                <div
+                  className="flex items-center py-2"
+                  onClick={() => {
+                    onClick(index, i);
+                  }}
+                >
                   <img
                     src={item.icon}
                     alt={item.id.toString()}
