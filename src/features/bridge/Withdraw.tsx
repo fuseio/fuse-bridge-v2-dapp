@@ -3,6 +3,7 @@ import {
   chainConfig,
   exchangeConfig,
   coinConfig,
+  appConfig,
 } from "../../constants/config";
 import Dropdown from "../commons/Dropdown";
 import switchImg from "../../assets/switch.svg";
@@ -51,7 +52,9 @@ const Withdraw = ({
             items={[
               {
                 heading: "Tokens",
-                items: coinConfig.coins.map((coin, i) => {
+                items: appConfig.wrappedBridge.chains[
+                  selectedChainItem
+                ].tokens.map((coin, i) => {
                   return {
                     icon: coin.icon,
                     id: i,
@@ -93,24 +96,24 @@ const Withdraw = ({
             items={[
               {
                 heading: "Chains",
-                items: chainConfig.chains.map((chain) => {
+                items: appConfig.wrappedBridge.chains.map((chain) => {
                   return {
-                    item: chain.chainName,
+                    item: chain.name,
                     icon: chain.icon,
                     id: chain.chainId,
                   };
                 }),
               },
-              {
-                heading: "Centralized Exchanges",
-                items: exchangeConfig.exchanges.map((exchange, i) => {
-                  return {
-                    item: exchange.name,
-                    icon: exchange.icon,
-                    id: i,
-                  };
-                }),
-              },
+              //   {
+              //     heading: "Centralized Exchanges",
+              //     items: exchangeConfig.exchanges.map((exchange, i) => {
+              //       return {
+              //         item: exchange.name,
+              //         icon: exchange.icon,
+              //         id: i,
+              //       };
+              //     }),
+              //   },
             ]}
             selectedSection={selectedChainSection}
             selectedItem={selectedChainItem}

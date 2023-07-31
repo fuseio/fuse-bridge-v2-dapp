@@ -8,39 +8,39 @@ import arbi from "../assets/arbi.png"
 import optimism from "../assets/optimism.png"
 
 export const chains : ChainConfigLike[] = [
-    {
-        chainName: "Ethereum",
-        chainId: 1,
-        icon: eth
-    },
-    {
-        chainName: "BNB",
-        chainId: 56,
-        icon: bnb
-    },
+    // {
+    //     chainName: "Ethereum",
+    //     chainId: 101,
+    //     icon: eth
+    // },
+    // {
+    //     chainName: "BNB",
+    //     chainId: 102,
+    //     icon: bnb
+    // },
     {
         chainName: "Gnosis",
-        chainId: 100,
+        chainId: 145,
         icon: gnosis
     },
     {
         chainName: "Polygon",
-        chainId: 137,
+        chainId: 109,
         icon: matic
     },
-    {
-        chainName: "Celo",
-        chainId: 42220,
-        icon: celo
-    },
-    {
-        chainName: "Arbitrum",
-        chainId: 42161,
-        icon: arbi
-    },
-    {
-        chainName: "Optimism",
-        chainId: 300,
-        icon: optimism
-    },
+    // {
+    //     chainName: "Celo",
+    //     chainId: 125,
+    //     icon: celo
+    // },
+    // {
+    //     chainName: "Arbitrum",
+    //     chainId: 110,
+    //     icon: arbi
+    // },
+    // {
+    //     chainName: "Optimism",
+    //     chainId: 111,
+    //     icon: optimism
+    // },
 ];

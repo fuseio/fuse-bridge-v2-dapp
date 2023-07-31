@@ -1,9 +1,6 @@
+import { brideConfig } from "./bridge";
 import {
-  type AppConfigLike,
   createAppConfig,
-} from "@layerzerolabs/ui-app-config";
-import config from "./bridge.json";
-import {
   createChainConfig,
   createCoinConfig,
   createExchangeConfig,
@@ -16,7 +13,7 @@ export const CONFIG = {
   fuseRPC: "https://rpc.fuse.io",
 };
 
-export const appConfig = createAppConfig(config as AppConfigLike);
 export const chainConfig = createChainConfig(chains);
 export const exchangeConfig = createExchangeConfig(exchanges);
 export const coinConfig = createCoinConfig(coins);
+export const appConfig = createAppConfig(brideConfig, chainConfig, coinConfig);
