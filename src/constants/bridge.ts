@@ -1,4 +1,4 @@
-export const brideConfig = {
+export const bridgeConfig = {
   version: 2,
   wrapped: {
     chainId: 138,

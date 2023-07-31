@@ -1,4 +1,4 @@
-import { brideConfig } from "./bridge";
+import { bridgeConfig } from "./bridge";
 import {
   createAppConfig,
   createChainConfig,
@@ -16,4 +16,4 @@ export const CONFIG = {
 export const chainConfig = createChainConfig(chains);
 export const exchangeConfig = createExchangeConfig(exchanges);
 export const coinConfig = createCoinConfig(coins);
-export const appConfig = createAppConfig(brideConfig, chainConfig, coinConfig);
+export const appConfig = createAppConfig(bridgeConfig, chainConfig, coinConfig);
