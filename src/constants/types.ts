@@ -89,7 +89,7 @@ interface WrappedBridgeConfig {
     chainId: number;
     name: string;
     icon: string;
-    bridge: string | undefined;
+    bridge: string;
     tokens:
       | {
           decimals: number;
@@ -166,7 +166,7 @@ export const createAppConfig = (
           icon: chain.icon,
           bridge: bridgeConfig.original.find(
             (bridge) => bridge.chainId === chain.lzChainId
-          )?.address,
+          )?.address as string,
           tokens: tokens,
         };
       }),

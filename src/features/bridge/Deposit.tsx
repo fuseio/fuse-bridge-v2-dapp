@@ -9,6 +9,8 @@ import Dropdown from "../commons/Dropdown";
 import switchImg from "../../assets/switch.svg";
 import { useConnectWallet, useSetChain } from "@web3-onboard/react";
 import { getERC20Balance } from "../../utils/erc20";
+import { useAppDispatch, useAppSelector } from "../../store/store";
+import { fetchBalance, selectBalanceSlice } from "../../store/balanceSlice";
 
 type DepositProps = {
   selectedChainSection: number;
@@ -25,6 +27,8 @@ type DepositProps = {
     chainSection: number,
     chainItem: number
   ) => void;
+  amount: string;
+  setAmount: (amount: string) => void;
 };
 
 const Deposit = ({
@@ -37,25 +41,47 @@ const Deposit = ({
   setSelectedTokenSection,
   setSelectedTokenItem,
   onSwitch,
+  amount,
+  setAmount,
 }: DepositProps) => {
   const [{ connectedChain }, setChain] = useSetChain();
   const [{ wallet }] = useConnectWallet();
-  const [balance, setBalance] = useState("0");
+  const dispatch = useAppDispatch();
+  const balanceSlice = useAppSelector(selectBalanceSlice);
   useEffect(() => {
     if (wallet)
-      getERC20Balance(
-        appConfig.wrappedBridge.chains[selectedChainItem].tokens[
-          selectedTokenItem
-        ].address,
-        wallet.accounts[0].address,
-        appConfig.wrappedBridge.chains[selectedChainItem].tokens[
-          selectedTokenItem
-        ].decimals
-      ).then((balance) => {
-        setBalance(balance);
-      });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedTokenItem, selectedTokenSection, connectedChain]);
+      dispatch(
+        fetchBalance({
+          address: wallet.accounts[0].address,
+          contractAddress:
+            appConfig.wrappedBridge.chains[selectedChainItem].tokens[
+              selectedTokenItem
+            ].address,
+          decimals:
+            appConfig.wrappedBridge.chains[selectedChainItem].tokens[
+              selectedTokenItem
+            ].decimals,
+          bridge: appConfig.wrappedBridge.chains[selectedChainItem].bridge,
+        })
+      );
+  }, [selectedTokenItem, selectedTokenSection, connectedChain, wallet]);
+  useEffect(() => {
+    if (wallet)
+      dispatch(
+        fetchBalance({
+          address: wallet.accounts[0].address,
+          contractAddress:
+            appConfig.wrappedBridge.chains[selectedChainItem].tokens[
+              selectedTokenItem
+            ].address,
+          decimals:
+            appConfig.wrappedBridge.chains[selectedChainItem].tokens[
+              selectedTokenItem
+            ].decimals,
+          bridge: appConfig.wrappedBridge.chains[selectedChainItem].bridge,
+        })
+      );
+  }, []);
   return (
     <>
       <div className="flex bg-modal-bg rounded-md p-4 mt-3 w-full flex-col">
@@ -105,6 +131,10 @@ const Deposit = ({
               type="text"
               className="w-full bg-transparent focus:outline-none"
               placeholder="0.00"
+              value={amount}
+              onChange={(e) => {
+                setAmount(e.target.value);
+              }}
             />
           </div>
           <Dropdown
@@ -131,7 +161,9 @@ const Deposit = ({
             }}
           />
         </div>
-        <span className="mt-3 text-sm font-medium">Balance: {balance}</span>
+        <span className="mt-3 text-sm font-medium">
+          Balance: {balanceSlice.balance}
+        </span>
       </div>
       <div className="flex justify-center">
         <img
@@ -150,7 +182,7 @@ const Deposit = ({
       </div>
       <div className="flex bg-modal-bg rounded-md px-4 py-[10px] mt-3 w-full flex-col">
         <span className="font-semibold text-lg">To Fuse Network</span>
-        <span className="font-medium mt-1">You will receive 0 USDC</span>
+        <span className="font-medium mt-1">You will receive {amount} USDC</span>
       </div>
     </>
   );

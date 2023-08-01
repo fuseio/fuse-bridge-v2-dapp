@@ -8,9 +8,13 @@ import history from "../../assets/history.svg";
 import Transactions from "../commons/Transactions";
 import { useSetChain } from "@web3-onboard/react";
 import { appConfig } from "../../constants/config";
+import { selectBalanceSlice } from "../../store/balanceSlice";
+import { useAppDispatch, useAppSelector } from "../../store/store";
 
 const Home = () => {
   const [{ connectedChain }, setChain] = useSetChain();
+  const dispatch = useAppDispatch();
+  const balanceSlice = useAppSelector(selectBalanceSlice);
   const [selected, setSelected] = useState(0);
   const [depositSelectedChainSection, setDepositSelectedChainSection] =
     useState(0);
@@ -25,7 +29,7 @@ const Home = () => {
   const [withdrawSelectedTokenSection, setWithdrawSelectedTokenSection] =
     useState(0);
   const [withdrawSelectedTokenItem, setWithdrawSelectedTokenItem] = useState(0);
-
+  const [amount, setAmount] = useState("");
   const filters = ["Deposit", "Withdraw"];
   const [isOpen, setIsOpen] = useState(false);
   return (
@@ -63,7 +67,7 @@ const Home = () => {
                         chainId:
                           "0x" +
                           appConfig.wrappedBridge.chains[
-                            withdrawSelectedChainItem
+                            depositSelectedChainItem
                           ].chainId.toString(16),
                       });
                     }
@@ -97,6 +101,8 @@ const Home = () => {
                     chainId: "0x7A",
                   });
               }}
+              amount={amount}
+              setAmount={setAmount}
             />
           ) : (
             <Withdraw
@@ -123,9 +129,25 @@ const Home = () => {
                       ].chainId.toString(16),
                   });
               }}
+              amount={amount}
+              setAmount={setAmount}
             />
           )}
-          <ConnectWallet className="mt-6 py-4 " />
+          {!connectedChain ? (
+            <ConnectWallet className="mt-6 py-4 " />
+          ) : (
+            <button
+              className="bg-fuse-black text-white px-4 mt-6 py-4 rounded-full font-medium md:text-sm "
+
+              // onClick={() => {
+              //   wallet ? disconnect(wallet) : connect();
+              // }}
+            >
+              {parseFloat(balanceSlice.approval) < parseFloat(amount)
+                ? "Approve"
+                : "Bridge"}
+            </button>
+          )}
         </motion.div>
         <motion.div className="flex bg-white w-[30%] mt-2 rounded-lg px-8 py-5 flex-col font-medium">
           <div className="flex justify-between">
