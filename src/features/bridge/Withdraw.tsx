@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   chainConfig,
   exchangeConfig,
@@ -7,6 +7,8 @@ import {
 } from "../../constants/config";
 import Dropdown from "../commons/Dropdown";
 import switchImg from "../../assets/switch.svg";
+import { useSetChain, useConnectWallet } from "@web3-onboard/react";
+import { getERC20Balance } from "../../utils/erc20";
 
 type WithdrawProps = {
   selectedChainSection: number;
@@ -36,6 +38,20 @@ const Withdraw = ({
   setSelectedTokenItem,
   onSwitch,
 }: WithdrawProps) => {
+  const [{ connectedChain }] = useSetChain();
+  const [{ wallet }] = useConnectWallet();
+  const [balance, setBalance] = useState("0");
+  useEffect(() => {
+    if (wallet)
+      getERC20Balance(
+        appConfig.wrappedBridge.wrapped.tokens[selectedTokenItem].address,
+        wallet.accounts[0].address,
+        appConfig.wrappedBridge.wrapped.tokens[selectedTokenItem].decimals
+      ).then((balance) => {
+        setBalance(balance);
+      });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedTokenItem, selectedTokenSection, connectedChain]);
   return (
     <>
       <div className="flex bg-modal-bg rounded-md p-4 mt-3 w-full flex-col">
@@ -72,7 +88,7 @@ const Withdraw = ({
             }}
           />
         </div>
-        <span className="mt-3 text-sm font-medium">Balance: 6940568098</span>
+        <span className="mt-3 text-sm font-medium">Balance: {balance}</span>
       </div>
       <div className="flex justify-center">
         <img
@@ -100,7 +116,7 @@ const Withdraw = ({
                   return {
                     item: chain.name,
                     icon: chain.icon,
-                    id: chain.chainId,
+                    id: chain.lzChainId,
                   };
                 }),
               },

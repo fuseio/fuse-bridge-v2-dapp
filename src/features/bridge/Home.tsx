@@ -6,8 +6,11 @@ import Withdraw from "./Withdraw";
 import Footer from "../commons/Footer";
 import history from "../../assets/history.svg";
 import Transactions from "../commons/Transactions";
+import { useSetChain } from "@web3-onboard/react";
+import { appConfig } from "../../constants/config";
 
 const Home = () => {
+  const [{ connectedChain }, setChain] = useSetChain();
   const [selected, setSelected] = useState(0);
   const [depositSelectedChainSection, setDepositSelectedChainSection] =
     useState(0);
@@ -51,6 +54,19 @@ const Home = () => {
                       : "text-primary font-medium py-2 cursor-pointer w-1/2 text-center"
                   }
                   onClick={() => {
+                    if (index === 1) {
+                      setChain({
+                        chainId: "0x7A",
+                      });
+                    } else {
+                      setChain({
+                        chainId:
+                          "0x" +
+                          appConfig.wrappedBridge.chains[
+                            withdrawSelectedChainItem
+                          ].chainId.toString(16),
+                      });
+                    }
                     setSelected(index);
                   }}
                   key={index}
@@ -76,6 +92,10 @@ const Home = () => {
                 setWithdrawSelectedTokenSection(tokenSection);
                 setWithdrawSelectedTokenItem(tokenItem);
                 setSelected(1);
+                if (connectedChain)
+                  setChain({
+                    chainId: "0x7A",
+                  });
               }}
             />
           ) : (
@@ -94,6 +114,14 @@ const Home = () => {
                 setDepositSelectedTokenSection(tokenSection);
                 setDepositSelectedTokenItem(tokenItem);
                 setSelected(0);
+                if (connectedChain)
+                  setChain({
+                    chainId:
+                      "0x" +
+                      appConfig.wrappedBridge.chains[
+                        withdrawSelectedChainItem
+                      ].chainId.toString(16),
+                  });
               }}
             />
           )}

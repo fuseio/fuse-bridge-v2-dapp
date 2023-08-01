@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   chainConfig,
   exchangeConfig,
@@ -7,6 +7,8 @@ import {
 } from "../../constants/config";
 import Dropdown from "../commons/Dropdown";
 import switchImg from "../../assets/switch.svg";
+import { useConnectWallet, useSetChain } from "@web3-onboard/react";
+import { getERC20Balance } from "../../utils/erc20";
 
 type DepositProps = {
   selectedChainSection: number;
@@ -36,6 +38,24 @@ const Deposit = ({
   setSelectedTokenItem,
   onSwitch,
 }: DepositProps) => {
+  const [{ connectedChain }, setChain] = useSetChain();
+  const [{ wallet }] = useConnectWallet();
+  const [balance, setBalance] = useState("0");
+  useEffect(() => {
+    if (wallet)
+      getERC20Balance(
+        appConfig.wrappedBridge.chains[selectedChainItem].tokens[
+          selectedTokenItem
+        ].address,
+        wallet.accounts[0].address,
+        appConfig.wrappedBridge.chains[selectedChainItem].tokens[
+          selectedTokenItem
+        ].decimals
+      ).then((balance) => {
+        setBalance(balance);
+      });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedTokenItem, selectedTokenSection, connectedChain]);
   return (
     <>
       <div className="flex bg-modal-bg rounded-md p-4 mt-3 w-full flex-col">
@@ -49,20 +69,20 @@ const Deposit = ({
                   return {
                     item: chain.name,
                     icon: chain.icon,
-                    id: chain.chainId,
+                    id: chain.lzChainId,
                   };
                 }),
               },
-            //   {
-            //     heading: "Centralized Exchanges",
-            //     items: exchangeConfig.exchanges.map((exchange, i) => {
-            //       return {
-            //         item: exchange.name,
-            //         icon: exchange.icon,
-            //         id: i,
-            //       };
-            //     }),
-            //   },
+              //   {
+              //     heading: "Centralized Exchanges",
+              //     items: exchangeConfig.exchanges.map((exchange, i) => {
+              //       return {
+              //         item: exchange.name,
+              //         icon: exchange.icon,
+              //         id: i,
+              //       };
+              //     }),
+              //   },
             ]}
             selectedSection={selectedChainSection}
             selectedItem={selectedChainItem}
@@ -70,6 +90,12 @@ const Deposit = ({
             onClick={(section, item) => {
               setSelectedChainSection(section);
               setSelectedChainItem(item);
+              if (connectedChain)
+                setChain({
+                  chainId:
+                    "0x" +
+                    appConfig.wrappedBridge.chains[item].chainId.toString(16),
+                });
             }}
           />
         </div>
@@ -105,7 +131,7 @@ const Deposit = ({
             }}
           />
         </div>
-        <span className="mt-3 text-sm font-medium">Balance: 6940568098</span>
+        <span className="mt-3 text-sm font-medium">Balance: {balance}</span>
       </div>
       <div className="flex justify-center">
         <img

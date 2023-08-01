@@ -1,11 +1,17 @@
 import React, { useEffect } from "react";
-import { useConnectWallet } from "@web3-onboard/react";
-import { useAppDispatch } from "../../store/store";
+import { useConnectWallet, useSetChain } from "@web3-onboard/react";
 import ReactGA from "react-ga4";
+import { setWeb3OnboardProvider } from "../../utils/provider";
+import { EIP1193Provider } from "@web3-onboard/core";
 
 const ConnectWallet = ({ className = "" }: { className?: string }) => {
   const [{ wallet, connecting }, connect, disconnect] = useConnectWallet();
-  const dispatch = useAppDispatch();
+  const [{ connectedChain }] = useSetChain();
+
+  useEffect(() => {
+    setWeb3OnboardProvider(wallet?.provider as EIP1193Provider);
+    connectionEvent(wallet);
+  }, [wallet, connectedChain]);
 
   const connectionEvent = (wallet: any) => {
     if (wallet)
@@ -15,6 +21,7 @@ const ConnectWallet = ({ className = "" }: { className?: string }) => {
         label: wallet?.label,
       });
   };
+
   return (
     <button
       className={

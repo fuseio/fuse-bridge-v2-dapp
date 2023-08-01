@@ -81,7 +81,7 @@ const Dropdown = ({
         className="absolute top-[120%] left-0 bg-white rounded-md shadow-xl px-4 pb-3 w-full z-50 max-h-[360px] overflow-y-auto"
       >
         {items.map((section, index) => (
-          <div className="w-full">
+          <div className="w-full" key={index}>
             <p className="font-semibold cursor-default py-3">
               {section.heading}
             </p>
@@ -92,6 +92,7 @@ const Dropdown = ({
                   onClick={() => {
                     onClick(index, i);
                   }}
+                  key={i}
                 >
                   <img
                     src={item.icon}

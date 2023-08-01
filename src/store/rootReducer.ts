@@ -1,23 +1,21 @@
 import {
-    AnyAction,
-    CombinedState,
-    combineReducers,
-    Reducer
-} from '@reduxjs/toolkit'
+  AnyAction,
+  CombinedState,
+  combineReducers,
+  Reducer,
+} from "@reduxjs/toolkit";
+import chainReducer from "./chainSlice";
 
 const appReducer = combineReducers({
-    // validator: validatorReducer,
-    // search: searchReducer
-
-})
+  chain: chainReducer,
+});
 
 export type AppState = CombinedState<{
-    // validator: ReturnType<typeof validatorReducer>,
-    // search: ReturnType<typeof searchReducer>
-}>
+  chain: ReturnType<typeof chainReducer>;
+}>;
 
 const rootReducer: Reducer = (state: AppState, action: AnyAction) => {
-    return appReducer(state, action)
-}
+  return appReducer(state, action);
+};
 
-export default rootReducer
+export default rootReducer;

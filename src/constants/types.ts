@@ -1,8 +1,10 @@
 import { TokenConfig, type AppConfigLike } from "@layerzerolabs/ui-app-config";
 export interface ChainConfigLike {
-  chainId: number;
+  lzChainId: number;
   chainName: string;
   icon: string;
+  rpc: string;
+  chainId: number;
 }
 
 export interface ChainConfig {
@@ -72,10 +74,18 @@ export interface BridgeConfigLike {
 interface WrappedBridgeConfig {
   version: number;
   wrapped: {
-    chainId: number;
+    lzChainId: number;
     address: string;
+    tokens: {
+      decimals: number;
+      symbol: string;
+      name: string;
+      address: string;
+      icon: string;
+    }[];
   };
   chains: {
+    lzChainId: number;
     chainId: number;
     name: string;
     icon: string;
@@ -91,21 +101,42 @@ interface WrappedBridgeConfig {
   }[];
 }
 
-export interface BrideConfig {
+export interface BridgeConfig {
   wrappedBridge: WrappedBridgeConfig;
 }
 
 export const createAppConfig = (
-  brideConfig: BridgeConfigLike,
+  bridgeConfig: BridgeConfigLike,
   chainConfig: ChainConfig,
   tokenConfig: CoinConfig
-): BrideConfig => {
+): BridgeConfig => {
+  let wrappedTokens: {
+    decimals: number;
+    symbol: string;
+    name: string;
+    address: string;
+    icon: string;
+  }[] = [];
+  if (bridgeConfig.tokens.length > 0) {
+    tokenConfig.coins.forEach((coin) => {
+      const token = bridgeConfig.tokens
+        .find((token) => token[0].symbol === coin.symbol)
+        ?.find((token) => token.chainId === bridgeConfig.wrapped.chainId);
+      if (token) {
+        wrappedTokens.push({
+          ...token,
+          icon: coin.icon,
+        });
+      }
+    });
+  }
   return {
     wrappedBridge: {
-      version: brideConfig.version,
+      version: bridgeConfig.version,
       wrapped: {
-        chainId: brideConfig.wrapped.chainId,
-        address: brideConfig.wrapped.address,
+        lzChainId: bridgeConfig.wrapped.chainId,
+        address: bridgeConfig.wrapped.address,
+        tokens: wrappedTokens,
       },
       chains: chainConfig.chains.map((chain) => {
         let tokens: {
@@ -115,11 +146,11 @@ export const createAppConfig = (
           address: string;
           icon: string;
         }[] = [];
-        if (brideConfig.tokens.length > 0) {
+        if (bridgeConfig.tokens.length > 0) {
           tokenConfig.coins.forEach((coin) => {
-            const token = brideConfig.tokens
+            const token = bridgeConfig.tokens
               .find((token) => token[0].symbol === coin.symbol)
-              ?.find((token) => token.chainId === chain.chainId);
+              ?.find((token) => token.chainId === chain.lzChainId);
             if (token) {
               tokens.push({
                 ...token,
@@ -130,10 +161,11 @@ export const createAppConfig = (
         }
         return {
           chainId: chain.chainId,
+          lzChainId: chain.lzChainId,
           name: chain.chainName,
           icon: chain.icon,
-          bridge: brideConfig.original.find(
-            (bridge) => bridge.chainId === chain.chainId
+          bridge: bridgeConfig.original.find(
+            (bridge) => bridge.chainId === chain.lzChainId
           )?.address,
           tokens: tokens,
         };
