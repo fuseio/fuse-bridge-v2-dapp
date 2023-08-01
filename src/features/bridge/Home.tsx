@@ -6,15 +6,26 @@ import Withdraw from "./Withdraw";
 import Footer from "../commons/Footer";
 import history from "../../assets/history.svg";
 import Transactions from "../commons/Transactions";
-import { useSetChain } from "@web3-onboard/react";
+import { useConnectWallet, useSetChain } from "@web3-onboard/react";
 import { appConfig } from "../../constants/config";
 import { selectBalanceSlice } from "../../store/balanceSlice";
 import { useAppDispatch, useAppSelector } from "../../store/store";
+import {
+  bridgeOriginalTokens,
+  bridgeWrappedTokens,
+  increaseERC20Allowance,
+  selectContractSlice,
+} from "../../store/contractSlice";
+import { selectChainSlice } from "../../store/chainSlice";
+import { bridgeOriginal } from "../../utils/originalBridge";
 
 const Home = () => {
   const [{ connectedChain }, setChain] = useSetChain();
+  const [{ wallet }] = useConnectWallet();
   const dispatch = useAppDispatch();
   const balanceSlice = useAppSelector(selectBalanceSlice);
+  const contractSlice = useAppSelector(selectContractSlice);
+  const chainSlice = useAppSelector(selectChainSlice);
   const [selected, setSelected] = useState(0);
   const [depositSelectedChainSection, setDepositSelectedChainSection] =
     useState(0);
@@ -138,12 +149,70 @@ const Home = () => {
           ) : (
             <button
               className="bg-fuse-black text-white px-4 mt-6 py-4 rounded-full font-medium md:text-sm "
-
-              // onClick={() => {
-              //   wallet ? disconnect(wallet) : connect();
-              // }}
+              onClick={() => {
+                if (!wallet) return;
+                if (!amount) return;
+                if (parseFloat(balanceSlice.approval) < parseFloat(amount)) {
+                  dispatch(
+                    increaseERC20Allowance({
+                      contractAddress:
+                        appConfig.wrappedBridge.chains[depositSelectedChainItem]
+                          .tokens[depositSelectedTokenItem].address,
+                      amount: amount,
+                      bridge:
+                        appConfig.wrappedBridge.chains[depositSelectedChainItem]
+                          .bridge,
+                      decimals:
+                        appConfig.wrappedBridge.chains[depositSelectedChainItem]
+                          .tokens[depositSelectedTokenItem].decimals,
+                      address: wallet.accounts[0].address,
+                    })
+                  );
+                } else if (selected === 0) {
+                  dispatch(
+                    bridgeOriginalTokens({
+                      address: wallet.accounts[0].address,
+                      amount: amount,
+                      bridge:
+                        appConfig.wrappedBridge.chains[depositSelectedChainItem]
+                          .bridge,
+                      contractAddress:
+                        appConfig.wrappedBridge.chains[depositSelectedChainItem]
+                          .tokens[depositSelectedTokenItem].address,
+                      decimals:
+                        appConfig.wrappedBridge.chains[depositSelectedChainItem]
+                          .tokens[depositSelectedTokenItem].decimals,
+                    })
+                  );
+                } else if (selected === 1) {
+                  dispatch(
+                    bridgeWrappedTokens({
+                      address: wallet.accounts[0].address,
+                      amount: amount,
+                      bridge: appConfig.wrappedBridge.wrapped.address,
+                      contractAddress:
+                        appConfig.wrappedBridge.wrapped.tokens[
+                          withdrawSelectedTokenItem
+                        ].address,
+                      decimals:
+                        appConfig.wrappedBridge.wrapped.tokens[
+                          withdrawSelectedTokenItem
+                        ].decimals,
+                      chainId:
+                        appConfig.wrappedBridge.chains[
+                          withdrawSelectedChainItem
+                        ].lzChainId,
+                    })
+                  );
+                }
+              }}
+              disabled={
+                contractSlice.isBridgeLoading || contractSlice.isApprovalLoading
+              }
             >
-              {parseFloat(balanceSlice.approval) < parseFloat(amount)
+              {contractSlice.isBridgeLoading || contractSlice.isApprovalLoading
+                ? "Loading"
+                : parseFloat(balanceSlice.approval) < parseFloat(amount)
                 ? "Approve"
                 : "Bridge"}
             </button>

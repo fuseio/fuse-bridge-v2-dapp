@@ -1,11 +1,11 @@
-import { Provider, Signer, ethers } from "ethers";
+import { Signer, ethers } from "ethers";
 import { ERC20ABI } from "../constants/types/ERC20";
 import { WrappedERC20 } from "../constants/types/WrappedERC20";
 import { web3OnboardProvider } from "./provider";
 
-export const getERC20Contract = (
+const getERC20Contract = (
   address: string,
-  signerOrProvider: Signer | Provider | null
+  signerOrProvider: Signer | ethers.providers.Provider | undefined
 ) => {
   const contract = new ethers.Contract(
     address,
@@ -37,14 +37,13 @@ export const getERC20Allowance = async (
 export const increaseAllowance = async (
   address: string,
   spender: string,
-  amount: number,
+  amount: string,
   decimals: number = 18
 ) => {
   const contract = getERC20Contract(address, web3OnboardProvider);
-
   const tx = await contract.increaseAllowance(
     spender,
-    ethers.parseUnits(amount.toString(), decimals)
+    ethers.utils.parseUnits(amount, decimals)
   );
   await tx.wait();
   return tx.hash;

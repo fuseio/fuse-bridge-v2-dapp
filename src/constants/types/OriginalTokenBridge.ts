@@ -14,6 +14,7 @@ import type {
   ContractMethod,
   Listener,
 } from "ethers";
+
 import type {
   TypedContractEvent,
   TypedDeferredTopicFilter,

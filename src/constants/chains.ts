@@ -25,13 +25,13 @@ export const chains: ChainConfigLike[] = [
     rpc: "https://rpc.gnosischain.com/",
     chainId: 100,
   },
-  {
-    chainName: "Polygon",
-    lzChainId: 109,
-    icon: matic,
-    rpc: "https://rpc-mainnet.maticvigil.com",
-    chainId: 137,
-  },
+  // {
+  //   chainName: "Polygon",
+  //   lzChainId: 109,
+  //   icon: matic,
+  //   rpc: "https://rpc-mainnet.maticvigil.com",
+  //   chainId: 137,
+  // },
   // {
   //     chainName: "Celo",
   //     chainId: 125,

@@ -1,4 +1,9 @@
-import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
+import {
+  createSlice,
+  createAsyncThunk,
+  PayloadAction,
+  compose,
+} from "@reduxjs/toolkit";
 import { AppState } from "../rootReducer";
 import { getERC20Allowance, getERC20Balance } from "../../utils/erc20";
 import { ethers } from "ethers";
@@ -44,7 +49,7 @@ export const fetchBalance = createAsyncThunk(
     return new Promise<any>(async (resolve, reject) => {
       getERC20Balance(contractAddress, address)
         .then((balance) => {
-          const bal = ethers.formatUnits(balance, decimals);
+          const bal = ethers.utils.formatUnits(balance, decimals);
           //call approval thunk
           thunkAPI.dispatch(
             fetchApproval({
@@ -82,7 +87,7 @@ export const fetchApproval = createAsyncThunk(
     return new Promise<any>(async (resolve, reject) => {
       getERC20Allowance(contractAddress, address, spender)
         .then((approval) => {
-          const app = ethers.formatUnits(approval, decimals);
+          const app = ethers.utils.formatUnits(approval, decimals);
           resolve(app);
         })
         .catch((err) => {
