@@ -1,8 +1,5 @@
 import { Signer, ethers } from "ethers";
-import {
-  WrappedTokenBridgeAbi,
-  WrappedTokenBridge,
-} from "../constants/types/WrappedTokenBridge";
+import { WrappedTokenBridgeAbi } from "../constants/types/WrappedTokenBridge";
 import { web3OnboardProvider } from "./provider";
 import { AdapterParams } from "@layerzerolabs/ui-core";
 import { serializeAdapterParams } from "@layerzerolabs/ui-evm";
@@ -15,7 +12,7 @@ const getWrappedTokenBridge = (
     contractAddress,
     WrappedTokenBridgeAbi,
     signerOrProvider
-  ) as unknown as WrappedTokenBridge;
+  );
   return contract;
 };
 

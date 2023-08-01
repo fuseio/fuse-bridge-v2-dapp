@@ -1,7 +1,6 @@
 import { Signer, ethers } from "ethers";
 import {
   OriginalTokenBridgeAbi,
-  OriginalTokenBridge,
 } from "../constants/types/OriginalTokenBridge";
 import { web3OnboardProvider } from "./provider";
 import { AdapterParams } from "@layerzerolabs/ui-core";
@@ -15,7 +14,7 @@ const getOriginalTokenBridge = (
     contractAddress,
     OriginalTokenBridgeAbi,
     signerOrProvider
-  ) as unknown as OriginalTokenBridge;
+  );
   return contract;
 };
 

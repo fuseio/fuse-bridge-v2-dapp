@@ -1,6 +1,5 @@
 import { Signer, ethers } from "ethers";
 import { ERC20ABI } from "../constants/types/ERC20";
-import { WrappedERC20 } from "../constants/types/WrappedERC20";
 import { web3OnboardProvider } from "./provider";
 
 const getERC20Contract = (
@@ -11,7 +10,7 @@ const getERC20Contract = (
     address,
     ERC20ABI,
     signerOrProvider
-  ) as unknown as WrappedERC20;
+  );
   return contract;
 };
 
