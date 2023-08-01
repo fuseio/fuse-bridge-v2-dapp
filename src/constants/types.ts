@@ -1,4 +1,3 @@
-import { TokenConfig, type AppConfigLike } from "@layerzerolabs/ui-app-config";
 export interface ChainConfigLike {
   lzChainId: number;
   chainName: string;
