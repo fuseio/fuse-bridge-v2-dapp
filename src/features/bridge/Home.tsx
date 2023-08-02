@@ -208,7 +208,9 @@ const Home = () => {
                 }
               }}
               disabled={
-                contractSlice.isBridgeLoading || contractSlice.isApprovalLoading
+                contractSlice.isBridgeLoading ||
+                contractSlice.isApprovalLoading ||
+                !amount
               }
               text={
                 contractSlice.isBridgeLoading || contractSlice.isApprovalLoading
