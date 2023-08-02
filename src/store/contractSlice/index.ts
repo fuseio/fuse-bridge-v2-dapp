@@ -38,8 +38,8 @@ export const increaseERC20Allowance = createAsyncThunk(
     thunkAPI
   ) => {
     return new Promise<any>(async (resolve, reject) => {
-      increaseAllowance(contractAddress, bridge, amount, decimals).then(
-        (txHash) => {
+      increaseAllowance(contractAddress, bridge, amount, decimals)
+        .then((txHash) => {
           thunkAPI.dispatch(
             fetchApproval({
               contractAddress,
@@ -49,8 +49,10 @@ export const increaseERC20Allowance = createAsyncThunk(
             })
           );
           resolve(txHash);
-        }
-      );
+        })
+        .catch((err) => {
+          reject(err);
+        });
     });
   }
 );
@@ -74,8 +76,8 @@ export const bridgeOriginalTokens = createAsyncThunk(
     thunkAPI
   ) => {
     return new Promise<any>(async (resolve, reject) => {
-      bridgeOriginal(bridge, address, contractAddress, amount, decimals).then(
-        (txHash) => {
+      bridgeOriginal(bridge, address, contractAddress, amount, decimals)
+        .then((txHash) => {
           thunkAPI.dispatch(
             fetchBalance({
               address,
@@ -85,8 +87,10 @@ export const bridgeOriginalTokens = createAsyncThunk(
             })
           );
           resolve(txHash);
-        }
-      );
+        })
+        .catch((err) => {
+          reject(err);
+        });
     });
   }
 );
@@ -112,24 +116,21 @@ export const bridgeWrappedTokens = createAsyncThunk(
     thunkAPI
   ) => {
     return new Promise<any>(async (resolve, reject) => {
-      bridgeWrapped(
-        bridge,
-        address,
-        contractAddress,
-        amount,
-        decimals,
-        chainId
-      ).then((txHash) => {
-        thunkAPI.dispatch(
-          fetchBalance({
-            address,
-            bridge,
-            contractAddress,
-            decimals,
-          })
-        );
-        resolve(txHash);
-      });
+      bridgeWrapped(bridge, address, contractAddress, amount, decimals, chainId)
+        .then((txHash) => {
+          thunkAPI.dispatch(
+            fetchBalance({
+              address,
+              bridge,
+              contractAddress,
+              decimals,
+            })
+          );
+          resolve(txHash);
+        })
+        .catch((err) => {
+          reject(err);
+        });
     });
   }
 );

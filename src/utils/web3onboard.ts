@@ -71,11 +71,13 @@ export const web3Onboard = init({
     icon: fuseIcon,
     logo: whiteFuseLogo,
     description:
-      "The Fuse Staking Dapp enables users to participate in the Fuse network's consensus by staking FUSE tokens.",
+      "The Fuse Bridge allows you to move funds from different networks and centralized exchanges to Fuse.",
   },
   accountCenter: {
     desktop: {
       enabled: true,
+      minimal: false,
+      position: "topRight",
     },
     mobile: {
       enabled: true,

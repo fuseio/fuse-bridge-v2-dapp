@@ -18,6 +18,7 @@ import {
 } from "../../store/contractSlice";
 import { selectChainSlice } from "../../store/chainSlice";
 import { bridgeOriginal } from "../../utils/originalBridge";
+import Button from "../commons/Button";
 
 const Home = () => {
   const [{ connectedChain }, setChain] = useSetChain();
@@ -147,7 +148,7 @@ const Home = () => {
           {!connectedChain ? (
             <ConnectWallet className="mt-6 py-4 " />
           ) : (
-            <button
+            <Button
               className="bg-fuse-black text-white px-4 mt-6 py-4 rounded-full font-medium md:text-sm "
               onClick={() => {
                 if (!wallet) return;
@@ -209,13 +210,15 @@ const Home = () => {
               disabled={
                 contractSlice.isBridgeLoading || contractSlice.isApprovalLoading
               }
-            >
-              {contractSlice.isBridgeLoading || contractSlice.isApprovalLoading
-                ? "Loading"
-                : parseFloat(balanceSlice.approval) < parseFloat(amount)
-                ? "Approve"
-                : "Bridge"}
-            </button>
+              text={
+                contractSlice.isBridgeLoading || contractSlice.isApprovalLoading
+                  ? "Loading..."
+                  : parseFloat(balanceSlice.approval) < parseFloat(amount)
+                  ? "Approve"
+                  : "Bridge"
+              }
+              disabledClassname="bg-fuse-black/20 text-black px-4 mt-6 py-4 rounded-full font-medium md:text-sm "
+            />
           )}
         </motion.div>
         <motion.div className="flex bg-white w-[30%] mt-2 rounded-lg px-8 py-5 flex-col font-medium">
