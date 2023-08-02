@@ -11,6 +11,7 @@ import { useSetChain, useConnectWallet } from "@web3-onboard/react";
 import { getERC20Balance } from "../../utils/erc20";
 import { selectBalanceSlice, fetchBalance } from "../../store/balanceSlice";
 import { useAppDispatch, useAppSelector } from "../../store/store";
+import { selectChainSlice, setChain } from "../../store/chainSlice";
 
 type WithdrawProps = {
   selectedChainSection: number;
@@ -44,10 +45,11 @@ const Withdraw = ({
   amount,
   setAmount,
 }: WithdrawProps) => {
-  const [{ connectedChain }] = useSetChain();
+  const [{ chains }] = useSetChain();
   const [{ wallet }] = useConnectWallet();
   const dispatch = useAppDispatch();
   const balanceSlice = useAppSelector(selectBalanceSlice);
+  const chainSlice = useAppSelector(selectChainSlice);
   useEffect(() => {
     if (wallet)
       dispatch(
@@ -60,24 +62,27 @@ const Withdraw = ({
           bridge: appConfig.wrappedBridge.wrapped.address,
         })
       );
-  }, [selectedTokenItem, selectedTokenSection, connectedChain, wallet]);
+  }, [
+    selectedTokenItem,
+    selectedTokenSection,
+    wallet?.accounts[0].address,
+    chainSlice.chainId,
+  ]);
   useEffect(() => {
-    if (wallet)
+    if (chainSlice.chainId === 0) {
       dispatch(
-        fetchBalance({
-          address: wallet.accounts[0].address,
-          contractAddress:
-            appConfig.wrappedBridge.chains[selectedChainItem].tokens[
-              selectedTokenItem
-            ].address,
-          decimals:
-            appConfig.wrappedBridge.chains[selectedChainItem].tokens[
-              selectedTokenItem
-            ].decimals,
+        setChain({
+          chainId: 122,
           bridge: appConfig.wrappedBridge.wrapped.address,
+          icon: chains[0].icon as string,
+          lzChainId: 138,
+          name: "Fuse",
+          rpcUrl: "https://rpc.fuse.io",
+          tokens: [],
         })
       );
-  }, []);
+    }
+  }, [chainSlice.chainId]);
   return (
     <>
       <div className="flex bg-modal-bg rounded-md p-4 mt-3 w-full flex-col">
@@ -119,7 +124,12 @@ const Withdraw = ({
           />
         </div>
         <span className="mt-3 text-sm font-medium">
-          Balance: {balanceSlice.balance}
+          Balance:{" "}
+          {balanceSlice.isBalanceLoading ? (
+            <span className="px-10 py-1 ml-2 rounded-md animate-pulse bg-fuse-black/10"></span>
+          ) : (
+            balanceSlice.balance
+          )}
         </span>
       </div>
       <div className="flex justify-center">
@@ -133,6 +143,9 @@ const Withdraw = ({
               selectedTokenItem,
               selectedChainSection,
               selectedChainItem
+            );
+            dispatch(
+              setChain(appConfig.wrappedBridge.chains[selectedChainItem])
             );
           }}
         />
@@ -176,7 +189,7 @@ const Withdraw = ({
       <div className="flex justify-between mt-4">
         <span className="text-black/50 font-medium">You will receive</span>
         <span className="font-medium">
-          {amount} <span className="font-bold">USDC</span>
+          {amount ? amount : 0} <span className="font-bold">USDC</span>
         </span>
       </div>
     </>

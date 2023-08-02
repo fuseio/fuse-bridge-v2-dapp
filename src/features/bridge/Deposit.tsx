@@ -9,6 +9,7 @@ import Dropdown from "../commons/Dropdown";
 import switchImg from "../../assets/switch.svg";
 import { useConnectWallet, useSetChain } from "@web3-onboard/react";
 import { getERC20Balance } from "../../utils/erc20";
+import { selectChainSlice, setChain } from "../../store/chainSlice";
 import { useAppDispatch, useAppSelector } from "../../store/store";
 import { fetchBalance, selectBalanceSlice } from "../../store/balanceSlice";
 
@@ -44,15 +45,16 @@ const Deposit = ({
   amount,
   setAmount,
 }: DepositProps) => {
-  const [{ connectedChain }, setChain] = useSetChain();
+  const [{ chains }] = useSetChain();
   const [{ wallet }] = useConnectWallet();
   const dispatch = useAppDispatch();
   const balanceSlice = useAppSelector(selectBalanceSlice);
+  const chainSlice = useAppSelector(selectChainSlice);
   useEffect(() => {
-    if (wallet)
+    if (wallet) {
       dispatch(
         fetchBalance({
-          address: wallet.accounts[0].address,
+          address: wallet?.accounts[0].address as string,
           contractAddress:
             appConfig.wrappedBridge.chains[selectedChainItem].tokens[
               selectedTokenItem
@@ -64,24 +66,13 @@ const Deposit = ({
           bridge: appConfig.wrappedBridge.chains[selectedChainItem].bridge,
         })
       );
-  }, [selectedTokenItem, selectedTokenSection, connectedChain, wallet]);
+    }
+  }, [selectedTokenItem, selectedTokenSection, wallet, chainSlice.chainId]);
   useEffect(() => {
-    if (wallet)
-      dispatch(
-        fetchBalance({
-          address: wallet.accounts[0].address,
-          contractAddress:
-            appConfig.wrappedBridge.chains[selectedChainItem].tokens[
-              selectedTokenItem
-            ].address,
-          decimals:
-            appConfig.wrappedBridge.chains[selectedChainItem].tokens[
-              selectedTokenItem
-            ].decimals,
-          bridge: appConfig.wrappedBridge.chains[selectedChainItem].bridge,
-        })
-      );
-  }, []);
+    if (chainSlice.chainId === 0) {
+      dispatch(setChain(appConfig.wrappedBridge.chains[selectedChainItem]));
+    }
+  }, [chainSlice.chainId]);
   return (
     <>
       <div className="flex bg-modal-bg rounded-md p-4 mt-3 w-full flex-col">
@@ -116,12 +107,7 @@ const Deposit = ({
             onClick={(section, item) => {
               setSelectedChainSection(section);
               setSelectedChainItem(item);
-              if (connectedChain)
-                setChain({
-                  chainId:
-                    "0x" +
-                    appConfig.wrappedBridge.chains[item].chainId.toString(16),
-                });
+              dispatch(setChain(appConfig.wrappedBridge.chains[item]));
             }}
           />
         </div>
@@ -162,7 +148,12 @@ const Deposit = ({
           />
         </div>
         <span className="mt-3 text-sm font-medium">
-          Balance: {balanceSlice.balance}
+          Balance:{" "}
+          {balanceSlice.isBalanceLoading ? (
+            <span className="px-10 py-1 ml-2 rounded-md animate-pulse bg-fuse-black/10"></span>
+          ) : (
+            balanceSlice.balance
+          )}
         </span>
       </div>
       <div className="flex justify-center">
@@ -176,6 +167,17 @@ const Deposit = ({
               selectedTokenItem,
               selectedChainSection,
               selectedChainItem
+            );
+            dispatch(
+              setChain({
+                chainId: 122,
+                bridge: appConfig.wrappedBridge.wrapped.address,
+                icon: chains[0].icon as string,
+                lzChainId: 138,
+                name: "Fuse",
+                rpcUrl: "https://rpc.fuse.io",
+                tokens: [],
+              })
             );
           }}
         />

@@ -6,19 +6,22 @@ const getERC20Contract = (
   address: string,
   signerOrProvider: Signer | ethers.providers.Provider | undefined
 ) => {
-  const contract = new ethers.Contract(
-    address,
-    ERC20ABI,
-    signerOrProvider
-  );
+  const contract = new ethers.Contract(address, ERC20ABI, signerOrProvider);
+  return contract;
+};
+
+const getERC20ContractWithoutSigner = (address: string, rpcUrl: string) => {
+  const provider = new ethers.providers.JsonRpcProvider(rpcUrl);
+  const contract = new ethers.Contract(address, ERC20ABI, provider);
   return contract;
 };
 
 export const getERC20Balance = async (
   contractAddress: string,
-  address: string
+  address: string,
+  rpcUrl: string
 ) => {
-  const contract = getERC20Contract(contractAddress, web3OnboardProvider);
+  const contract = getERC20ContractWithoutSigner(contractAddress, rpcUrl);
   const balance = await contract.balanceOf(address);
   return balance;
 };
@@ -26,9 +29,10 @@ export const getERC20Balance = async (
 export const getERC20Allowance = async (
   contractAddress: string,
   address: string,
-  spender: string
+  spender: string,
+  rpcUrl: string
 ) => {
-  const contract = getERC20Contract(contractAddress, web3OnboardProvider);
+  const contract = getERC20ContractWithoutSigner(contractAddress, rpcUrl);
   const allowance = await contract.allowance(address, spender);
   return allowance;
 };

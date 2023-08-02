@@ -7,6 +7,7 @@ export interface ChainStateType {
   name: string;
   icon: string;
   bridge: string | undefined;
+  rpcUrl: string | undefined;
   tokens:
     | {
         decimals: number;
@@ -24,17 +25,33 @@ const INIT_STATE: ChainStateType = {
   icon: "",
   bridge: "",
   tokens: [],
+  rpcUrl: "",
 };
+
+export const setChain = createAsyncThunk(
+  "CHAIN_STATE/SET_CHAIN",
+  async (chain: ChainStateType, thunkAPI) => {
+    return new Promise<any>(async (resolve, reject) => {
+      resolve(chain);
+    });
+  }
+);
 
 const chainSlice = createSlice({
   name: "CHAIN_STATE",
   initialState: INIT_STATE,
-  reducers: {},
-  extraReducers: {
-    setChain: (state, action: PayloadAction<ChainStateType>) => {
-      state = action.payload;
-    },
+  extraReducers: (builder) => {
+    builder.addCase(setChain.fulfilled, (state, action) => {
+      state.bridge = action.payload.bridge;
+      state.chainId = action.payload.chainId;
+      state.icon = action.payload.icon;
+      state.lzChainId = action.payload.lzChainId;
+      state.name = action.payload.name;
+      state.rpcUrl = action.payload.rpcUrl;
+      state.tokens = action.payload.tokens;
+    });
   },
+  reducers: {},
 });
 
 export const selectChainSlice = (state: AppState): ChainStateType =>

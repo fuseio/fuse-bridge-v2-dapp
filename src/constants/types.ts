@@ -89,6 +89,7 @@ interface WrappedBridgeConfig {
     name: string;
     icon: string;
     bridge: string;
+    rpcUrl: string;
     tokens:
       | {
           decimals: number;
@@ -152,7 +153,10 @@ export const createAppConfig = (
               ?.find((token) => token.chainId === chain.lzChainId);
             if (token) {
               tokens.push({
-                ...token,
+                address: token.address,
+                decimals: token.decimals,
+                name: token.name,
+                symbol: token.symbol,
                 icon: coin.icon,
               });
             }
@@ -167,6 +171,7 @@ export const createAppConfig = (
             (bridge) => bridge.chainId === chain.lzChainId
           )?.address as string,
           tokens: tokens,
+          rpcUrl: chain.rpc,
         };
       }),
     },

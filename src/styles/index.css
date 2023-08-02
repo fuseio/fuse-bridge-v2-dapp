@@ -31,7 +31,7 @@
 #onboard-container {
   position: fixed;
   width: 315.77px;
-  z-index: 300;
+  z-index: 20;
   /* contain: layout; */
 }
 
@@ -43,7 +43,7 @@
 
 :root {
   --w3o-background-color: #000000 !important;
-  --account-center-z-index: 300;
+  --account-center-z-index: 20;
   --account-center-position-top: -0.7rem;
 }
 

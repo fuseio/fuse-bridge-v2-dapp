@@ -7,6 +7,7 @@ import {
 import { AppState } from "../rootReducer";
 import { getERC20Allowance, getERC20Balance } from "../../utils/erc20";
 import { ethers } from "ethers";
+import { ChainStateType } from "../chainSlice";
 
 export interface BalanceStateType {
   lzChainId: number;
@@ -47,9 +48,13 @@ export const fetchBalance = createAsyncThunk(
     thunkAPI
   ) => {
     return new Promise<any>(async (resolve, reject) => {
-      getERC20Balance(contractAddress, address)
+      const state = thunkAPI.getState();
+      // @ts-ignore
+      const chain: ChainStateType = state.chain;
+      getERC20Balance(contractAddress, address, chain.rpcUrl as string)
         .then((balance) => {
           const bal = ethers.utils.formatUnits(balance, decimals);
+          //fetcg chain from chain slice store
           //call approval thunk
           thunkAPI.dispatch(
             fetchApproval({
@@ -85,7 +90,15 @@ export const fetchApproval = createAsyncThunk(
     thunkAPI
   ) => {
     return new Promise<any>(async (resolve, reject) => {
-      getERC20Allowance(contractAddress, address, spender)
+      const state = thunkAPI.getState();
+      // @ts-ignore
+      const chain: ChainStateType = state.chain;
+      getERC20Allowance(
+        contractAddress,
+        address,
+        spender,
+        chain.rpcUrl as string
+      )
         .then((approval) => {
           const app = ethers.utils.formatUnits(approval, decimals);
           resolve(app);
