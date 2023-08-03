@@ -34,7 +34,7 @@ const Home = () => {
   const [depositSelectedTokenSection, setDepositSelectedTokenSection] =
     useState(0);
   const [depositSelectedTokenItem, setDepositSelectedTokenItem] = useState(0);
-
+  const [displayButton, setDisplayButton] = useState(true);
   const [withdrawSelectedChainSection, setWithdrawSelectedChainSection] =
     useState(0);
   const [withdrawSelectedChainItem, setWithdrawSelectedChainItem] = useState(0);
@@ -44,6 +44,8 @@ const Home = () => {
   const [amount, setAmount] = useState("");
   const filters = ["Deposit", "Withdraw"];
   const [isOpen, setIsOpen] = useState(false);
+  const [isExchange, setIsExchange] = useState(false);
+
   return (
     <>
       <Transactions isOpen={isOpen} onToggle={setIsOpen} />
@@ -70,6 +72,8 @@ const Home = () => {
                       : "text-primary font-medium py-2 cursor-pointer w-1/2 text-center"
                   }
                   onClick={() => {
+                    setSelected(index);
+                    if (isExchange) return;
                     if (index === 1) {
                       dispatch(
                         setChain({
@@ -91,7 +95,6 @@ const Home = () => {
                         )
                       );
                     }
-                    setSelected(index);
                   }}
                   key={index}
                 >
@@ -119,6 +122,9 @@ const Home = () => {
               }}
               amount={amount}
               setAmount={setAmount}
+              setDisplayButton={setDisplayButton}
+              isExchange={isExchange}
+              setIsExchange={setIsExchange}
             />
           ) : (
             <Withdraw
@@ -141,129 +147,132 @@ const Home = () => {
               setAmount={setAmount}
             />
           )}
-          {!connectedChain ? (
+          {!connectedChain && displayButton ? (
             <ConnectWallet className="mt-6 py-4 " />
           ) : (
-            <Button
-              className="bg-fuse-black text-white px-4 mt-6 py-4 rounded-full font-medium md:text-sm "
-              onClick={() => {
-                if (!wallet) return;
-                if (!amount) return;
-                if (parseFloat(balanceSlice.approval) < parseFloat(amount)) {
-                  switchChain({
-                    chainId:
-                      selected === 0
-                        ? "0x" +
-                          appConfig.wrappedBridge.chains[
-                            depositSelectedChainItem
-                          ].chainId.toString(16)
-                        : "0x7A",
-                  }).then((res) => {
-                    if (res && selected === 0)
-                      dispatch(
-                        increaseERC20Allowance({
-                          contractAddress:
+            displayButton && (
+              <Button
+                className="bg-fuse-black text-white px-4 mt-6 py-4 rounded-full font-medium md:text-sm "
+                onClick={() => {
+                  if (!wallet) return;
+                  if (!amount) return;
+                  if (parseFloat(balanceSlice.approval) < parseFloat(amount)) {
+                    switchChain({
+                      chainId:
+                        selected === 0
+                          ? "0x" +
                             appConfig.wrappedBridge.chains[
                               depositSelectedChainItem
-                            ].tokens[depositSelectedTokenItem].address,
-                          amount: amount,
-                          bridge:
-                            appConfig.wrappedBridge.chains[
-                              depositSelectedChainItem
-                            ].bridge,
-                          decimals:
-                            appConfig.wrappedBridge.chains[
-                              depositSelectedChainItem
-                            ].tokens[depositSelectedTokenItem].decimals,
-                          address: wallet.accounts[0].address,
-                        })
-                      );
-                    else if (res && selected === 1)
-                      dispatch(
-                        increaseERC20Allowance({
-                          contractAddress:
-                            appConfig.wrappedBridge.wrapped.tokens[
-                              withdrawSelectedTokenItem
-                            ].address,
-                          amount: amount,
-                          bridge: appConfig.wrappedBridge.wrapped.address,
-                          decimals:
-                            appConfig.wrappedBridge.wrapped.tokens[
-                              withdrawSelectedTokenItem
-                            ].decimals,
-                          address: wallet.accounts[0].address,
-                        })
-                      );
-                  });
-                } else if (selected === 0) {
-                  switchChain({
-                    chainId:
-                      "0x" +
-                      appConfig.wrappedBridge.chains[
-                        depositSelectedChainItem
-                      ].chainId.toString(16),
-                  }).then((res) => {
-                    if (res)
-                      dispatch(
-                        bridgeOriginalTokens({
-                          address: wallet.accounts[0].address,
-                          amount: amount,
-                          bridge:
-                            appConfig.wrappedBridge.chains[
-                              depositSelectedChainItem
-                            ].bridge,
-                          contractAddress:
-                            appConfig.wrappedBridge.chains[
-                              depositSelectedChainItem
-                            ].tokens[depositSelectedTokenItem].address,
-                          decimals:
-                            appConfig.wrappedBridge.chains[
-                              depositSelectedChainItem
-                            ].tokens[depositSelectedTokenItem].decimals,
-                        })
-                      );
-                  });
-                } else if (selected === 1) {
-                  switchChain({
-                    chainId: "0x7A",
-                  }).then((res) => {
-                    if (res)
-                      dispatch(
-                        bridgeWrappedTokens({
-                          address: wallet.accounts[0].address,
-                          amount: amount,
-                          bridge: appConfig.wrappedBridge.wrapped.address,
-                          contractAddress:
-                            appConfig.wrappedBridge.wrapped.tokens[
-                              withdrawSelectedTokenItem
-                            ].address,
-                          decimals:
-                            appConfig.wrappedBridge.wrapped.tokens[
-                              withdrawSelectedTokenItem
-                            ].decimals,
-                          chainId:
-                            appConfig.wrappedBridge.chains[
-                              withdrawSelectedChainItem
-                            ].lzChainId,
-                        })
-                      );
-                  });
+                            ].chainId.toString(16)
+                          : "0x7A",
+                    }).then((res) => {
+                      if (res && selected === 0)
+                        dispatch(
+                          increaseERC20Allowance({
+                            contractAddress:
+                              appConfig.wrappedBridge.chains[
+                                depositSelectedChainItem
+                              ].tokens[depositSelectedTokenItem].address,
+                            amount: amount,
+                            bridge:
+                              appConfig.wrappedBridge.chains[
+                                depositSelectedChainItem
+                              ].bridge,
+                            decimals:
+                              appConfig.wrappedBridge.chains[
+                                depositSelectedChainItem
+                              ].tokens[depositSelectedTokenItem].decimals,
+                            address: wallet.accounts[0].address,
+                          })
+                        );
+                      else if (res && selected === 1)
+                        dispatch(
+                          increaseERC20Allowance({
+                            contractAddress:
+                              appConfig.wrappedBridge.wrapped.tokens[
+                                withdrawSelectedTokenItem
+                              ].address,
+                            amount: amount,
+                            bridge: appConfig.wrappedBridge.wrapped.address,
+                            decimals:
+                              appConfig.wrappedBridge.wrapped.tokens[
+                                withdrawSelectedTokenItem
+                              ].decimals,
+                            address: wallet.accounts[0].address,
+                          })
+                        );
+                    });
+                  } else if (selected === 0) {
+                    switchChain({
+                      chainId:
+                        "0x" +
+                        appConfig.wrappedBridge.chains[
+                          depositSelectedChainItem
+                        ].chainId.toString(16),
+                    }).then((res) => {
+                      if (res)
+                        dispatch(
+                          bridgeOriginalTokens({
+                            address: wallet.accounts[0].address,
+                            amount: amount,
+                            bridge:
+                              appConfig.wrappedBridge.chains[
+                                depositSelectedChainItem
+                              ].bridge,
+                            contractAddress:
+                              appConfig.wrappedBridge.chains[
+                                depositSelectedChainItem
+                              ].tokens[depositSelectedTokenItem].address,
+                            decimals:
+                              appConfig.wrappedBridge.chains[
+                                depositSelectedChainItem
+                              ].tokens[depositSelectedTokenItem].decimals,
+                          })
+                        );
+                    });
+                  } else if (selected === 1) {
+                    switchChain({
+                      chainId: "0x7A",
+                    }).then((res) => {
+                      if (res)
+                        dispatch(
+                          bridgeWrappedTokens({
+                            address: wallet.accounts[0].address,
+                            amount: amount,
+                            bridge: appConfig.wrappedBridge.wrapped.address,
+                            contractAddress:
+                              appConfig.wrappedBridge.wrapped.tokens[
+                                withdrawSelectedTokenItem
+                              ].address,
+                            decimals:
+                              appConfig.wrappedBridge.wrapped.tokens[
+                                withdrawSelectedTokenItem
+                              ].decimals,
+                            chainId:
+                              appConfig.wrappedBridge.chains[
+                                withdrawSelectedChainItem
+                              ].lzChainId,
+                          })
+                        );
+                    });
+                  }
+                }}
+                disabled={
+                  contractSlice.isBridgeLoading ||
+                  contractSlice.isApprovalLoading ||
+                  !amount
                 }
-              }}
-              disabled={
-                contractSlice.isBridgeLoading ||
-                contractSlice.isApprovalLoading ||
-                !amount
-              }
-              text={
-                contractSlice.isBridgeLoading || contractSlice.isApprovalLoading
-                  ? "Loading..."
-                  : parseFloat(balanceSlice.approval) < parseFloat(amount)
-                  ? "Approve"
-                  : "Bridge"
-              }
-              disabledClassname="bg-fuse-black/20 text-black px-4 mt-6 py-4 rounded-full font-medium md:text-sm "
-            />
+                text={
+                  contractSlice.isBridgeLoading ||
+                  contractSlice.isApprovalLoading
+                    ? "Loading..."
+                    : parseFloat(balanceSlice.approval) < parseFloat(amount)
+                    ? "Approve"
+                    : "Bridge"
+                }
+                disabledClassname="bg-fuse-black/20 text-black px-4 mt-6 py-4 rounded-full font-medium md:text-sm "
+              />
+            )
           )}
         </motion.div>
         <motion.div className="flex bg-white w-[30%] mt-2 rounded-lg px-8 py-5 flex-col font-medium">

@@ -39,6 +39,11 @@ export interface ExchangeConfigLike {
   name: string;
   icon: string;
   website: string;
+  bridges: {
+    name: string;
+    icon: string;
+    website: string;
+  }[];
 }
 
 export interface CoinConfig {

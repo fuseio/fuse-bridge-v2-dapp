@@ -2,7 +2,11 @@ import React, { useEffect } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import cross from "../../assets/cross.svg";
 import Transaction from "./Transaction";
-import {} from "@layerzerolabs/scan-client"
+import {} from "@layerzerolabs/scan-client";
+import { appConfig } from "../../constants/config";
+import { useConnectWallet } from "@web3-onboard/react";
+import { useAppDispatch } from "../../store/store";
+import { fetchBridgeTransactions } from "../../store/transactionsSlice";
 
 interface TransactionProps {
   delegators?: Array<Array<string>> | undefined;
@@ -16,6 +20,8 @@ const Transactions = ({
   onToggle,
   isLoading = false,
 }: TransactionProps): JSX.Element => {
+  const [{ wallet }] = useConnectWallet();
+  const dispatch = useAppDispatch();
   useEffect(() => {
     window.addEventListener("click", (e) => {
       if ((e.target as HTMLElement).id === "modal-bg") {
@@ -23,6 +29,17 @@ const Transactions = ({
       }
     });
   }, [onToggle]);
+  useEffect(() => {
+    if (isOpen && wallet?.accounts[0].address) {
+      dispatch(
+        fetchBridgeTransactions({
+          rpcUrl: appConfig.wrappedBridge.chains[0].rpcUrl,
+          address: wallet?.accounts[0].address as string,
+          contractAddress: appConfig.wrappedBridge.chains[0].bridge,
+        })
+      );
+    }
+  }, [isOpen, wallet?.accounts[0].address]);
   return (
     <AnimatePresence>
       {isOpen && (

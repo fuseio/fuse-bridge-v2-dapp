@@ -49,6 +49,8 @@ module.exports = {
       "warning-yellow": "#FFD764",
       "warning-gray": "#3B4145",
       "border-gray": "#E6E6E6",
+      "warning-border": "#D4A72C",
+      "warning-bg": "#FFF8C5"
     },
     fontFamily: {
       mona: ["Mona-Sans"],

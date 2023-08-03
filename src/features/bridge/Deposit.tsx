@@ -8,10 +8,11 @@ import {
 import Dropdown from "../commons/Dropdown";
 import switchImg from "../../assets/switch.svg";
 import { useConnectWallet, useSetChain } from "@web3-onboard/react";
-import { getERC20Balance } from "../../utils/erc20";
 import { selectChainSlice, setChain } from "../../store/chainSlice";
 import { useAppDispatch, useAppSelector } from "../../store/store";
 import { fetchBalance, selectBalanceSlice } from "../../store/balanceSlice";
+import alert from "../../assets/alert.svg";
+import visit from "../../assets/visit.svg";
 
 type DepositProps = {
   selectedChainSection: number;
@@ -30,6 +31,9 @@ type DepositProps = {
   ) => void;
   amount: string;
   setAmount: (amount: string) => void;
+  setDisplayButton: (display: boolean) => void;
+  isExchange: boolean;
+  setIsExchange: (isExchange: boolean) => void;
 };
 
 const Deposit = ({
@@ -44,6 +48,9 @@ const Deposit = ({
   onSwitch,
   amount,
   setAmount,
+  setDisplayButton,
+  isExchange,
+  setIsExchange,
 }: DepositProps) => {
   const [{ chains }] = useSetChain();
   const [{ wallet }] = useConnectWallet();
@@ -51,7 +58,7 @@ const Deposit = ({
   const balanceSlice = useAppSelector(selectBalanceSlice);
   const chainSlice = useAppSelector(selectChainSlice);
   useEffect(() => {
-    if (wallet) {
+    if (wallet && selectedChainSection === 0) {
       dispatch(
         fetchBalance({
           address: wallet?.accounts[0].address as string,
@@ -67,12 +74,18 @@ const Deposit = ({
         })
       );
     }
-  }, [selectedTokenItem, selectedTokenSection, wallet, chainSlice.chainId]);
+  }, [
+    selectedTokenItem,
+    selectedTokenSection,
+    wallet,
+    chainSlice.chainId,
+    selectedChainSection,
+  ]);
   useEffect(() => {
-    if (chainSlice.chainId === 0) {
+    if (chainSlice.chainId === 0 && selectedChainSection === 0) {
       dispatch(setChain(appConfig.wrappedBridge.chains[selectedChainItem]));
     }
-  }, [chainSlice.chainId]);
+  }, [chainSlice.chainId, selectedChainSection]);
   return (
     <>
       <div className="flex bg-modal-bg rounded-md p-4 mt-3 w-full flex-col">
@@ -90,16 +103,16 @@ const Deposit = ({
                   };
                 }),
               },
-              //   {
-              //     heading: "Centralized Exchanges",
-              //     items: exchangeConfig.exchanges.map((exchange, i) => {
-              //       return {
-              //         item: exchange.name,
-              //         icon: exchange.icon,
-              //         id: i,
-              //       };
-              //     }),
-              //   },
+              {
+                heading: "Centralized Exchanges",
+                items: exchangeConfig.exchanges.map((exchange, i) => {
+                  return {
+                    item: exchange.name,
+                    icon: exchange.icon,
+                    id: i,
+                  };
+                }),
+              },
             ]}
             selectedSection={selectedChainSection}
             selectedItem={selectedChainItem}
@@ -107,87 +120,148 @@ const Deposit = ({
             onClick={(section, item) => {
               setSelectedChainSection(section);
               setSelectedChainItem(item);
-              dispatch(setChain(appConfig.wrappedBridge.chains[item]));
+              if (section === 1) {
+                setIsExchange(true);
+                setDisplayButton(false);
+              } else {
+                setIsExchange(false);
+                dispatch(setChain(appConfig.wrappedBridge.chains[item]));
+                setDisplayButton(true);
+              }
             }}
           />
         </div>
-        <div className="flex w-full items-center mt-3">
-          <div className="bg-white p-4 rounded-s-md border-[1px] border-border-gray w-2/3">
-            <input
-              type="text"
-              className="w-full bg-transparent focus:outline-none"
-              placeholder="0.00"
-              value={amount}
-              onChange={(e) => {
-                setAmount(e.target.value);
+        {!isExchange && (
+          <>
+            <div className="flex w-full items-center mt-3">
+              <div className="bg-white p-4 rounded-s-md border-[1px] border-border-gray w-2/3">
+                <input
+                  type="text"
+                  className="w-full bg-transparent focus:outline-none"
+                  placeholder="0.00"
+                  value={amount}
+                  onChange={(e) => {
+                    setAmount(e.target.value);
+                  }}
+                />
+              </div>
+              <Dropdown
+                items={[
+                  {
+                    heading: "Tokens",
+                    items: appConfig.wrappedBridge.chains[
+                      selectedChainItem
+                    ].tokens.map((coin, i) => {
+                      return {
+                        icon: coin.icon,
+                        id: i,
+                        item: coin.symbol,
+                      };
+                    }),
+                  },
+                ]}
+                selectedSection={selectedTokenSection}
+                selectedItem={selectedTokenItem}
+                className="rounded-e-md rounded-s-none border-s-0 w-1/3"
+                onClick={(section, item) => {
+                  setSelectedTokenSection(section);
+                  setSelectedTokenItem(item);
+                }}
+              />
+            </div>
+            <span className="mt-3 text-sm font-medium">
+              Balance:{" "}
+              {balanceSlice.isBalanceLoading ? (
+                <span className="px-10 py-1 ml-2 rounded-md animate-pulse bg-fuse-black/10"></span>
+              ) : (
+                balanceSlice.balance
+              )}
+            </span>
+          </>
+        )}
+      </div>
+      {isExchange ? (
+        <>
+          <div className="px-2 py-4 mt-4 mb-2 bg-warning-bg rounded-md border border-warning-border flex">
+            <div className="flex p-2 w-[15%] items-start">
+              <img src={alert} alt="warning" className="h-5" />
+            </div>
+            <div className="flex flex-col font-medium">
+              <p>
+                To move tokens from{" "}
+                {exchangeConfig.exchanges[selectedChainItem].name} to Fuse can
+                use one of the following third-part brides
+              </p>
+              <p className="mt-2">
+                Please note that these are independent service providers that
+                Fuse is linking to for your convenience - Fuse has no
+                responsibility for their operation
+              </p>
+            </div>
+          </div>
+          {exchangeConfig.exchanges[selectedChainItem].bridges.map(
+            (bridge, i) => {
+              return (
+                <div
+                  className="flex mt-2 bg-modal-bg py-4 px-5 rounded-md items-center"
+                  key={i}
+                >
+                  <img src={bridge.icon} alt="icon" />
+                  <div className="flex flex-col ml-3">
+                    <p className="font-semibold text-lg">{bridge.name}</p>
+                    <p className="font-medium text-[#898888]">
+                      {bridge.website}
+                    </p>
+                  </div>
+                  <a
+                    href={bridge.website}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="ml-auto cursor-pointer"
+                  >
+                    <img src={visit} alt="go" />
+                  </a>
+                </div>
+              );
+            }
+          )}
+        </>
+      ) : (
+        <>
+          <div className="flex justify-center">
+            <img
+              src={switchImg}
+              alt="switch"
+              className="mt-4 cursor-pointer"
+              onClick={() => {
+                onSwitch(
+                  selectedTokenSection,
+                  selectedTokenItem,
+                  selectedChainSection,
+                  selectedChainItem
+                );
+                dispatch(
+                  setChain({
+                    chainId: 122,
+                    bridge: appConfig.wrappedBridge.wrapped.address,
+                    icon: chains[0].icon as string,
+                    lzChainId: 138,
+                    name: "Fuse",
+                    rpcUrl: "https://rpc.fuse.io",
+                    tokens: [],
+                  })
+                );
               }}
             />
           </div>
-          <Dropdown
-            items={[
-              {
-                heading: "Tokens",
-                items: appConfig.wrappedBridge.chains[
-                  selectedChainItem
-                ].tokens.map((coin, i) => {
-                  return {
-                    icon: coin.icon,
-                    id: i,
-                    item: coin.symbol,
-                  };
-                }),
-              },
-            ]}
-            selectedSection={selectedTokenSection}
-            selectedItem={selectedTokenItem}
-            className="rounded-e-md rounded-s-none border-s-0 w-1/3"
-            onClick={(section, item) => {
-              setSelectedTokenSection(section);
-              setSelectedTokenItem(item);
-            }}
-          />
-        </div>
-        <span className="mt-3 text-sm font-medium">
-          Balance:{" "}
-          {balanceSlice.isBalanceLoading ? (
-            <span className="px-10 py-1 ml-2 rounded-md animate-pulse bg-fuse-black/10"></span>
-          ) : (
-            balanceSlice.balance
-          )}
-        </span>
-      </div>
-      <div className="flex justify-center">
-        <img
-          src={switchImg}
-          alt="switch"
-          className="mt-4 cursor-pointer"
-          onClick={() => {
-            onSwitch(
-              selectedTokenSection,
-              selectedTokenItem,
-              selectedChainSection,
-              selectedChainItem
-            );
-            dispatch(
-              setChain({
-                chainId: 122,
-                bridge: appConfig.wrappedBridge.wrapped.address,
-                icon: chains[0].icon as string,
-                lzChainId: 138,
-                name: "Fuse",
-                rpcUrl: "https://rpc.fuse.io",
-                tokens: [],
-              })
-            );
-          }}
-        />
-      </div>
-      <div className="flex bg-modal-bg rounded-md px-4 py-[10px] mt-3 w-full flex-col">
-        <span className="font-semibold text-lg">To Fuse Network</span>
-        <span className="font-medium mt-1">
-          You will receive {amount ? amount : 0} USDC
-        </span>
-      </div>
+          <div className="flex bg-modal-bg rounded-md px-4 py-[10px] mt-3 w-full flex-col">
+            <span className="font-semibold text-lg">To Fuse Network</span>
+            <span className="font-medium mt-1">
+              You will receive {amount ? amount : 0} USDC
+            </span>
+          </div>
+        </>
+      )}
     </>
   );
 };

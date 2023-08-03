@@ -1,7 +1,5 @@
 import { Signer, ethers } from "ethers";
-import {
-  OriginalTokenBridgeAbi,
-} from "../constants/types/OriginalTokenBridge";
+import { OriginalTokenBridgeAbi } from "../constants/types/OriginalTokenBridge";
 import { web3OnboardProvider } from "./provider";
 import { AdapterParams } from "@layerzerolabs/ui-core";
 import { serializeAdapterParams } from "@layerzerolabs/ui-evm";
