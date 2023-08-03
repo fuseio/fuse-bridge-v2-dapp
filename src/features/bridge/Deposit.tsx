@@ -190,7 +190,7 @@ const Deposit = ({
               <p>
                 To move tokens from{" "}
                 {exchangeConfig.exchanges[selectedChainItem].name} to Fuse can
-                use one of the following third-part brides
+                use one of the following third-part bridges
               </p>
               <p className="mt-2">
                 Please note that these are independent service providers that
