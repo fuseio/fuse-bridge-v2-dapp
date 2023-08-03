@@ -189,39 +189,39 @@ const Deposit = ({
             <div className="flex flex-col font-medium">
               <p>
                 To move tokens from{" "}
-                {exchangeConfig.exchanges[selectedChainItem].name} to Fuse can
-                use one of the following third-part bridges
+                {exchangeConfig.exchanges[selectedChainItem].name} to Fuse you
+                can use one of the following third-part bridges.
               </p>
               <p className="mt-2">
                 Please note that these are independent service providers that
                 Fuse is linking to for your convenience - Fuse has no
-                responsibility for their operation
+                responsibility for their operation.
               </p>
             </div>
           </div>
           {exchangeConfig.exchanges[selectedChainItem].bridges.map(
             (bridge, i) => {
               return (
-                <div
-                  className="flex mt-2 bg-modal-bg py-4 px-5 rounded-md items-center"
-                  key={i}
+                <a
+                  href={bridge.website}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="cursor-pointer"
                 >
-                  <img src={bridge.icon} alt="icon" />
-                  <div className="flex flex-col ml-3">
-                    <p className="font-semibold text-lg">{bridge.name}</p>
-                    <p className="font-medium text-[#898888]">
-                      {bridge.website}
-                    </p>
-                  </div>
-                  <a
-                    href={bridge.website}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="ml-auto cursor-pointer"
+                  <div
+                    className="flex mt-2 bg-modal-bg py-4 px-5 rounded-md items-center cursor-pointer"
+                    key={i}
                   >
-                    <img src={visit} alt="go" />
-                  </a>
-                </div>
+                    <img src={bridge.icon} alt="icon" />
+                    <div className="flex flex-col ml-3">
+                      <p className="font-semibold text-lg">{bridge.name}</p>
+                      <p className="font-medium text-[#898888]">
+                        {bridge.website}
+                      </p>
+                    </div>
+                    <img src={visit} alt="go" className="ml-auto" />
+                  </div>
+                </a>
               );
             }
           )}
