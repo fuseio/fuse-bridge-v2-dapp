@@ -45,12 +45,13 @@ const Home = () => {
   const filters = ["Deposit", "Withdraw"];
   const [isOpen, setIsOpen] = useState(false);
   const [isExchange, setIsExchange] = useState(false);
+  const [isDisabledChain, setIsDisabledChain] = useState(false);
 
   return (
     <>
       <Transactions isOpen={isOpen} onToggle={setIsOpen} />
       <div className="w-full bg-light-gray flex flex-col items-center h-[90%]">
-        <motion.div className="flex bg-white w-[30%] mt-8 rounded-lg px-8 pt-8 pb-9 flex-col">
+        <motion.div className="flex bg-white w-[575px] mt-8 rounded-lg px-8 pt-8 pb-9 flex-col">
           <div className="flex w-full justify-between items-end">
             <p className="text-2xl font-bold">Bridge</p>
             <img
@@ -75,6 +76,12 @@ const Home = () => {
                     setSelected(index);
                     if (isExchange) return;
                     if (index === 1) {
+                      if (withdrawSelectedChainSection === 1) {
+                        setIsDisabledChain(true);
+                        return;
+                      } else {
+                        setIsDisabledChain(false);
+                      }
                       dispatch(
                         setChain({
                           chainId: 122,
@@ -87,6 +94,12 @@ const Home = () => {
                         })
                       );
                     } else {
+                      if (depositSelectedChainSection === 1) {
+                        setIsDisabledChain(true);
+                        return;
+                      } else {
+                        setIsDisabledChain(false);
+                      }
                       dispatch(
                         setChain(
                           appConfig.wrappedBridge.chains[
@@ -125,6 +138,8 @@ const Home = () => {
               setDisplayButton={setDisplayButton}
               isExchange={isExchange}
               setIsExchange={setIsExchange}
+              isDisabledChain={isDisabledChain}
+              setIsDisabledChain={setIsDisabledChain}
             />
           ) : (
             <Withdraw
@@ -145,6 +160,9 @@ const Home = () => {
               }}
               amount={amount}
               setAmount={setAmount}
+              isDisabledChain={isDisabledChain}
+              setIsDisabledChain={setIsDisabledChain}
+              setDisplayButton={setDisplayButton}
             />
           )}
           {!connectedChain && displayButton ? (
@@ -275,7 +293,7 @@ const Home = () => {
             )
           )}
         </motion.div>
-        <motion.div className="flex bg-white w-[30%] mt-2 rounded-lg px-8 py-5 flex-col font-medium">
+        <motion.div className="flex bg-white w-[575px] mt-2 rounded-lg px-8 py-5 flex-col font-medium">
           <div className="flex justify-between">
             <span className="text-black/50">Daily Limits</span>
             <span>0.5 Min - 25,000,000 max</span>

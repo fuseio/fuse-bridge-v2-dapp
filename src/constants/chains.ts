@@ -6,17 +6,30 @@ import gnosis from "../assets/gnosis.png";
 import celo from "../assets/celo.png";
 import arbi from "../assets/arbi.png";
 import optimism from "../assets/optimism.png";
+import voltage from "../assets/voltage.png";
 
 export const chains: ChainConfigLike[] = [
   // {
-  //     chainName: "Ethereum",
-  //     chainId: 101,
-  //     icon: eth
+  //   chainName: "Ethereum",
+  //   chainId: 101,
+  //   icon: eth,
+  //   lzChainId: 100,
+  //   rpc: "https://mainnet.infura.io/v3/3d8a7f0e7d9a4b0e8b0b3b0b9f1b9b9b",
+  //   enabled: false,
+  //   appLogo: voltage,
+  //   appName: "Voltage FInance",
+  //   appURL: "https://app.voltage.finance/#/bridge",
   // },
   // {
-  //     chainName: "BNB",
-  //     chainId: 102,
-  //     icon: bnb
+  //   chainName: "BNB",
+  //   chainId: 102,
+  //   icon: bnb,
+  //   lzChainId: 101,
+  //   rpc: "https://bsc-dataseed.binance.org/",
+  //   enabled: false,
+  //   appLogo: voltage,
+  //   appName: "Voltage FInance",
+  //   appURL: "https://app.voltage.finance/#/bridge",
   // },
   {
     chainName: "Gnosis",

@@ -12,6 +12,8 @@ import { getERC20Balance } from "../../utils/erc20";
 import { selectBalanceSlice, fetchBalance } from "../../store/balanceSlice";
 import { useAppDispatch, useAppSelector } from "../../store/store";
 import { selectChainSlice, setChain } from "../../store/chainSlice";
+import alert from "../../assets/alert.svg";
+import visit from "../../assets/visit.svg";
 
 type WithdrawProps = {
   selectedChainSection: number;
@@ -30,6 +32,9 @@ type WithdrawProps = {
   ) => void;
   amount: string;
   setAmount: (amount: string) => void;
+  isDisabledChain: boolean;
+  setIsDisabledChain: (isDisabledChain: boolean) => void;
+  setDisplayButton: (displayButton: boolean) => void;
 };
 
 const Withdraw = ({
@@ -44,6 +49,9 @@ const Withdraw = ({
   onSwitch,
   amount,
   setAmount,
+  isDisabledChain,
+  setIsDisabledChain,
+  setDisplayButton,
 }: WithdrawProps) => {
   const [{ chains }] = useSetChain();
   const [{ wallet }] = useConnectWallet();
@@ -51,7 +59,7 @@ const Withdraw = ({
   const balanceSlice = useAppSelector(selectBalanceSlice);
   const chainSlice = useAppSelector(selectChainSlice);
   useEffect(() => {
-    if (wallet)
+    if (wallet && selectedChainSection === 0)
       dispatch(
         fetchBalance({
           address: wallet.accounts[0].address,
@@ -85,71 +93,75 @@ const Withdraw = ({
   }, [chainSlice.chainId]);
   return (
     <>
-      <div className="flex bg-modal-bg rounded-md p-4 mt-3 w-full flex-col">
-        <span className="font-semibold text-lg">From Fuse Network</span>
-        <div className="flex w-full items-center mt-3">
-          <div className="bg-white w-2/3 p-4 rounded-s-md border-[1px] border-border-gray">
-            <input
-              type="text"
-              className="w-full bg-transparent focus:outline-none"
-              placeholder="0.00"
-              value={amount}
-              onChange={(e) => {
-                setAmount(e.target.value);
+      {!isDisabledChain && (
+        <>
+          <div className="flex bg-modal-bg rounded-md p-4 mt-3 w-full flex-col">
+            <span className="font-semibold text-lg">From Fuse Network</span>
+            <div className="flex w-full items-center mt-3">
+              <div className="bg-white w-2/3 p-4 rounded-s-md border-[1px] border-border-gray">
+                <input
+                  type="text"
+                  className="w-full bg-transparent focus:outline-none"
+                  placeholder="0.00"
+                  value={amount}
+                  onChange={(e) => {
+                    setAmount(e.target.value);
+                  }}
+                />
+              </div>
+              <Dropdown
+                items={[
+                  {
+                    heading: "Tokens",
+                    items: appConfig.wrappedBridge.chains[
+                      selectedChainItem
+                    ].tokens.map((coin, i) => {
+                      return {
+                        icon: coin.icon,
+                        id: i,
+                        item: coin.symbol,
+                      };
+                    }),
+                  },
+                ]}
+                selectedSection={selectedTokenSection}
+                selectedItem={selectedTokenItem}
+                className="rounded-e-md rounded-s-none border-s-0 w-1/3"
+                onClick={(section, item) => {
+                  setSelectedTokenSection(section);
+                  setSelectedTokenItem(item);
+                }}
+              />
+            </div>
+            <span className="mt-3 text-sm font-medium">
+              Balance:{" "}
+              {balanceSlice.isBalanceLoading ? (
+                <span className="px-10 py-1 ml-2 rounded-md animate-pulse bg-fuse-black/10"></span>
+              ) : (
+                balanceSlice.balance
+              )}
+            </span>
+          </div>
+          <div className="flex justify-center">
+            <img
+              src={switchImg}
+              alt="switch"
+              className="mt-4 cursor-pointer"
+              onClick={() => {
+                onSwitch(
+                  selectedTokenSection,
+                  selectedTokenItem,
+                  selectedChainSection,
+                  selectedChainItem
+                );
+                dispatch(
+                  setChain(appConfig.wrappedBridge.chains[selectedChainItem])
+                );
               }}
             />
           </div>
-          <Dropdown
-            items={[
-              {
-                heading: "Tokens",
-                items: appConfig.wrappedBridge.chains[
-                  selectedChainItem
-                ].tokens.map((coin, i) => {
-                  return {
-                    icon: coin.icon,
-                    id: i,
-                    item: coin.symbol,
-                  };
-                }),
-              },
-            ]}
-            selectedSection={selectedTokenSection}
-            selectedItem={selectedTokenItem}
-            className="rounded-e-md rounded-s-none border-s-0 w-1/3"
-            onClick={(section, item) => {
-              setSelectedTokenSection(section);
-              setSelectedTokenItem(item);
-            }}
-          />
-        </div>
-        <span className="mt-3 text-sm font-medium">
-          Balance:{" "}
-          {balanceSlice.isBalanceLoading ? (
-            <span className="px-10 py-1 ml-2 rounded-md animate-pulse bg-fuse-black/10"></span>
-          ) : (
-            balanceSlice.balance
-          )}
-        </span>
-      </div>
-      <div className="flex justify-center">
-        <img
-          src={switchImg}
-          alt="switch"
-          className="mt-4 cursor-pointer"
-          onClick={() => {
-            onSwitch(
-              selectedTokenSection,
-              selectedTokenItem,
-              selectedChainSection,
-              selectedChainItem
-            );
-            dispatch(
-              setChain(appConfig.wrappedBridge.chains[selectedChainItem])
-            );
-          }}
-        />
-      </div>
+        </>
+      )}
       <div className="flex bg-modal-bg rounded-md px-4 py-6 mt-3 w-full flex-col">
         <div className="flex w-full items-center justify-between">
           <span className="font-medium mr-[10px]">To</span>
@@ -165,16 +177,17 @@ const Withdraw = ({
                   };
                 }),
               },
-              //   {
-              //     heading: "Centralized Exchanges",
-              //     items: exchangeConfig.exchanges.map((exchange, i) => {
-              //       return {
-              //         item: exchange.name,
-              //         icon: exchange.icon,
-              //         id: i,
-              //       };
-              //     }),
-              //   },
+              {
+                items: appConfig.wrappedBridge.disabledChains.map(
+                  (chain, i) => {
+                    return {
+                      item: chain.chainName,
+                      icon: chain.icon,
+                      id: i,
+                    };
+                  }
+                ),
+              },
             ]}
             selectedSection={selectedChainSection}
             selectedItem={selectedChainItem}
@@ -182,16 +195,83 @@ const Withdraw = ({
             onClick={(section, item) => {
               setSelectedChainSection(section);
               setSelectedChainItem(item);
+              if (section === 1) {
+                setDisplayButton(false);
+                setIsDisabledChain(true);
+              } else {
+                dispatch(setChain(appConfig.wrappedBridge.chains[item]));
+                setDisplayButton(true);
+                setIsDisabledChain(false);
+              }
             }}
           />
         </div>
       </div>
-      <div className="flex justify-between mt-4">
-        <span className="text-black/50 font-medium">You will receive</span>
-        <span className="font-medium">
-          {amount ? amount : 0} <span className="font-bold">USDC</span>
-        </span>
-      </div>
+      {isDisabledChain && (
+        <>
+          <div className="px-2 py-4 mt-4 mb-2 bg-warning-bg rounded-md border border-warning-border flex">
+            <div className="flex p-2 w-[10%] items-start">
+              <img src={alert} alt="warning" className="h-5" />
+            </div>
+            <div className="flex flex-col font-medium">
+              <p>
+                To move tokens from Fuse to{" "}
+                {
+                  appConfig.wrappedBridge.disabledChains[selectedChainItem]
+                    .chainName
+                }{" "}
+                please use{" "}
+                {
+                  appConfig.wrappedBridge.disabledChains[selectedChainItem]
+                    .appName
+                }{" "}
+                dApp.
+              </p>
+            </div>
+          </div>
+          <a
+            href={
+              appConfig.wrappedBridge.disabledChains[selectedChainItem].appURL
+            }
+            target="_blank"
+            rel="noreferrer"
+            className="cursor-pointer"
+          >
+            <div className="flex mt-2 bg-modal-bg py-4 px-5 rounded-md items-center cursor-pointer">
+              <img
+                src={
+                  appConfig.wrappedBridge.disabledChains[selectedChainItem]
+                    .appLogo
+                }
+                alt="icon"
+              />
+              <div className="flex flex-col ml-3">
+                <p className="font-semibold text-lg">
+                  {
+                    appConfig.wrappedBridge.disabledChains[selectedChainItem]
+                      .appName
+                  }
+                </p>
+                <p className="font-medium text-[#898888]">
+                  {
+                    appConfig.wrappedBridge.disabledChains[selectedChainItem]
+                      .appURL
+                  }
+                </p>
+              </div>
+              <img src={visit} alt="go" className="ml-auto" />
+            </div>
+          </a>
+        </>
+      )}
+      {!isDisabledChain && (
+        <div className="flex justify-between mt-4">
+          <span className="text-black/50 font-medium">You will receive</span>
+          <span className="font-medium">
+            {amount ? amount : 0} <span className="font-bold">USDC</span>
+          </span>
+        </div>
+      )}
     </>
   );
 };

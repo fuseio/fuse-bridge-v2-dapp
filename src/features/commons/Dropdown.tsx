@@ -17,7 +17,7 @@ type DropdownItemsType = {
 };
 
 type DropdownSectionType = {
-  heading: string;
+  heading?: string;
   items: DropdownItemsType[];
 };
 
@@ -82,9 +82,11 @@ const Dropdown = ({
       >
         {items.map((section, index) => (
           <div className="w-full" key={index}>
-            <p className="font-semibold cursor-default py-3">
-              {section.heading}
-            </p>
+            {section.heading && (
+              <p className="font-semibold cursor-default py-3">
+                {section.heading}
+              </p>
+            )}
             {items[index].items.map((item, i) => {
               return (
                 <div

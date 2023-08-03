@@ -1,9 +1,19 @@
+import { disabledChains } from "./disabledChains";
+
 export interface ChainConfigLike {
   lzChainId: number;
   chainName: string;
   icon: string;
   rpc: string;
   chainId: number;
+}
+
+export interface DisabledChainConfigLike {
+  chainName: string;
+  icon: string;
+  appName: string;
+  appLogo: string;
+  appURL: string;
 }
 
 export interface ChainConfig {
@@ -88,6 +98,7 @@ interface WrappedBridgeConfig {
       icon: string;
     }[];
   };
+  disabledChains: DisabledChainConfigLike[];
   chains: {
     lzChainId: number;
     chainId: number;
@@ -143,6 +154,7 @@ export const createAppConfig = (
         address: bridgeConfig.wrapped.address,
         tokens: wrappedTokens,
       },
+      disabledChains: disabledChains,
       chains: chainConfig.chains.map((chain) => {
         let tokens: {
           decimals: number;

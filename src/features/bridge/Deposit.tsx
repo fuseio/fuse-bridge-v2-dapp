@@ -34,6 +34,8 @@ type DepositProps = {
   setDisplayButton: (display: boolean) => void;
   isExchange: boolean;
   setIsExchange: (isExchange: boolean) => void;
+  isDisabledChain: boolean;
+  setIsDisabledChain: (isDisabledChain: boolean) => void;
 };
 
 const Deposit = ({
@@ -51,6 +53,8 @@ const Deposit = ({
   setDisplayButton,
   isExchange,
   setIsExchange,
+  isDisabledChain,
+  setIsDisabledChain,
 }: DepositProps) => {
   const [{ chains }] = useSetChain();
   const [{ wallet }] = useConnectWallet();
@@ -104,6 +108,17 @@ const Deposit = ({
                 }),
               },
               {
+                items: appConfig.wrappedBridge.disabledChains.map(
+                  (chain, i) => {
+                    return {
+                      item: chain.chainName,
+                      icon: chain.icon,
+                      id: i,
+                    };
+                  }
+                ),
+              },
+              {
                 heading: "Centralized Exchanges",
                 items: exchangeConfig.exchanges.map((exchange, i) => {
                   return {
@@ -121,17 +136,23 @@ const Deposit = ({
               setSelectedChainSection(section);
               setSelectedChainItem(item);
               if (section === 1) {
+                setIsExchange(false);
+                setDisplayButton(false);
+                setIsDisabledChain(true);
+              } else if (section === 2) {
                 setIsExchange(true);
                 setDisplayButton(false);
+                setIsDisabledChain(false);
               } else {
                 setIsExchange(false);
                 dispatch(setChain(appConfig.wrappedBridge.chains[item]));
                 setDisplayButton(true);
+                setIsDisabledChain(false);
               }
             }}
           />
         </div>
-        {!isExchange && (
+        {!(isExchange || isDisabledChain) && (
           <>
             <div className="flex w-full items-center mt-3">
               <div className="bg-white p-4 rounded-s-md border-[1px] border-border-gray w-2/3">
@@ -190,7 +211,7 @@ const Deposit = ({
               <p>
                 To move tokens from{" "}
                 {exchangeConfig.exchanges[selectedChainItem].name} to Fuse you
-                can use one of the following third-part bridges.
+                can use one of the following third-party bridges.
               </p>
               <p className="mt-2">
                 Please note that these are independent service providers that
@@ -225,6 +246,62 @@ const Deposit = ({
               );
             }
           )}
+        </>
+      ) : isDisabledChain ? (
+        <>
+          <div className="px-2 py-4 mt-4 mb-2 bg-warning-bg rounded-md border border-warning-border flex">
+            <div className="flex p-2 w-[10%] items-start">
+              <img src={alert} alt="warning" className="h-5" />
+            </div>
+            <div className="flex flex-col font-medium">
+              <p>
+                To move tokens from{" "}
+                {
+                  appConfig.wrappedBridge.disabledChains[selectedChainItem]
+                    .chainName
+                }{" "}
+                to Fuse please use{" "}
+                {
+                  appConfig.wrappedBridge.disabledChains[selectedChainItem]
+                    .appName
+                }{" "}
+                dApp.
+              </p>
+            </div>
+          </div>
+          <a
+            href={
+              appConfig.wrappedBridge.disabledChains[selectedChainItem].appURL
+            }
+            target="_blank"
+            rel="noreferrer"
+            className="cursor-pointer"
+          >
+            <div className="flex mt-2 bg-modal-bg py-4 px-5 rounded-md items-center cursor-pointer">
+              <img
+                src={
+                  appConfig.wrappedBridge.disabledChains[selectedChainItem]
+                    .appLogo
+                }
+                alt="icon"
+              />
+              <div className="flex flex-col ml-3">
+                <p className="font-semibold text-lg">
+                  {
+                    appConfig.wrappedBridge.disabledChains[selectedChainItem]
+                      .appName
+                  }
+                </p>
+                <p className="font-medium text-[#898888]">
+                  {
+                    appConfig.wrappedBridge.disabledChains[selectedChainItem]
+                      .appURL
+                  }
+                </p>
+              </div>
+              <img src={visit} alt="go" className="ml-auto" />
+            </div>
+          </a>
         </>
       ) : (
         <>
