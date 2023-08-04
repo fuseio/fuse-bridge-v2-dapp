@@ -268,7 +268,8 @@ const Withdraw = ({
         <div className="flex justify-between mt-4">
           <span className="text-black/50 font-medium">You will receive</span>
           <span className="font-medium">
-            {amount ? amount : 0} <span className="font-bold">USDC</span>
+            {amount && !isNaN(parseFloat(amount)) ? parseFloat(amount) : 0}{" "}
+            <span className="font-bold">USDC</span>
           </span>
         </div>
       )}

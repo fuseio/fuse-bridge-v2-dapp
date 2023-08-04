@@ -334,7 +334,9 @@ const Deposit = ({
           <div className="flex bg-modal-bg rounded-md px-4 py-[10px] mt-3 w-full flex-col">
             <span className="font-semibold text-lg">To Fuse Network</span>
             <span className="font-medium mt-1">
-              You will receive {amount ? amount : 0} USDC
+              You will receive{" "}
+              {amount && !isNaN(parseFloat(amount)) ? parseFloat(amount) : 0}{" "}
+              USDC
             </span>
           </div>
         </>
