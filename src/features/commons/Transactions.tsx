@@ -5,8 +5,11 @@ import Transaction from "./Transaction";
 import {} from "@layerzerolabs/scan-client";
 import { appConfig } from "../../constants/config";
 import { useConnectWallet } from "@web3-onboard/react";
-import { useAppDispatch } from "../../store/store";
-import { fetchBridgeTransactions } from "../../store/transactionsSlice";
+import { useAppDispatch, useAppSelector } from "../../store/store";
+import {
+  fetchBridgeTransactions,
+  selectTransactionsSlice,
+} from "../../store/transactionsSlice";
 
 interface TransactionProps {
   delegators?: Array<Array<string>> | undefined;
@@ -20,8 +23,6 @@ const Transactions = ({
   onToggle,
   isLoading = false,
 }: TransactionProps): JSX.Element => {
-  const [{ wallet }] = useConnectWallet();
-  const dispatch = useAppDispatch();
   useEffect(() => {
     window.addEventListener("click", (e) => {
       if ((e.target as HTMLElement).id === "modal-bg") {
@@ -29,17 +30,7 @@ const Transactions = ({
       }
     });
   }, [onToggle]);
-  useEffect(() => {
-    if (isOpen && wallet?.accounts[0].address) {
-      dispatch(
-        fetchBridgeTransactions({
-          rpcUrl: appConfig.wrappedBridge.chains[0].rpcUrl,
-          address: wallet?.accounts[0].address as string,
-          contractAddress: appConfig.wrappedBridge.chains[0].bridge,
-        })
-      );
-    }
-  }, [isOpen, wallet?.accounts[0].address]);
+  const transactionsSlice = useAppSelector(selectTransactionsSlice);
   return (
     <AnimatePresence>
       {isOpen && (
@@ -70,7 +61,15 @@ const Transactions = ({
             <span className="text-2xl font-semibold mt-4 mb-2">
               Transactions History
             </span>
-            <Transaction />
+            {transactionsSlice.transactions.map((transaction, i) => {
+              return (
+                <Transaction
+                  transaction={transaction}
+                  transactionHashes={transactionsSlice.transactionHashes[i]}
+                  key={i}
+                />
+              );
+            })}
           </motion.div>
         </motion.div>
       )}

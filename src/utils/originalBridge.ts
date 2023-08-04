@@ -28,7 +28,6 @@ export const bridgeOriginal = async (
   const amt = ethers.utils.parseUnits(amount, decimals);
   const adapterParams = AdapterParams.forV1(Number(dstGasLimit));
   const nativeFee = (await contract.estimateBridgeFee(false, "0x")).nativeFee;
-  console.log(`Native fee: ${nativeFee}`);
   const increasedNativeFee = BigInt(Number(nativeFee) * 1.2); // 20% increase
   const callParams = {
     refundAddress: address,
@@ -43,6 +42,5 @@ export const bridgeOriginal = async (
     { value: increasedNativeFee }
   );
   await tx.wait();
-  console.log(`Bridged ${tx.hash}`);
   return tx.hash;
 };

@@ -54,8 +54,7 @@ export const fetchBalance = createAsyncThunk(
       getERC20Balance(contractAddress, address, chain.rpcUrl as string)
         .then((balance) => {
           const bal = ethers.utils.formatUnits(balance, decimals);
-          //fetcg chain from chain slice store
-          //call approval thunk
+          resolve(bal);
           thunkAPI.dispatch(
             fetchApproval({
               contractAddress,
@@ -64,7 +63,6 @@ export const fetchBalance = createAsyncThunk(
               decimals,
             })
           );
-          resolve(bal);
         })
         .catch((err) => {
           reject(err);
@@ -117,25 +115,31 @@ const balanceSlice = createSlice({
   extraReducers: {
     [fetchBalance.pending.type]: (state, action) => {
       state.isBalanceLoading = true;
+      state.isApprovalLoading = true;
     },
     [fetchBalance.fulfilled.type]: (state, action) => {
       state.balance = action.payload;
       state.isBalanceLoading = false;
+      state.isApprovalLoading = false;
     },
     [fetchBalance.rejected.type]: (state, action) => {
       state.isBalanceLoading = false;
+      state.isApprovalLoading = false;
       state.isError = true;
     },
     [fetchApproval.pending.type]: (state, action) => {
       state.isApprovalLoading = true;
+      state.isBalanceLoading = true;
     },
     [fetchApproval.fulfilled.type]: (state, action) => {
       state.approval = action.payload;
       state.isApprovalLoading = false;
+      state.isBalanceLoading = false;
     },
     [fetchApproval.rejected.type]: (state, action) => {
       state.isApprovalLoading = false;
       state.isError = true;
+      state.isBalanceLoading = false;
     },
   },
 });

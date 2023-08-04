@@ -17,8 +17,8 @@ import {
   selectContractSlice,
 } from "../../store/contractSlice";
 import { selectChainSlice, setChain } from "../../store/chainSlice";
-import { bridgeOriginal } from "../../utils/originalBridge";
 import Button from "../commons/Button";
+import { fetchBridgeTransactions } from "../../store/transactionsSlice";
 
 const Home = () => {
   const [{ connectedChain, chains }, switchChain] = useSetChain();
@@ -26,7 +26,6 @@ const Home = () => {
   const dispatch = useAppDispatch();
   const balanceSlice = useAppSelector(selectBalanceSlice);
   const contractSlice = useAppSelector(selectContractSlice);
-  const chainSlice = useAppSelector(selectChainSlice);
   const [selected, setSelected] = useState(0);
   const [depositSelectedChainSection, setDepositSelectedChainSection] =
     useState(0);
@@ -46,7 +45,11 @@ const Home = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isExchange, setIsExchange] = useState(false);
   const [isDisabledChain, setIsDisabledChain] = useState(false);
-
+  useEffect(() => {
+    if (wallet?.accounts[0].address) {
+      dispatch(fetchBridgeTransactions(wallet?.accounts[0].address));
+    }
+  }, [wallet?.accounts[0].address]);
   return (
     <>
       <Transactions isOpen={isOpen} onToggle={setIsOpen} />
@@ -245,6 +248,14 @@ const Home = () => {
                               appConfig.wrappedBridge.chains[
                                 depositSelectedChainItem
                               ].tokens[depositSelectedTokenItem].decimals,
+                            srcChainId:
+                              appConfig.wrappedBridge.chains[
+                                depositSelectedChainItem
+                              ].lzChainId,
+                            symbol:
+                              appConfig.wrappedBridge.chains[
+                                depositSelectedChainItem
+                              ].tokens[depositSelectedTokenItem].symbol,
                           })
                         );
                     });
@@ -270,12 +281,17 @@ const Home = () => {
                               appConfig.wrappedBridge.chains[
                                 withdrawSelectedChainItem
                               ].lzChainId,
+                            symbol:
+                              appConfig.wrappedBridge.wrapped.tokens[
+                                withdrawSelectedTokenItem
+                              ].symbol,
                           })
                         );
                     });
                   }
                 }}
                 disabled={
+                  balanceSlice.isApprovalLoading ||
                   contractSlice.isBridgeLoading ||
                   contractSlice.isApprovalLoading ||
                   !amount

@@ -30,7 +30,6 @@ export const bridgeWrapped = async (
   const adapterParams = AdapterParams.forV1(Number(dstGasLimit));
   const nativeFee = (await contract.estimateBridgeFee(lzChainId, false, "0x"))
     .nativeFee;
-  console.log(`Native fee: ${nativeFee}`);
   const increasedNativeFee = BigInt(Number(nativeFee) * 1.2); // 20% increase
   const callParams = {
     refundAddress: address,
@@ -47,6 +46,5 @@ export const bridgeWrapped = async (
     { value: increasedNativeFee }
   );
   await tx.wait();
-  console.log(`Bridged ${tx.hash}`);
   return tx.hash;
 };

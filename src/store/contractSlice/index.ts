@@ -6,6 +6,8 @@ import { AsyncThunkRejectedActionCreator } from "@reduxjs/toolkit/dist/createAsy
 import { fetchApproval, fetchBalance } from "../balanceSlice";
 import { bridgeOriginal } from "../../utils/originalBridge";
 import { bridgeWrapped } from "../../utils/wrappedBridge";
+import { insertTransactionToLocalStorage } from "../../utils/helpers";
+import { updateTransactions } from "../transactionsSlice";
 
 export interface ContractStateType {
   isBridgeLoading: boolean;
@@ -58,7 +60,7 @@ export const increaseERC20Allowance = createAsyncThunk(
 );
 
 export const bridgeOriginalTokens = createAsyncThunk(
-  "CONTRACT/INCREASE_ALLOWANCE",
+  "CONTRACT/BRIDGE_ORIGINAL",
   async (
     {
       amount,
@@ -66,12 +68,16 @@ export const bridgeOriginalTokens = createAsyncThunk(
       bridge,
       decimals = 18,
       address,
+      srcChainId,
+      symbol,
     }: {
       amount: string;
       contractAddress: string;
       bridge: string;
       decimals: number;
       address: string;
+      srcChainId: number;
+      symbol: string;
     },
     thunkAPI
   ) => {
@@ -86,6 +92,22 @@ export const bridgeOriginalTokens = createAsyncThunk(
               decimals,
             })
           );
+          insertTransactionToLocalStorage({
+            hash: txHash,
+            srcChainId,
+            address,
+            amount: amount + " " + symbol,
+            timestamp: Date.now(),
+          });
+          thunkAPI.dispatch(
+            updateTransactions({
+              hash: txHash,
+              srcChainId,
+              address,
+              amount: amount + " " + symbol,
+              timestamp: Date.now(),
+            })
+          );
           resolve(txHash);
         })
         .catch((err) => {
@@ -96,7 +118,7 @@ export const bridgeOriginalTokens = createAsyncThunk(
 );
 
 export const bridgeWrappedTokens = createAsyncThunk(
-  "CONTRACT/INCREASE_ALLOWANCE",
+  "CONTRACT/BRIDGE_WRAPPED",
   async (
     {
       amount,
@@ -105,6 +127,7 @@ export const bridgeWrappedTokens = createAsyncThunk(
       decimals = 18,
       address,
       chainId,
+      symbol,
     }: {
       amount: string;
       contractAddress: string;
@@ -112,6 +135,7 @@ export const bridgeWrappedTokens = createAsyncThunk(
       decimals: number;
       address: string;
       chainId: number;
+      symbol: string;
     },
     thunkAPI
   ) => {
@@ -124,6 +148,22 @@ export const bridgeWrappedTokens = createAsyncThunk(
               bridge,
               contractAddress,
               decimals,
+            })
+          );
+          insertTransactionToLocalStorage({
+            hash: txHash,
+            srcChainId: 138,
+            address,
+            amount: amount + " " + symbol,
+            timestamp: Date.now(),
+          });
+          thunkAPI.dispatch(
+            updateTransactions({
+              hash: txHash,
+              srcChainId: 138,
+              address,
+              amount: amount + " " + symbol,
+              timestamp: Date.now(),
             })
           );
           resolve(txHash);
@@ -157,6 +197,16 @@ const contractSlice = createSlice({
       state.isBridgeLoading = false;
     },
     [bridgeOriginalTokens.rejected.type]: (state) => {
+      state.isBridgeLoading = false;
+      state.isError = true;
+    },
+    [bridgeWrappedTokens.pending.type]: (state) => {
+      state.isBridgeLoading = true;
+    },
+    [bridgeWrappedTokens.fulfilled.type]: (state) => {
+      state.isBridgeLoading = false;
+    },
+    [bridgeWrappedTokens.rejected.type]: (state) => {
       state.isBridgeLoading = false;
       state.isError = true;
     },
