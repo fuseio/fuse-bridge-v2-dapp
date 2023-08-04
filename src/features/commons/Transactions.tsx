@@ -2,14 +2,8 @@ import React, { useEffect } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import cross from "../../assets/cross.svg";
 import Transaction from "./Transaction";
-import {} from "@layerzerolabs/scan-client";
-import { appConfig } from "../../constants/config";
-import { useConnectWallet } from "@web3-onboard/react";
-import { useAppDispatch, useAppSelector } from "../../store/store";
-import {
-  fetchBridgeTransactions,
-  selectTransactionsSlice,
-} from "../../store/transactionsSlice";
+import { useAppSelector } from "../../store/store";
+import { selectTransactionsSlice } from "../../store/transactionsSlice";
 
 interface TransactionProps {
   delegators?: Array<Array<string>> | undefined;

@@ -1,8 +1,6 @@
-import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { AppState } from "../rootReducer";
 import { increaseAllowance } from "../../utils/erc20";
-import { ethers } from "ethers";
-import { AsyncThunkRejectedActionCreator } from "@reduxjs/toolkit/dist/createAsyncThunk";
 import { fetchApproval, fetchBalance } from "../balanceSlice";
 import { bridgeOriginal } from "../../utils/originalBridge";
 import { bridgeWrapped } from "../../utils/wrappedBridge";

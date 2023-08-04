@@ -16,7 +16,7 @@ import {
   increaseERC20Allowance,
   selectContractSlice,
 } from "../../store/contractSlice";
-import { selectChainSlice, setChain } from "../../store/chainSlice";
+import { setChain } from "../../store/chainSlice";
 import Button from "../commons/Button";
 import { fetchBridgeTransactions } from "../../store/transactionsSlice";
 
@@ -49,6 +49,7 @@ const Home = () => {
     if (wallet?.accounts[0].address) {
       dispatch(fetchBridgeTransactions(wallet?.accounts[0].address));
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [wallet?.accounts[0].address]);
   return (
     <>
@@ -150,10 +151,10 @@ const Home = () => {
               selectedChainSection={withdrawSelectedChainSection}
               setSelectedChainItem={setWithdrawSelectedChainItem}
               setSelectedChainSection={setWithdrawSelectedChainSection}
-              selectedTokenItem={depositSelectedTokenItem}
-              selectedTokenSection={depositSelectedTokenSection}
-              setSelectedTokenItem={setDepositSelectedTokenItem}
-              setSelectedTokenSection={setDepositSelectedTokenSection}
+              selectedTokenItem={withdrawSelectedTokenItem}
+              selectedTokenSection={withdrawSelectedTokenSection}
+              setSelectedTokenItem={setWithdrawSelectedTokenItem}
+              setSelectedTokenSection={setWithdrawSelectedTokenSection}
               onSwitch={(tokenSection, tokenItem, chainSection, chainItem) => {
                 setDepositSelectedChainSection(chainSection);
                 setDepositSelectedChainItem(chainItem);

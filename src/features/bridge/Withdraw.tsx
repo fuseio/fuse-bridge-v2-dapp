@@ -1,19 +1,15 @@
-import React, { useEffect, useState } from "react";
-import {
-  chainConfig,
-  exchangeConfig,
-  coinConfig,
-  appConfig,
-} from "../../constants/config";
+/* eslint-disable react-hooks/exhaustive-deps */
+import React, { useEffect } from "react";
+import { appConfig } from "../../constants/config";
 import Dropdown from "../commons/Dropdown";
 import switchImg from "../../assets/switch.svg";
 import { useSetChain, useConnectWallet } from "@web3-onboard/react";
-import { getERC20Balance } from "../../utils/erc20";
 import { selectBalanceSlice, fetchBalance } from "../../store/balanceSlice";
 import { useAppDispatch, useAppSelector } from "../../store/store";
 import { selectChainSlice, setChain } from "../../store/chainSlice";
 import alert from "../../assets/alert.svg";
 import visit from "../../assets/visit.svg";
+import sFuse from "../../assets/sFuse.svg";
 
 type WithdrawProps = {
   selectedChainSection: number;
@@ -96,7 +92,15 @@ const Withdraw = ({
       {!isDisabledChain && (
         <>
           <div className="flex bg-modal-bg rounded-md p-4 mt-3 w-full flex-col">
-            <span className="font-semibold text-lg">From Fuse Network</span>
+            <span className="font-semibold text-lg">
+              From
+              <img
+                src={sFuse}
+                alt="sFuse"
+                className="inline-block ml-2 mr-2 h-7"
+              />
+              Fuse Network
+            </span>
             <div className="flex w-full items-center mt-3">
               <div className="bg-white w-2/3 p-4 rounded-s-md border-[1px] border-border-gray">
                 <input
@@ -162,50 +166,59 @@ const Withdraw = ({
           </div>
         </>
       )}
-      <div className="flex bg-modal-bg rounded-md px-4 py-6 mt-3 w-full flex-col">
-        <div className="flex w-full items-center justify-between">
-          <span className="font-medium mr-[10px]">To</span>
-          <Dropdown
-            items={[
+      <div className="flex bg-modal-bg rounded-md p-4 mt-3 w-full flex-col">
+        <span className="font-medium mb-2">To Network</span>
+        <Dropdown
+          items={[
+            {
+              heading: "Chains",
+              items: appConfig.wrappedBridge.chains.map((chain) => {
+                return {
+                  item: chain.name,
+                  icon: chain.icon,
+                  id: chain.lzChainId,
+                };
+              }),
+            },
+            {
+              items: appConfig.wrappedBridge.disabledChains.map((chain, i) => {
+                return {
+                  item: chain.chainName,
+                  icon: chain.icon,
+                  id: i,
+                };
+              }),
+            },
+          ]}
+          selectedSection={selectedChainSection}
+          selectedItem={selectedChainItem}
+          onClick={(section, item) => {
+            setSelectedChainSection(section);
+            setSelectedChainItem(item);
+            if (section === 1) {
+              setDisplayButton(false);
+              setIsDisabledChain(true);
+            } else {
+              dispatch(setChain(appConfig.wrappedBridge.chains[item]));
+              setDisplayButton(true);
+              setIsDisabledChain(false);
+            }
+          }}
+        />
+        <span className="text-black/50 font-medium mt-3">
+          You will receive:{" "}
+          <span className="text-black font-medium">
+            {" "}
+            {amount && !isNaN(parseFloat(amount)) ? parseFloat(amount) : 0}{" "}
+            <span className="font-bold">
               {
-                heading: "Chains",
-                items: appConfig.wrappedBridge.chains.map((chain) => {
-                  return {
-                    item: chain.name,
-                    icon: chain.icon,
-                    id: chain.lzChainId,
-                  };
-                }),
-              },
-              {
-                items: appConfig.wrappedBridge.disabledChains.map(
-                  (chain, i) => {
-                    return {
-                      item: chain.chainName,
-                      icon: chain.icon,
-                      id: i,
-                    };
-                  }
-                ),
-              },
-            ]}
-            selectedSection={selectedChainSection}
-            selectedItem={selectedChainItem}
-            className="w-9/10"
-            onClick={(section, item) => {
-              setSelectedChainSection(section);
-              setSelectedChainItem(item);
-              if (section === 1) {
-                setDisplayButton(false);
-                setIsDisabledChain(true);
-              } else {
-                dispatch(setChain(appConfig.wrappedBridge.chains[item]));
-                setDisplayButton(true);
-                setIsDisabledChain(false);
+                appConfig.wrappedBridge.chains[selectedChainItem].tokens[
+                  selectedTokenItem
+                ].symbol
               }
-            }}
-          />
-        </div>
+            </span>
+          </span>
+        </span>
       </div>
       {isDisabledChain && (
         <>
@@ -263,15 +276,6 @@ const Withdraw = ({
             </div>
           </a>
         </>
-      )}
-      {!isDisabledChain && (
-        <div className="flex justify-between mt-4">
-          <span className="text-black/50 font-medium">You will receive</span>
-          <span className="font-medium">
-            {amount && !isNaN(parseFloat(amount)) ? parseFloat(amount) : 0}{" "}
-            <span className="font-bold">USDC</span>
-          </span>
-        </div>
       )}
     </>
   );

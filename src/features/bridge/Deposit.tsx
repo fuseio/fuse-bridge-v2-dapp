@@ -1,10 +1,6 @@
-import React, { useEffect, useState } from "react";
-import {
-  chainConfig,
-  exchangeConfig,
-  coinConfig,
-  appConfig,
-} from "../../constants/config";
+/* eslint-disable react-hooks/exhaustive-deps */
+import React, { useEffect } from "react";
+import { exchangeConfig, appConfig } from "../../constants/config";
 import Dropdown from "../commons/Dropdown";
 import switchImg from "../../assets/switch.svg";
 import { useConnectWallet, useSetChain } from "@web3-onboard/react";
@@ -13,6 +9,7 @@ import { useAppDispatch, useAppSelector } from "../../store/store";
 import { fetchBalance, selectBalanceSlice } from "../../store/balanceSlice";
 import alert from "../../assets/alert.svg";
 import visit from "../../assets/visit.svg";
+import sFuse from "../../assets/sFuse.svg";
 
 type DepositProps = {
   selectedChainSection: number;
@@ -93,68 +90,65 @@ const Deposit = ({
   return (
     <>
       <div className="flex bg-modal-bg rounded-md p-4 mt-3 w-full flex-col">
-        <div className="flex w-full items-center">
-          <span className="font-medium mr-[10px] text-lg">From</span>
-          <Dropdown
-            items={[
-              {
-                heading: "Chains",
-                items: appConfig.wrappedBridge.chains.map((chain) => {
-                  return {
-                    item: chain.name,
-                    icon: chain.icon,
-                    id: chain.lzChainId,
-                  };
-                }),
-              },
-              {
-                items: appConfig.wrappedBridge.disabledChains.map(
-                  (chain, i) => {
-                    return {
-                      item: chain.chainName,
-                      icon: chain.icon,
-                      id: i,
-                    };
-                  }
-                ),
-              },
-              {
-                heading: "Centralized Exchanges",
-                items: exchangeConfig.exchanges.map((exchange, i) => {
-                  return {
-                    item: exchange.name,
-                    icon: exchange.icon,
-                    id: i,
-                  };
-                }),
-              },
-            ]}
-            selectedSection={selectedChainSection}
-            selectedItem={selectedChainItem}
-            className="w-full"
-            onClick={(section, item) => {
-              setSelectedChainSection(section);
-              setSelectedChainItem(item);
-              if (section === 1) {
-                setIsExchange(false);
-                setDisplayButton(false);
-                setIsDisabledChain(true);
-              } else if (section === 2) {
-                setIsExchange(true);
-                setDisplayButton(false);
-                setIsDisabledChain(false);
-              } else {
-                setIsExchange(false);
-                dispatch(setChain(appConfig.wrappedBridge.chains[item]));
-                setDisplayButton(true);
-                setIsDisabledChain(false);
-              }
-            }}
-          />
-        </div>
+        <span className="font-medium mb-2">From Network</span>
+        <Dropdown
+          items={[
+            {
+              heading: "Chains",
+              items: appConfig.wrappedBridge.chains.map((chain) => {
+                return {
+                  item: chain.name,
+                  icon: chain.icon,
+                  id: chain.lzChainId,
+                };
+              }),
+            },
+            {
+              items: appConfig.wrappedBridge.disabledChains.map((chain, i) => {
+                return {
+                  item: chain.chainName,
+                  icon: chain.icon,
+                  id: i,
+                };
+              }),
+            },
+            {
+              heading: "Centralized Exchanges",
+              items: exchangeConfig.exchanges.map((exchange, i) => {
+                return {
+                  item: exchange.name,
+                  icon: exchange.icon,
+                  id: i,
+                };
+              }),
+            },
+          ]}
+          selectedSection={selectedChainSection}
+          selectedItem={selectedChainItem}
+          className="w-full"
+          onClick={(section, item) => {
+            setSelectedChainSection(section);
+            setSelectedChainItem(item);
+            if (section === 1) {
+              setIsExchange(false);
+              setDisplayButton(false);
+              setIsDisabledChain(true);
+            } else if (section === 2) {
+              setIsExchange(true);
+              setDisplayButton(false);
+              setIsDisabledChain(false);
+            } else {
+              setIsExchange(false);
+              dispatch(setChain(appConfig.wrappedBridge.chains[item]));
+              setDisplayButton(true);
+              setIsDisabledChain(false);
+            }
+          }}
+        />
         {!(isExchange || isDisabledChain) && (
           <>
-            <div className="flex w-full items-center mt-3">
+            <span className="font-medium mt-2">Amount</span>
+            <div className="flex w-full items-center mt-2">
               <div className="bg-white p-4 rounded-s-md border-[1px] border-border-gray w-2/3">
                 <input
                   type="text"
@@ -332,11 +326,19 @@ const Deposit = ({
             />
           </div>
           <div className="flex bg-modal-bg rounded-md px-4 py-[10px] mt-3 w-full flex-col">
-            <span className="font-semibold text-lg">To Fuse Network</span>
+            <span className="font-semibold text-lg">
+              To
+              <img src={sFuse} alt="sFuse" className="inline-block ml-2 mr-2 h-7" />
+              Fuse Network
+            </span>
             <span className="font-medium mt-1">
               You will receive{" "}
               {amount && !isNaN(parseFloat(amount)) ? parseFloat(amount) : 0}{" "}
-              USDC
+              {
+                appConfig.wrappedBridge.chains[selectedChainItem].tokens[
+                  selectedTokenItem
+                ].symbol
+              }
             </span>
           </div>
         </>
