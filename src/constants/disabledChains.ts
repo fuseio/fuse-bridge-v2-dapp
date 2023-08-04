@@ -8,7 +8,7 @@ export const disabledChains: DisabledChainConfigLike[] = [
     chainName: "Ethereum",
     icon: eth,
     appLogo: voltage,
-    appName: "Voltage FInance",
+    appName: "Voltage Finance",
     appURL: "https://app.voltage.finance/#/bridge",
   },
   {
