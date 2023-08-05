@@ -186,7 +186,8 @@ const Deposit = ({
             </div>
             <span className="mt-3 text-sm font-medium">
               Balance:{" "}
-              {balanceSlice.isBalanceLoading ? (
+              {balanceSlice.isBalanceLoading ||
+              balanceSlice.isApprovalLoading ? (
                 <span className="px-10 py-1 ml-2 rounded-md animate-pulse bg-fuse-black/10"></span>
               ) : (
                 balanceSlice.balance
@@ -328,7 +329,11 @@ const Deposit = ({
           <div className="flex bg-modal-bg rounded-md px-4 py-[10px] mt-3 w-full flex-col">
             <span className="font-semibold text-lg">
               To
-              <img src={sFuse} alt="sFuse" className="inline-block ml-2 mr-2 h-7" />
+              <img
+                src={sFuse}
+                alt="sFuse"
+                className="inline-block ml-2 mr-2 h-7"
+              />
               Fuse Network
             </span>
             <span className="font-medium mt-1">

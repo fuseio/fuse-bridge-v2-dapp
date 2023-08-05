@@ -139,7 +139,8 @@ const Withdraw = ({
             </div>
             <span className="mt-3 text-sm font-medium">
               Balance:{" "}
-              {balanceSlice.isBalanceLoading ? (
+              {balanceSlice.isBalanceLoading ||
+              balanceSlice.isApprovalLoading ? (
                 <span className="px-10 py-1 ml-2 rounded-md animate-pulse bg-fuse-black/10"></span>
               ) : (
                 balanceSlice.balance
