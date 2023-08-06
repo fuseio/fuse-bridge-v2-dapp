@@ -205,7 +205,7 @@ const Withdraw = ({
               dispatch(
                 estimateWrappedFee({
                   contractAddress: appConfig.wrappedBridge.wrapped.address,
-                  lzChainId: appConfig.wrappedBridge.wrapped.lzChainId,
+                  lzChainId: appConfig.wrappedBridge.chains[item].lzChainId,
                   rpcUrl: "https://rpc.fuse.io",
                 })
               );
