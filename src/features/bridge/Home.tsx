@@ -109,7 +109,10 @@ const Home = () => {
                         estimateWrappedFee({
                           contractAddress:
                             appConfig.wrappedBridge.wrapped.address,
-                          lzChainId: 138,
+                          lzChainId:
+                            appConfig.wrappedBridge.chains[
+                              withdrawSelectedChainItem
+                            ].lzChainId,
                           rpcUrl: "https://rpc.fuse.io",
                         })
                       );
