@@ -19,6 +19,13 @@ import {
 import { setChain } from "../../store/chainSlice";
 import Button from "../commons/Button";
 import { fetchBridgeTransactions } from "../../store/transactionsSlice";
+import {
+  estimateOriginalFee,
+  estimateWrappedFee,
+  selectFeeSlice,
+} from "../../store/feeSlice";
+import { getNativeCurrency } from "@layerzerolabs/ui-core";
+import { getChainKey } from "@layerzerolabs/lz-sdk";
 
 const Home = () => {
   const [{ connectedChain, chains }, switchChain] = useSetChain();
@@ -51,6 +58,7 @@ const Home = () => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [wallet?.accounts[0].address]);
+  const feeSlice = useAppSelector(selectFeeSlice);
   return (
     <>
       <Transactions isOpen={isOpen} onToggle={setIsOpen} />
@@ -97,6 +105,14 @@ const Home = () => {
                           tokens: [],
                         })
                       );
+                      dispatch(
+                        estimateWrappedFee({
+                          contractAddress:
+                            appConfig.wrappedBridge.wrapped.address,
+                          lzChainId: 138,
+                          rpcUrl: "https://rpc.fuse.io",
+                        })
+                      );
                     } else {
                       if (depositSelectedChainSection === 1) {
                         setIsDisabledChain(true);
@@ -110,6 +126,18 @@ const Home = () => {
                             depositSelectedChainItem
                           ]
                         )
+                      );
+                      dispatch(
+                        estimateOriginalFee({
+                          contractAddress:
+                            appConfig.wrappedBridge.chains[
+                              depositSelectedChainItem
+                            ].bridge,
+                          rpcUrl:
+                            appConfig.wrappedBridge.chains[
+                              depositSelectedChainItem
+                            ].rpcUrl,
+                        })
                       );
                     }
                   }}
@@ -314,12 +342,33 @@ const Home = () => {
         </motion.div>
         <motion.div className="flex bg-white w-[575px] mt-2 rounded-lg px-8 py-5 flex-col font-medium">
           <div className="flex justify-between">
-            <span className="text-black/50">Daily Limits</span>
-            <span>0.5 Min - 25,000,000 max</span>
-          </div>
-          <div className="flex justify-between mt-2">
             <span className="text-black/50">Bridge Fee</span>
             <span>Free</span>
+          </div>
+          <div className="flex justify-between mt-2">
+            <span className="text-black/50">Gas Estimation</span>
+            {feeSlice.isGasFeeLoading ? (
+              <span className="px-14 rounded-md animate-pulse bg-fuse-black/10"></span>
+            ) : (
+              <span>
+                {feeSlice.gasFee}{" "}
+                {
+                  getNativeCurrency(
+                    getChainKey(
+                      selected === 0
+                        ? appConfig.wrappedBridge.chains[
+                            depositSelectedChainItem
+                          ].lzChainId
+                        : 138
+                    )
+                  ).symbol
+                }
+              </span>
+            )}
+          </div>
+          <div className="flex justify-between mt-2">
+            <span className="text-black/50">Daily Limits</span>
+            <span>0.5 Min - 25,000,000 max</span>
           </div>
         </motion.div>
         <Footer />

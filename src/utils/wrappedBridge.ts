@@ -28,8 +28,13 @@ export const bridgeWrapped = async (
   const dstGasLimit = await contract.minDstGasLookup(lzChainId, 1);
   const amt = ethers.utils.parseUnits(amount, decimals);
   const adapterParams = AdapterParams.forV1(Number(dstGasLimit));
-  const nativeFee = (await contract.estimateBridgeFee(lzChainId, false, "0x"))
-    .nativeFee;
+  const nativeFee = (
+    await contract.estimateBridgeFee(
+      lzChainId,
+      false,
+      serializeAdapterParams(adapterParams)
+    )
+  ).nativeFee;
   const increasedNativeFee = BigInt(Number(nativeFee) * 1.2); // 20% increase
   const callParams = {
     refundAddress: address,
@@ -47,4 +52,24 @@ export const bridgeWrapped = async (
   );
   await tx.wait();
   return tx.hash;
+};
+
+export const estimateWrappedNativeFee = async (
+  bridgeAddress: string,
+  lzChainId: number,
+  rpcUrl: string
+) => {
+  let provider = new ethers.providers.JsonRpcProvider(rpcUrl);
+  const contract = getWrappedTokenBridge(bridgeAddress, provider);
+  const dstGasLimit = await contract.minDstGasLookup(lzChainId, 1);
+  const adapterParams = AdapterParams.forV1(Number(dstGasLimit));
+  const nativeFee = (
+    await contract.estimateBridgeFee(
+      lzChainId,
+      false,
+      serializeAdapterParams(adapterParams)
+    )
+  ).nativeFee;
+  const increasedNativeFee = BigInt(Number(nativeFee) * 1.2);
+  return increasedNativeFee;
 };

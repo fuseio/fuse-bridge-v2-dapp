@@ -25,10 +25,15 @@ export const bridgeOriginal = async (
 ) => {
   const contract = getOriginalTokenBridge(bridgeAddress, web3OnboardProvider);
   const dstGasLimit = await contract.minDstGasLookup(138, 0);
-  const amt = ethers.utils.parseUnits(amount, decimals);
   const adapterParams = AdapterParams.forV1(Number(dstGasLimit));
-  const nativeFee = (await contract.estimateBridgeFee(false, "0x")).nativeFee;
-  const increasedNativeFee = BigInt(Number(nativeFee) * 1.2); // 20% increase
+  const nativeFee = (
+    await contract.estimateBridgeFee(
+      false,
+      serializeAdapterParams(adapterParams)
+    )
+  ).nativeFee;
+  const increasedNativeFee = BigInt(Number(nativeFee) * 1.2);
+  const amt = ethers.utils.parseUnits(amount, decimals);
   const callParams = {
     refundAddress: address,
     zroPaymentAddress: ethers.constants.AddressZero,
@@ -43,4 +48,22 @@ export const bridgeOriginal = async (
   );
   await tx.wait();
   return tx.hash;
+};
+
+export const estimateOriginalNativeFee = async (
+  bridgeAddress: string,
+  rpcUrl: string
+) => {
+  let provider = new ethers.providers.JsonRpcProvider(rpcUrl);
+  const contract = getOriginalTokenBridge(bridgeAddress, provider);
+  const dstGasLimit = await contract.minDstGasLookup(138, 0);
+  const adapterParams = AdapterParams.forV1(Number(dstGasLimit));
+  const nativeFee = (
+    await contract.estimateBridgeFee(
+      false,
+      serializeAdapterParams(adapterParams)
+    )
+  ).nativeFee;
+  const increasedNativeFee = BigInt(Number(nativeFee) * 1.2);
+  return increasedNativeFee;
 };

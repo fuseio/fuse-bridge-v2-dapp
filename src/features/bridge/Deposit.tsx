@@ -10,6 +10,7 @@ import { fetchBalance, selectBalanceSlice } from "../../store/balanceSlice";
 import alert from "../../assets/alert.svg";
 import visit from "../../assets/visit.svg";
 import sFuse from "../../assets/sFuse.svg";
+import { estimateOriginalFee } from "../../store/feeSlice";
 
 type DepositProps = {
   selectedChainSection: number;
@@ -85,6 +86,13 @@ const Deposit = ({
   useEffect(() => {
     if (chainSlice.chainId === 0 && selectedChainSection === 0) {
       dispatch(setChain(appConfig.wrappedBridge.chains[selectedChainItem]));
+      dispatch(
+        estimateOriginalFee({
+          contractAddress:
+            appConfig.wrappedBridge.chains[selectedChainItem].bridge,
+          rpcUrl: appConfig.wrappedBridge.chains[selectedChainItem].rpcUrl,
+        })
+      );
     }
   }, [chainSlice.chainId, selectedChainSection]);
   return (
@@ -140,6 +148,12 @@ const Deposit = ({
             } else {
               setIsExchange(false);
               dispatch(setChain(appConfig.wrappedBridge.chains[item]));
+              dispatch(
+                estimateOriginalFee({
+                  contractAddress: appConfig.wrappedBridge.chains[item].bridge,
+                  rpcUrl: appConfig.wrappedBridge.chains[item].rpcUrl,
+                })
+              );
               setDisplayButton(true);
               setIsDisabledChain(false);
             }

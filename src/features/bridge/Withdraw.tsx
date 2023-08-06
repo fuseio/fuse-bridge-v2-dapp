@@ -10,6 +10,7 @@ import { selectChainSlice, setChain } from "../../store/chainSlice";
 import alert from "../../assets/alert.svg";
 import visit from "../../assets/visit.svg";
 import sFuse from "../../assets/sFuse.svg";
+import { estimateWrappedFee } from "../../store/feeSlice";
 
 type WithdrawProps = {
   selectedChainSection: number;
@@ -201,6 +202,13 @@ const Withdraw = ({
               setIsDisabledChain(true);
             } else {
               dispatch(setChain(appConfig.wrappedBridge.chains[item]));
+              dispatch(
+                estimateWrappedFee({
+                  contractAddress: appConfig.wrappedBridge.wrapped.address,
+                  lzChainId: appConfig.wrappedBridge.wrapped.lzChainId,
+                  rpcUrl: "https://rpc.fuse.io",
+                })
+              );
               setDisplayButton(true);
               setIsDisabledChain(false);
             }
