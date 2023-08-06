@@ -32,18 +32,18 @@ export const chains: ChainConfigLike[] = [
   //   appURL: "https://app.voltage.finance/#/bridge",
   // },
   {
-    chainName: "Gnosis",
-    lzChainId: 145,
-    icon: gnosis,
-    rpc: "https://rpc.gnosischain.com/",
-    chainId: 100,
-  },
-  {
     chainName: "Polygon",
     lzChainId: 109,
     icon: matic,
     rpc: "https://rpc-mainnet.maticvigil.com",
     chainId: 137,
+  },
+  {
+    chainName: "Gnosis",
+    lzChainId: 145,
+    icon: gnosis,
+    rpc: "https://rpc.gnosischain.com/",
+    chainId: 100,
   },
   // {
   //     chainName: "Celo",
