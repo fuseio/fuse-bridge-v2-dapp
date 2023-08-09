@@ -352,7 +352,7 @@ const Home = () => {
             <span className="text-black/50">Gas Estimation</span>
             {feeSlice.isGasFeeLoading ? (
               <span className="px-14 rounded-md animate-pulse bg-fuse-black/10"></span>
-            ) : (
+            ) : !(isExchange || isDisabledChain) ? (
               <span>
                 {feeSlice.gasFee}{" "}
                 {
@@ -367,6 +367,8 @@ const Home = () => {
                   ).symbol
                 }
               </span>
+            ) : (
+              <></>
             )}
           </div>
           <div className="flex justify-between mt-2">
