@@ -237,6 +237,7 @@ const Deposit = ({
                   target="_blank"
                   rel="noreferrer"
                   className="cursor-pointer"
+                  key={i}
                 >
                   <div
                     className="flex mt-2 bg-modal-bg py-4 px-5 rounded-md items-center cursor-pointer"
