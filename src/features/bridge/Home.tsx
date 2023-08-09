@@ -62,7 +62,7 @@ const Home = () => {
   return (
     <>
       <Transactions isOpen={isOpen} onToggle={setIsOpen} />
-      <div className="w-full bg-light-gray flex flex-col items-center h-[90%]">
+      <div className="w-full bg-light-gray flex flex-col items-center min-h-[90vh]">
         <motion.div className="flex bg-white w-[575px] mt-8 rounded-lg px-8 pt-8 pb-9 flex-col">
           <div className="flex w-full justify-between items-end">
             <p className="text-2xl font-bold">Bridge</p>
