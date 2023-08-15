@@ -123,6 +123,7 @@ export const bridgeOriginalTokens = createAsyncThunk(
           resolve(txHash);
         })
         .catch((err) => {
+          console.log(err);
           reject(err);
         });
     });
@@ -345,6 +346,26 @@ const contractSlice = createSlice({
       state.isBridgeLoading = false;
     },
     [bridgeWrappedTokens.rejected.type]: (state) => {
+      state.isBridgeLoading = false;
+      state.isError = true;
+    },
+    [bridgeNativeTokens.pending.type]: (state) => {
+      state.isBridgeLoading = true;
+    },
+    [bridgeNativeTokens.fulfilled.type]: (state) => {
+      state.isBridgeLoading = false;
+    },
+    [bridgeNativeTokens.rejected.type]: (state) => {
+      state.isBridgeLoading = false;
+      state.isError = true;
+    },
+    [bridgeAndUnwrap.pending.type]: (state) => {
+      state.isBridgeLoading = true;
+    },
+    [bridgeAndUnwrap.fulfilled.type]: (state) => {
+      state.isBridgeLoading = false;
+    },
+    [bridgeAndUnwrap.rejected.type]: (state) => {
       state.isBridgeLoading = false;
       state.isError = true;
     },

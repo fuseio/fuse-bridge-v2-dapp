@@ -206,8 +206,8 @@ const Home = () => {
                 appConfig.wrappedBridge.chains[withdrawSelectedChainItem]
                   .originalFuse,
               decimals:
-                appConfig.wrappedBridge.fuse.tokens[withdrawSelectedTokenItem]
-                  .decimals,
+                appConfig.wrappedBridge.chains[withdrawSelectedChainItem]
+                  .tokens[withdrawSelectedTokenItem].decimals,
               dstChainId:
                 appConfig.wrappedBridge.chains[withdrawSelectedChainItem]
                   .lzChainId,
@@ -394,10 +394,13 @@ const Home = () => {
                     if (!wallet) return;
                     if (!amount) return;
                     if (
-                      parseFloat(balanceSlice.approval) < parseFloat(amount) &&
                       selected === 1 &&
-                      !appConfig.wrappedBridge.chains[withdrawSelectedChainItem]
+                      appConfig.wrappedBridge.chains[withdrawSelectedChainItem]
                         .tokens[withdrawSelectedTokenItem].isNative
+                    ) {
+                      handleWithdraw();
+                    } else if (
+                      parseFloat(balanceSlice.approval) < parseFloat(amount)
                     ) {
                       handleIncreaseAllowance();
                     } else if (selected === 0) {
@@ -422,13 +425,14 @@ const Home = () => {
                   contractSlice.isBridgeLoading ||
                   contractSlice.isApprovalLoading
                     ? "Loading..."
-                    : parseFloat(balanceSlice.approval) < parseFloat(amount) &&
-                      selected === 1 &&
-                      !appConfig.wrappedBridge.chains[withdrawSelectedChainItem]
-                        .tokens[withdrawSelectedTokenItem].isNative
-                    ? "Approve"
                     : selected === 1 && connectedChain?.id !== "0x7a"
                     ? "Switch To Fuse"
+                    : selected === 1 &&
+                      appConfig.wrappedBridge.chains[withdrawSelectedChainItem]
+                        .tokens[withdrawSelectedTokenItem].isNative
+                    ? "Bridge"
+                    : parseFloat(balanceSlice.approval) < parseFloat(amount)
+                    ? "Approve"
                     : "Bridge"
                 }
                 disabledClassname="bg-fuse-black/20 text-black px-4 mt-6 py-4 rounded-full font-medium md:text-sm "
