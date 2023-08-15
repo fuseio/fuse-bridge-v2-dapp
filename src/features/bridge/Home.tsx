@@ -116,7 +116,7 @@ const Home = () => {
     }).then((res) => {
       if (res) {
         if (
-          !appConfig.wrappedBridge.chains[depositSelectedChainItem].tokens[
+          appConfig.wrappedBridge.chains[depositSelectedChainItem].tokens[
             depositSelectedTokenItem
           ].isBridged &&
           appConfig.wrappedBridge.chains[depositSelectedChainItem].tokens[
@@ -151,10 +151,7 @@ const Home = () => {
         } else if (
           !appConfig.wrappedBridge.chains[depositSelectedChainItem].tokens[
             depositSelectedTokenItem
-          ].isBridged &&
-          !appConfig.wrappedBridge.chains[depositSelectedChainItem].tokens[
-            depositSelectedTokenItem
-          ].isNative
+          ].isBridged
         )
           dispatch(
             bridgeOriginalTokens({
