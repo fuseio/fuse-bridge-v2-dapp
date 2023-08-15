@@ -83,7 +83,6 @@ export interface BridgeConfigLike {
   fuse: {
     chainId: number;
     wrapped: string;
-    original: string;
   };
   tokens: TokenStateType[][];
 }

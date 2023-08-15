@@ -72,6 +72,7 @@ export const bridgeConfig = {
         name: "FUSE",
         isBridged: false,
         isNative: true,
+        address: "",
       },
       {
         chainId: 109,
