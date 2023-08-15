@@ -75,21 +75,32 @@ export interface BridgeConfigLike {
   wrapped: {
     chainId: number;
     address: string;
-  };
-  tokens: {
+  }[];
+  originalFuse: {
     chainId: number;
-    decimals: number;
-    symbol: string;
-    name: string;
     address: string;
-  }[][];
+  }[];
+  fuse: {
+    chainId: number;
+    wrapped: string;
+    original: string;
+  };
+  tokens: TokenStateType[][];
 }
-
+interface TokenStateType {
+  chainId: number;
+  decimals: number;
+  symbol: string;
+  name: string;
+  address: string;
+  isNative: boolean;
+  isBridged: boolean;
+}
 interface WrappedBridgeConfig {
   version: number;
-  wrapped: {
+  fuse: {
     lzChainId: number;
-    address: string;
+    wrapped: string;
     tokens: {
       decimals: number;
       symbol: string;
@@ -104,16 +115,19 @@ interface WrappedBridgeConfig {
     chainId: number;
     name: string;
     icon: string;
-    bridge: string;
+    original: string;
+    wrapped: string;
+    originalFuse: string;
     rpcUrl: string;
-    tokens:
-      | {
-          decimals: number;
-          symbol: string;
-          name: string;
-          address: string;
-          icon: string;
-        }[];
+    tokens: {
+      decimals: number;
+      symbol: string;
+      name: string;
+      address: string;
+      icon: string;
+      isNative: boolean;
+      isBridged: boolean;
+    }[];
   }[];
 }
 
@@ -137,7 +151,7 @@ export const createAppConfig = (
     tokenConfig.coins.forEach((coin) => {
       const token = bridgeConfig.tokens
         .find((token) => token[0].symbol === coin.symbol)
-        ?.find((token) => token.chainId === bridgeConfig.wrapped.chainId);
+        ?.find((token) => token.chainId === bridgeConfig.fuse.chainId);
       if (token) {
         wrappedTokens.push({
           ...token,
@@ -149,9 +163,9 @@ export const createAppConfig = (
   return {
     wrappedBridge: {
       version: bridgeConfig.version,
-      wrapped: {
-        lzChainId: bridgeConfig.wrapped.chainId,
-        address: bridgeConfig.wrapped.address,
+      fuse: {
+        lzChainId: bridgeConfig.fuse.chainId,
+        wrapped: bridgeConfig.fuse.wrapped,
         tokens: wrappedTokens,
       },
       disabledChains: disabledChains,
@@ -162,6 +176,8 @@ export const createAppConfig = (
           name: string;
           address: string;
           icon: string;
+          isNative: boolean;
+          isBridged: boolean;
         }[] = [];
         if (bridgeConfig.tokens.length > 0) {
           tokenConfig.coins.forEach((coin) => {
@@ -175,6 +191,8 @@ export const createAppConfig = (
                 name: token.name,
                 symbol: token.symbol,
                 icon: coin.icon,
+                isNative: token.isNative,
+                isBridged: token.isBridged,
               });
             }
           });
@@ -184,7 +202,13 @@ export const createAppConfig = (
           lzChainId: chain.lzChainId,
           name: chain.chainName,
           icon: chain.icon,
-          bridge: bridgeConfig.original.find(
+          original: bridgeConfig.original.find(
+            (bridge) => bridge.chainId === chain.lzChainId
+          )?.address as string,
+          wrapped: bridgeConfig.wrapped.find(
+            (bridge) => bridge.chainId === chain.lzChainId
+          )?.address as string,
+          originalFuse: bridgeConfig.originalFuse.find(
             (bridge) => bridge.chainId === chain.lzChainId
           )?.address as string,
           tokens: tokens,

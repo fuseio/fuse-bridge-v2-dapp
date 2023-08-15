@@ -6,7 +6,7 @@ export interface ChainStateType {
   chainId: number;
   name: string;
   icon: string;
-  bridge: string | undefined;
+  wrapped: string | undefined;
   rpcUrl: string | undefined;
   tokens:
     | {
@@ -23,7 +23,7 @@ const INIT_STATE: ChainStateType = {
   chainId: 0,
   name: "",
   icon: "",
-  bridge: "",
+  wrapped: "",
   tokens: [],
   rpcUrl: "",
 };
@@ -42,7 +42,6 @@ const chainSlice = createSlice({
   initialState: INIT_STATE,
   extraReducers: (builder) => {
     builder.addCase(setChain.fulfilled, (state, action) => {
-      state.bridge = action.payload.bridge;
       state.chainId = action.payload.chainId;
       state.icon = action.payload.icon;
       state.lzChainId = action.payload.lzChainId;

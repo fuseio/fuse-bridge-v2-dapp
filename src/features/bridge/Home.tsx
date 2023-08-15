@@ -11,6 +11,8 @@ import { appConfig } from "../../constants/config";
 import { selectBalanceSlice } from "../../store/balanceSlice";
 import { useAppDispatch, useAppSelector } from "../../store/store";
 import {
+  bridgeAndUnwrap,
+  bridgeNativeTokens,
   bridgeOriginalTokens,
   bridgeWrappedTokens,
   increaseERC20Allowance,
@@ -59,6 +61,184 @@ const Home = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [wallet?.accounts[0].address]);
   const feeSlice = useAppSelector(selectFeeSlice);
+
+  const handleIncreaseAllowance = () => {
+    switchChain({
+      chainId:
+        selected === 0
+          ? "0x" +
+            appConfig.wrappedBridge.chains[
+              depositSelectedChainItem
+            ].chainId.toString(16)
+          : "0x7A",
+    }).then((res) => {
+      if (res && selected === 0)
+        dispatch(
+          increaseERC20Allowance({
+            contractAddress:
+              appConfig.wrappedBridge.chains[depositSelectedChainItem].tokens[
+                depositSelectedTokenItem
+              ].address,
+            amount: amount,
+            bridge:
+              appConfig.wrappedBridge.chains[depositSelectedChainItem].original,
+            decimals:
+              appConfig.wrappedBridge.chains[depositSelectedChainItem].tokens[
+                depositSelectedTokenItem
+              ].decimals,
+            address: wallet?.accounts[0].address as string,
+          })
+        );
+      else if (res && selected === 1)
+        dispatch(
+          increaseERC20Allowance({
+            contractAddress:
+              appConfig.wrappedBridge.fuse.tokens[withdrawSelectedTokenItem]
+                .address,
+            amount: amount,
+            bridge: appConfig.wrappedBridge.fuse.wrapped,
+            decimals:
+              appConfig.wrappedBridge.fuse.tokens[withdrawSelectedTokenItem]
+                .decimals,
+            address: wallet?.accounts[0].address as string,
+          })
+        );
+    });
+  };
+
+  const handleDeposit = () => {
+    switchChain({
+      chainId:
+        "0x" +
+        appConfig.wrappedBridge.chains[
+          depositSelectedChainItem
+        ].chainId.toString(16),
+    }).then((res) => {
+      if (res) {
+        if (
+          !appConfig.wrappedBridge.chains[depositSelectedChainItem].tokens[
+            depositSelectedTokenItem
+          ].isBridged &&
+          appConfig.wrappedBridge.chains[depositSelectedChainItem].tokens[
+            depositSelectedTokenItem
+          ].isNative
+        ) {
+          dispatch(
+            bridgeAndUnwrap({
+              address: wallet?.accounts[0].address as string,
+              amount: amount,
+              bridge:
+                appConfig.wrappedBridge.chains[depositSelectedChainItem]
+                  .wrapped,
+              contractAddress:
+                appConfig.wrappedBridge.chains[depositSelectedChainItem].tokens[
+                  depositSelectedTokenItem
+                ].address,
+              decimals:
+                appConfig.wrappedBridge.chains[depositSelectedChainItem].tokens[
+                  depositSelectedTokenItem
+                ].decimals,
+              srcChainId:
+                appConfig.wrappedBridge.chains[depositSelectedChainItem]
+                  .lzChainId,
+              symbol:
+                appConfig.wrappedBridge.chains[depositSelectedChainItem].tokens[
+                  depositSelectedTokenItem
+                ].symbol,
+              chainId: 138,
+            })
+          );
+        } else if (
+          !appConfig.wrappedBridge.chains[depositSelectedChainItem].tokens[
+            depositSelectedTokenItem
+          ].isBridged &&
+          !appConfig.wrappedBridge.chains[depositSelectedChainItem].tokens[
+            depositSelectedTokenItem
+          ].isNative
+        )
+          dispatch(
+            bridgeOriginalTokens({
+              address: wallet?.accounts[0].address as string,
+              amount: amount,
+              bridge:
+                appConfig.wrappedBridge.chains[depositSelectedChainItem]
+                  .original,
+              contractAddress:
+                appConfig.wrappedBridge.chains[depositSelectedChainItem].tokens[
+                  depositSelectedTokenItem
+                ].address,
+              decimals:
+                appConfig.wrappedBridge.chains[depositSelectedChainItem].tokens[
+                  depositSelectedTokenItem
+                ].decimals,
+              srcChainId:
+                appConfig.wrappedBridge.chains[depositSelectedChainItem]
+                  .lzChainId,
+              symbol:
+                appConfig.wrappedBridge.chains[depositSelectedChainItem].tokens[
+                  depositSelectedTokenItem
+                ].symbol,
+              dstChainId: 138,
+            })
+          );
+      }
+    });
+  };
+
+  const handleWithdraw = () => {
+    switchChain({
+      chainId: "0x7A",
+    }).then((res) => {
+      if (res) {
+        if (
+          appConfig.wrappedBridge.chains[withdrawSelectedTokenItem].tokens[
+            withdrawSelectedTokenItem
+          ].isNative &&
+          appConfig.wrappedBridge.chains[withdrawSelectedTokenItem].tokens[
+            withdrawSelectedTokenItem
+          ].isBridged
+        ) {
+          dispatch(
+            bridgeNativeTokens({
+              address: wallet?.accounts[0].address as string,
+              amount: amount,
+              bridge:
+                appConfig.wrappedBridge.chains[withdrawSelectedChainItem]
+                  .originalFuse,
+              decimals:
+                appConfig.wrappedBridge.fuse.tokens[withdrawSelectedTokenItem]
+                  .decimals,
+              dstChainId:
+                appConfig.wrappedBridge.chains[withdrawSelectedChainItem]
+                  .lzChainId,
+              srcChainId: 138,
+              symbol: "FUSE",
+            })
+          );
+        } else
+          dispatch(
+            bridgeWrappedTokens({
+              address: wallet?.accounts[0].address as string,
+              amount: amount,
+              bridge: appConfig.wrappedBridge.fuse.wrapped,
+              contractAddress:
+                appConfig.wrappedBridge.fuse.tokens[withdrawSelectedTokenItem]
+                  .address,
+              decimals:
+                appConfig.wrappedBridge.fuse.tokens[withdrawSelectedTokenItem]
+                  .decimals,
+              chainId:
+                appConfig.wrappedBridge.chains[withdrawSelectedChainItem]
+                  .lzChainId,
+              symbol:
+                appConfig.wrappedBridge.fuse.tokens[withdrawSelectedTokenItem]
+                  .symbol,
+              srcChainId: 138,
+            })
+          );
+      }
+    });
+  };
   return (
     <>
       <Transactions isOpen={isOpen} onToggle={setIsOpen} />
@@ -97,18 +277,17 @@ const Home = () => {
                       dispatch(
                         setChain({
                           chainId: 122,
-                          bridge: appConfig.wrappedBridge.wrapped.address,
                           icon: chains[0].icon as string,
                           lzChainId: 138,
                           name: "Fuse",
                           rpcUrl: "https://rpc.fuse.io",
                           tokens: [],
+                          wrapped: appConfig.wrappedBridge.fuse.wrapped,
                         })
                       );
                       dispatch(
                         estimateWrappedFee({
-                          contractAddress:
-                            appConfig.wrappedBridge.wrapped.address,
+                          contractAddress: appConfig.wrappedBridge.fuse.wrapped,
                           lzChainId:
                             appConfig.wrappedBridge.chains[
                               withdrawSelectedChainItem
@@ -135,7 +314,7 @@ const Home = () => {
                           contractAddress:
                             appConfig.wrappedBridge.chains[
                               depositSelectedChainItem
-                            ].bridge,
+                            ].original,
                           rpcUrl:
                             appConfig.wrappedBridge.chains[
                               depositSelectedChainItem
@@ -206,136 +385,50 @@ const Home = () => {
             displayButton && (
               <Button
                 className="bg-fuse-black text-white px-4 mt-6 py-4 rounded-full font-medium md:text-sm "
-                onClick={() => {
-                  if (!wallet) return;
-                  if (!amount) return;
-                  if (parseFloat(balanceSlice.approval) < parseFloat(amount)) {
-                    switchChain({
-                      chainId:
-                        selected === 0
-                          ? "0x" +
-                            appConfig.wrappedBridge.chains[
-                              depositSelectedChainItem
-                            ].chainId.toString(16)
-                          : "0x7A",
-                    }).then((res) => {
-                      if (res && selected === 0)
-                        dispatch(
-                          increaseERC20Allowance({
-                            contractAddress:
-                              appConfig.wrappedBridge.chains[
-                                depositSelectedChainItem
-                              ].tokens[depositSelectedTokenItem].address,
-                            amount: amount,
-                            bridge:
-                              appConfig.wrappedBridge.chains[
-                                depositSelectedChainItem
-                              ].bridge,
-                            decimals:
-                              appConfig.wrappedBridge.chains[
-                                depositSelectedChainItem
-                              ].tokens[depositSelectedTokenItem].decimals,
-                            address: wallet.accounts[0].address,
-                          })
-                        );
-                      else if (res && selected === 1)
-                        dispatch(
-                          increaseERC20Allowance({
-                            contractAddress:
-                              appConfig.wrappedBridge.wrapped.tokens[
-                                withdrawSelectedTokenItem
-                              ].address,
-                            amount: amount,
-                            bridge: appConfig.wrappedBridge.wrapped.address,
-                            decimals:
-                              appConfig.wrappedBridge.wrapped.tokens[
-                                withdrawSelectedTokenItem
-                              ].decimals,
-                            address: wallet.accounts[0].address,
-                          })
-                        );
+                onClick={async () => {
+                  if (selected === 1 && connectedChain?.id !== "0x7a") {
+                    await switchChain({
+                      chainId: "0x7a",
                     });
-                  } else if (selected === 0) {
-                    switchChain({
-                      chainId:
-                        "0x" +
-                        appConfig.wrappedBridge.chains[
-                          depositSelectedChainItem
-                        ].chainId.toString(16),
-                    }).then((res) => {
-                      if (res)
-                        dispatch(
-                          bridgeOriginalTokens({
-                            address: wallet.accounts[0].address,
-                            amount: amount,
-                            bridge:
-                              appConfig.wrappedBridge.chains[
-                                depositSelectedChainItem
-                              ].bridge,
-                            contractAddress:
-                              appConfig.wrappedBridge.chains[
-                                depositSelectedChainItem
-                              ].tokens[depositSelectedTokenItem].address,
-                            decimals:
-                              appConfig.wrappedBridge.chains[
-                                depositSelectedChainItem
-                              ].tokens[depositSelectedTokenItem].decimals,
-                            srcChainId:
-                              appConfig.wrappedBridge.chains[
-                                depositSelectedChainItem
-                              ].lzChainId,
-                            symbol:
-                              appConfig.wrappedBridge.chains[
-                                depositSelectedChainItem
-                              ].tokens[depositSelectedTokenItem].symbol,
-                          })
-                        );
-                    });
-                  } else if (selected === 1) {
-                    switchChain({
-                      chainId: "0x7A",
-                    }).then((res) => {
-                      if (res)
-                        dispatch(
-                          bridgeWrappedTokens({
-                            address: wallet.accounts[0].address,
-                            amount: amount,
-                            bridge: appConfig.wrappedBridge.wrapped.address,
-                            contractAddress:
-                              appConfig.wrappedBridge.wrapped.tokens[
-                                withdrawSelectedTokenItem
-                              ].address,
-                            decimals:
-                              appConfig.wrappedBridge.wrapped.tokens[
-                                withdrawSelectedTokenItem
-                              ].decimals,
-                            chainId:
-                              appConfig.wrappedBridge.chains[
-                                withdrawSelectedChainItem
-                              ].lzChainId,
-                            symbol:
-                              appConfig.wrappedBridge.wrapped.tokens[
-                                withdrawSelectedTokenItem
-                              ].symbol,
-                          })
-                        );
-                    });
+                  } else {
+                    if (!wallet) return;
+                    if (!amount) return;
+                    if (
+                      parseFloat(balanceSlice.approval) < parseFloat(amount) &&
+                      selected === 1 &&
+                      !appConfig.wrappedBridge.chains[withdrawSelectedChainItem]
+                        .tokens[withdrawSelectedTokenItem].isNative
+                    ) {
+                      handleIncreaseAllowance();
+                    } else if (selected === 0) {
+                      handleDeposit();
+                    } else if (selected === 1) {
+                      handleWithdraw();
+                    }
                   }
                 }}
                 disabled={
-                  balanceSlice.isApprovalLoading ||
-                  contractSlice.isBridgeLoading ||
-                  contractSlice.isApprovalLoading ||
-                  !amount ||
-                  parseFloat(amount) === 0 ||
-                  isNaN(parseFloat(amount))
+                  (selected === 1 && connectedChain?.id === "0x7a") ||
+                  selected === 0
+                    ? balanceSlice.isApprovalLoading ||
+                      contractSlice.isBridgeLoading ||
+                      contractSlice.isApprovalLoading ||
+                      !amount ||
+                      parseFloat(amount) === 0 ||
+                      isNaN(parseFloat(amount))
+                    : false
                 }
                 text={
                   contractSlice.isBridgeLoading ||
                   contractSlice.isApprovalLoading
                     ? "Loading..."
-                    : parseFloat(balanceSlice.approval) < parseFloat(amount)
+                    : parseFloat(balanceSlice.approval) < parseFloat(amount) &&
+                      selected === 1 &&
+                      !appConfig.wrappedBridge.chains[withdrawSelectedChainItem]
+                        .tokens[withdrawSelectedTokenItem].isNative
                     ? "Approve"
+                    : selected === 1 && connectedChain?.id !== "0x7a"
+                    ? "Switch To Fuse"
                     : "Bridge"
                 }
                 disabledClassname="bg-fuse-black/20 text-black px-4 mt-6 py-4 rounded-full font-medium md:text-sm "

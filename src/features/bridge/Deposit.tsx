@@ -72,7 +72,7 @@ const Deposit = ({
             appConfig.wrappedBridge.chains[selectedChainItem].tokens[
               selectedTokenItem
             ].decimals,
-          bridge: appConfig.wrappedBridge.chains[selectedChainItem].bridge,
+          bridge: appConfig.wrappedBridge.chains[selectedChainItem].original,
         })
       );
     }
@@ -89,7 +89,7 @@ const Deposit = ({
       dispatch(
         estimateOriginalFee({
           contractAddress:
-            appConfig.wrappedBridge.chains[selectedChainItem].bridge,
+            appConfig.wrappedBridge.chains[selectedChainItem].original,
           rpcUrl: appConfig.wrappedBridge.chains[selectedChainItem].rpcUrl,
         })
       );
@@ -150,7 +150,8 @@ const Deposit = ({
               dispatch(setChain(appConfig.wrappedBridge.chains[item]));
               dispatch(
                 estimateOriginalFee({
-                  contractAddress: appConfig.wrappedBridge.chains[item].bridge,
+                  contractAddress:
+                    appConfig.wrappedBridge.chains[item].original,
                   rpcUrl: appConfig.wrappedBridge.chains[item].rpcUrl,
                 })
               );
@@ -330,12 +331,12 @@ const Deposit = ({
                 dispatch(
                   setChain({
                     chainId: 122,
-                    bridge: appConfig.wrappedBridge.wrapped.address,
                     icon: chains[0].icon as string,
                     lzChainId: 138,
                     name: "Fuse",
                     rpcUrl: "https://rpc.fuse.io",
                     tokens: [],
+                    wrapped: appConfig.wrappedBridge.fuse.wrapped,
                   })
                 );
               }}

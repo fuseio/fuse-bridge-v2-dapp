@@ -2,7 +2,7 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { AppState } from "../rootReducer";
 import {
   getMessagesBySrcTxHash,
-  Message,
+  MessageStatus,
   waitForMessageReceived,
 } from "@layerzerolabs/scan-client";
 import { fetchTransactionsFromLocalStorage } from "../../utils/helpers";
@@ -10,6 +10,7 @@ import { fetchTransactionsFromLocalStorage } from "../../utils/helpers";
 export type TransactionType = {
   hash: string;
   srcChainId: number;
+  dstChainId: number;
   address: string;
   amount: string;
   timestamp: number;
@@ -17,7 +18,7 @@ export type TransactionType = {
 export interface TransactionsStateType {
   isTransactionLoading: boolean;
   isError: boolean;
-  transactions: Message[];
+  transactions: MessageStatus[];
   transactionHashes: TransactionType[];
 }
 
@@ -32,7 +33,7 @@ export const fetchBridgeTransactions = createAsyncThunk(
   "TRANSACTIONS/FETCH_TRANSACTIONS",
   async (address: string, thunkAPI) => {
     return new Promise<any>(async (resolve, reject) => {
-      let transactions: Message[] = [];
+      let transactions: MessageStatus[] = [];
       const hashes = fetchTransactionsFromLocalStorage(address);
       Promise.all(
         hashes.map(async (hash, i) => {
@@ -40,7 +41,7 @@ export const fetchBridgeTransactions = createAsyncThunk(
             hash.srcChainId,
             hash.hash
           );
-          transactions[i] = messages[0];
+          transactions[i] = messages[0].status;
         })
       )
         .then(() => {
@@ -57,17 +58,11 @@ export const updateTransactions = createAsyncThunk(
   "TRANSACTIONS/UPDATE_TRANSACTIONS",
   async (transaction: TransactionType, thunkAPI) => {
     return new Promise<any>(async (resolve, reject) => {
-      setTimeout(async () => {
-        const { messages } = await getMessagesBySrcTxHash(
-          transaction.srcChainId,
-          transaction.hash
-        );
-        thunkAPI.dispatch(updateTransactionStatus(transaction));
-        resolve({
-          transaction: messages[0],
-          hash: transaction,
-        });
-      }, 15000);
+      thunkAPI.dispatch(updateTransactionStatus(transaction));
+      resolve({
+        transaction: MessageStatus.INFLIGHT,
+        hash: transaction,
+      });
     });
   }
 );
@@ -78,7 +73,7 @@ export const updateTransactionStatus = createAsyncThunk(
     return new Promise<any>(async (resolve, reject) => {
       waitForMessageReceived(transaction.srcChainId, transaction.hash).then(
         (message) => {
-          resolve({ message, hash: transaction.hash });
+          resolve({ message: message.status, hash: transaction.hash });
         }
       );
     });
@@ -123,10 +118,10 @@ const transactionsSlice = createSlice({
     [updateTransactionStatus.fulfilled.type]: (state, action) => {
       state.isTransactionLoading = false;
       let transactions = state.transactions;
-      transactions.forEach((transaction, index) => {
+      const hashes = state.transactionHashes;
+      hashes.forEach((transaction, index) => {
         if (
-          transaction.srcTxHash?.toLowerCase() ===
-          action.payload.hash.toLowerCase()
+          transaction.hash.toLowerCase() === action.payload.hash.toLowerCase()
         ) {
           transactions[index] = action.payload.message;
         }

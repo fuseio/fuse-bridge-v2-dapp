@@ -1,6 +1,6 @@
 import React from "react";
 import right from "../../assets/right.svg";
-import { Message, MessageStatus } from "@layerzerolabs/scan-client";
+import { MessageStatus } from "@layerzerolabs/scan-client";
 import { getNetworkByChainKey, getScanLink } from "@layerzerolabs/ui-core";
 import { getChainKey } from "@layerzerolabs/lz-sdk";
 import { TransactionType } from "../../store/transactionsSlice";
@@ -10,7 +10,7 @@ const Transaction = ({
   transaction,
   transactionHashes,
 }: {
-  transaction: Message;
+  transaction: MessageStatus;
   transactionHashes: TransactionType;
 }) => {
   return (
@@ -18,34 +18,34 @@ const Transaction = ({
       className="flex justify-between px-10 py-5 bg-transaction-bg w-full rounded-md mt-3 border-border-gray border-solid border font-medium cursor-pointer"
       onClick={() => {
         window.open(
-          getScanLink(transaction.srcChainId, transactionHashes.hash),
+          getScanLink(transactionHashes.srcChainId, transactionHashes.hash),
           "_blank"
         );
       }}
     >
       <div className="flex w-[25%] justify-between">
         <span>
-          {getNetworkByChainKey(getChainKey(transaction.srcChainId)).name}
+          {getNetworkByChainKey(getChainKey(transactionHashes.srcChainId)).name}
         </span>
         <img src={right} alt="right" />
         <span>
-          {getNetworkByChainKey(getChainKey(transaction.dstChainId)).name}
+          {getNetworkByChainKey(getChainKey(transactionHashes.dstChainId)).name}
         </span>
       </div>
       <span>{transactionHashes.amount}</span>
       <span>{new Date(transactionHashes.timestamp).toLocaleDateString()}</span>
       <Pill
         text={
-          transaction.status === MessageStatus.DELIVERED
+          transaction === MessageStatus.DELIVERED
             ? "Complete"
-            : transaction.status === MessageStatus.INFLIGHT
+            : transaction === MessageStatus.INFLIGHT
             ? "Finishing"
             : "Failed"
         }
         type={
-          transaction.status === MessageStatus.DELIVERED
+          transaction === MessageStatus.DELIVERED
             ? "success"
-            : transaction.status === MessageStatus.INFLIGHT
+            : transaction === MessageStatus.INFLIGHT
             ? "warning"
             : "error"
         }

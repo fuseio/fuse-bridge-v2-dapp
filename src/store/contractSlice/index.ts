@@ -2,8 +2,11 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { AppState } from "../rootReducer";
 import { increaseAllowance } from "../../utils/erc20";
 import { fetchApproval, fetchBalance } from "../balanceSlice";
-import { bridgeOriginal } from "../../utils/originalBridge";
-import { bridgeWrapped } from "../../utils/wrappedBridge";
+import { bridgeNative, bridgeOriginal } from "../../utils/originalBridge";
+import {
+  bridgeAndUnwrapNative,
+  bridgeWrapped,
+} from "../../utils/wrappedBridge";
 import { insertTransactionToLocalStorage } from "../../utils/helpers";
 import { updateTransactions } from "../transactionsSlice";
 
@@ -68,6 +71,7 @@ export const bridgeOriginalTokens = createAsyncThunk(
       address,
       srcChainId,
       symbol,
+      dstChainId,
     }: {
       amount: string;
       contractAddress: string;
@@ -76,11 +80,19 @@ export const bridgeOriginalTokens = createAsyncThunk(
       address: string;
       srcChainId: number;
       symbol: string;
+      dstChainId: number;
     },
     thunkAPI
   ) => {
     return new Promise<any>(async (resolve, reject) => {
-      bridgeOriginal(bridge, address, contractAddress, amount, decimals)
+      bridgeOriginal(
+        bridge,
+        address,
+        contractAddress,
+        amount,
+        decimals,
+        dstChainId
+      )
         .then((txHash) => {
           thunkAPI.dispatch(
             fetchBalance({
@@ -96,6 +108,7 @@ export const bridgeOriginalTokens = createAsyncThunk(
             address,
             amount: amount + " " + symbol,
             timestamp: Date.now(),
+            dstChainId,
           });
           thunkAPI.dispatch(
             updateTransactions({
@@ -104,11 +117,65 @@ export const bridgeOriginalTokens = createAsyncThunk(
               address,
               amount: amount + " " + symbol,
               timestamp: Date.now(),
+              dstChainId,
             })
           );
           resolve(txHash);
         })
         .catch((err) => {
+          reject(err);
+        });
+    });
+  }
+);
+
+export const bridgeNativeTokens = createAsyncThunk(
+  "CONTRACT/BRIDGE_NATIVE",
+  async (
+    {
+      amount,
+      bridge,
+      decimals = 18,
+      address,
+      srcChainId,
+      symbol,
+      dstChainId,
+    }: {
+      amount: string;
+      bridge: string;
+      decimals: number;
+      address: string;
+      srcChainId: number;
+      symbol: string;
+      dstChainId: number;
+    },
+    thunkAPI
+  ) => {
+    return new Promise<any>(async (resolve, reject) => {
+      bridgeNative(bridge, address, amount, decimals, dstChainId)
+        .then((txHash) => {
+          insertTransactionToLocalStorage({
+            hash: txHash,
+            srcChainId,
+            address,
+            amount: amount + " " + symbol,
+            timestamp: Date.now(),
+            dstChainId,
+          });
+          thunkAPI.dispatch(
+            updateTransactions({
+              hash: txHash,
+              srcChainId,
+              address,
+              amount: amount + " " + symbol,
+              timestamp: Date.now(),
+              dstChainId,
+            })
+          );
+          resolve(txHash);
+        })
+        .catch((err) => {
+          console.log(err);
           reject(err);
         });
     });
@@ -126,6 +193,7 @@ export const bridgeWrappedTokens = createAsyncThunk(
       address,
       chainId,
       symbol,
+      srcChainId,
     }: {
       amount: string;
       contractAddress: string;
@@ -134,6 +202,7 @@ export const bridgeWrappedTokens = createAsyncThunk(
       address: string;
       chainId: number;
       symbol: string;
+      srcChainId: number;
     },
     thunkAPI
   ) => {
@@ -150,18 +219,89 @@ export const bridgeWrappedTokens = createAsyncThunk(
           );
           insertTransactionToLocalStorage({
             hash: txHash,
-            srcChainId: 138,
+            srcChainId: srcChainId,
             address,
             amount: amount + " " + symbol,
             timestamp: Date.now(),
+            dstChainId: chainId,
           });
           thunkAPI.dispatch(
             updateTransactions({
               hash: txHash,
-              srcChainId: 138,
+              srcChainId: srcChainId,
               address,
               amount: amount + " " + symbol,
               timestamp: Date.now(),
+              dstChainId: chainId,
+            })
+          );
+          resolve(txHash);
+        })
+        .catch((err) => {
+          reject(err);
+        });
+    });
+  }
+);
+
+export const bridgeAndUnwrap = createAsyncThunk(
+  "CONTRACT/BRIDGE_AND_UNWRAP_NATIVE",
+  async (
+    {
+      amount,
+      contractAddress,
+      bridge,
+      decimals = 18,
+      address,
+      chainId,
+      symbol,
+      srcChainId,
+    }: {
+      amount: string;
+      contractAddress: string;
+      bridge: string;
+      decimals: number;
+      address: string;
+      chainId: number;
+      symbol: string;
+      srcChainId: number;
+    },
+    thunkAPI
+  ) => {
+    return new Promise<any>(async (resolve, reject) => {
+      bridgeAndUnwrapNative(
+        bridge,
+        address,
+        contractAddress,
+        amount,
+        decimals,
+        chainId
+      )
+        .then((txHash) => {
+          thunkAPI.dispatch(
+            fetchBalance({
+              address,
+              bridge,
+              contractAddress,
+              decimals,
+            })
+          );
+          insertTransactionToLocalStorage({
+            hash: txHash,
+            srcChainId: srcChainId,
+            address,
+            amount: amount + " " + symbol,
+            timestamp: Date.now(),
+            dstChainId: chainId,
+          });
+          thunkAPI.dispatch(
+            updateTransactions({
+              hash: txHash,
+              srcChainId: srcChainId,
+              address,
+              amount: amount + " " + symbol,
+              timestamp: Date.now(),
+              dstChainId: chainId,
             })
           );
           resolve(txHash);
