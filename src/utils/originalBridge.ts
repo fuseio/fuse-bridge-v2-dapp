@@ -68,7 +68,7 @@ export const bridgeNative = async (
     )
   ).nativeFee;
   const increasedNativeFee = BigInt(Number(nativeFee) * 1.2);
-  const amt = ethers.utils.parseUnits(amount, decimals);
+  const amt = ethers.utils.parseEther(amount);
   const callParams = {
     refundAddress: address,
     zroPaymentAddress: ethers.constants.AddressZero,
@@ -78,7 +78,7 @@ export const bridgeNative = async (
     address,
     callParams,
     serializeAdapterParams(adapterParams),
-    { value: amount + increasedNativeFee }
+    { value: amt.add(increasedNativeFee) }
   );
   await tx.wait();
   return tx.hash;
