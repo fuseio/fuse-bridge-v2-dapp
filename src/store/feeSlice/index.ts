@@ -34,7 +34,7 @@ export const estimateOriginalFee = createAsyncThunk(
       estimateOriginalNativeFee(contractAddress, rpcUrl)
         .then((fee) => {
           let feeFloat = parseFloat(ethers.utils.formatEther(fee));
-          resolve(feeFloat.toFixed(5));
+          resolve(feeFloat.toFixed(8));
         })
         .catch((err) => {
           reject(err);
@@ -83,6 +83,17 @@ const feeSlice = createSlice({
       state.gasFee = action.payload;
     },
     [estimateOriginalFee.rejected.type]: (state) => {
+      state.isGasFeeLoading = false;
+      state.isError = true;
+    },
+    [estimateWrappedFee.pending.type]: (state) => {
+      state.isGasFeeLoading = true;
+    },
+    [estimateWrappedFee.fulfilled.type]: (state, action) => {
+      state.isGasFeeLoading = false;
+      state.gasFee = action.payload;
+    },
+    [estimateWrappedFee.rejected.type]: (state) => {
       state.isGasFeeLoading = false;
       state.isError = true;
     },

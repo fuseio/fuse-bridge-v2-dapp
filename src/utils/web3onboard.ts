@@ -89,3 +89,7 @@ export const web3Onboard = init({
     autoConnectLastWallet: true,
   },
 });
+
+export const updateAllBalances = async () => {
+  await web3Onboard.state.actions.updateBalances();
+};

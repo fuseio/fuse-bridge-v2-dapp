@@ -9,6 +9,7 @@ import {
 } from "../../utils/wrappedBridge";
 import { insertTransactionToLocalStorage } from "../../utils/helpers";
 import { updateTransactions } from "../transactionsSlice";
+import { updateAllBalances } from "../../utils/web3onboard";
 
 export interface ContractStateType {
   isBridgeLoading: boolean;
@@ -51,6 +52,7 @@ export const increaseERC20Allowance = createAsyncThunk(
               decimals,
             })
           );
+          updateAllBalances();
           resolve(txHash);
         })
         .catch((err) => {
@@ -120,6 +122,7 @@ export const bridgeOriginalTokens = createAsyncThunk(
               dstChainId,
             })
           );
+          updateAllBalances();
           resolve(txHash);
         })
         .catch((err) => {
@@ -173,6 +176,7 @@ export const bridgeNativeTokens = createAsyncThunk(
               dstChainId,
             })
           );
+          updateAllBalances();
           resolve(txHash);
         })
         .catch((err) => {
@@ -236,6 +240,7 @@ export const bridgeWrappedTokens = createAsyncThunk(
               dstChainId: chainId,
             })
           );
+          updateAllBalances();
           resolve(txHash);
         })
         .catch((err) => {
@@ -305,6 +310,7 @@ export const bridgeAndUnwrap = createAsyncThunk(
               dstChainId: chainId,
             })
           );
+          updateAllBalances();
           resolve(txHash);
         })
         .catch((err) => {

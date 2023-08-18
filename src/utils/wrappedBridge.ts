@@ -54,7 +54,6 @@ export const bridgeWrapped = async (
   return tx.hash;
 };
 
-
 export const bridgeAndUnwrapNative = async (
   bridgeAddress: string,
   address: string,
@@ -74,7 +73,7 @@ export const bridgeAndUnwrapNative = async (
       serializeAdapterParams(adapterParams)
     )
   ).nativeFee;
-  const increasedNativeFee = BigInt(Number(nativeFee) * 1.2); // 20% increase
+  const increasedNativeFee = (Number(nativeFee) * 1.2).toFixed(0);
   const callParams = {
     refundAddress: address,
     zroPaymentAddress: ethers.constants.AddressZero,
@@ -109,6 +108,6 @@ export const estimateWrappedNativeFee = async (
       serializeAdapterParams(adapterParams)
     )
   ).nativeFee;
-  const increasedNativeFee = BigInt(Number(nativeFee) * 1.2);
+  const increasedNativeFee = (Number(nativeFee) * 1.2).toFixed(0);
   return increasedNativeFee;
 };

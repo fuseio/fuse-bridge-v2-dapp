@@ -413,6 +413,7 @@ const Home = () => {
                     ? balanceSlice.isApprovalLoading ||
                       contractSlice.isBridgeLoading ||
                       contractSlice.isApprovalLoading ||
+                      balanceSlice.isBalanceLoading ||
                       !amount ||
                       parseFloat(amount) === 0 ||
                       isNaN(parseFloat(amount))

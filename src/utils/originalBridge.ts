@@ -33,7 +33,7 @@ export const bridgeOriginal = async (
       serializeAdapterParams(adapterParams)
     )
   ).nativeFee;
-  const increasedNativeFee = BigInt(Number(nativeFee) * 1.2);
+  const increasedNativeFee = (Number(nativeFee) * 1.2).toFixed(0)
   const amt = ethers.utils.parseUnits(amount, decimals);
   const callParams = {
     refundAddress: address,
@@ -67,7 +67,7 @@ export const bridgeNative = async (
       serializeAdapterParams(adapterParams)
     )
   ).nativeFee;
-  const increasedNativeFee = BigInt(Number(nativeFee) * 1.2);
+  const increasedNativeFee = (Number(nativeFee) * 1.2).toFixed(0);
   const amt = ethers.utils.parseEther(amount);
   const callParams = {
     refundAddress: address,
@@ -92,12 +92,14 @@ export const estimateOriginalNativeFee = async (
   const contract = getOriginalTokenBridge(bridgeAddress, provider);
   const dstGasLimit = await contract.minDstGasLookup(138, 0);
   const adapterParams = AdapterParams.forV1(Number(dstGasLimit));
-  const nativeFee = (
-    await contract.estimateBridgeFee(
-      false,
-      serializeAdapterParams(adapterParams)
-    )
-  ).nativeFee;
-  const increasedNativeFee = BigInt(Number(nativeFee) * 1.2);
+  const nativeFee = parseInt(
+    (
+      await contract.estimateBridgeFee(
+        false,
+        serializeAdapterParams(adapterParams)
+      )
+    ).nativeFee
+  );
+  const increasedNativeFee = (Number(nativeFee) * 1.2).toFixed(0);
   return increasedNativeFee;
 };

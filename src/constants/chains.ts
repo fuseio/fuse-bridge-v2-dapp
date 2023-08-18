@@ -50,14 +50,18 @@ export const chains: ChainConfigLike[] = [
   //     chainId: 125,
   //     icon: celo
   // },
-  // {
-  //     chainName: "Arbitrum",
-  //     chainId: 110,
-  //     icon: arbi
-  // },
-  // {
-  //     chainName: "Optimism",
-  //     chainId: 111,
-  //     icon: optimism
-  // },
+  {
+      chainName: "Arbitrum",
+      lzChainId: 110,
+      icon: arbi,
+      chainId: 42161,
+      rpc: "https://arb1.arbitrum.io/rpc",
+  },
+  {
+      chainName: "Optimism",
+      lzChainId: 111,
+      icon: optimism,
+      rpc: "https://mainnet.optimism.io",
+      chainId: 10,
+  },
 ];
