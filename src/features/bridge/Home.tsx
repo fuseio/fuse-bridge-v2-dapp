@@ -28,6 +28,7 @@ import {
 } from "../../store/feeSlice";
 import { getNativeCurrency } from "@layerzerolabs/ui-core";
 import { getChainKey } from "@layerzerolabs/lz-sdk";
+import ToastPane from "../commons/ToastPane";
 
 const Home = () => {
   const [{ connectedChain, chains }, switchChain] = useSetChain();
@@ -239,7 +240,7 @@ const Home = () => {
   return (
     <>
       <Transactions isOpen={isOpen} onToggle={setIsOpen} />
-      <div className="w-full bg-light-gray flex flex-col items-center min-h-[90vh]">
+      <div className="w-full bg-light-gray flex flex-col items-center min-h-[90vh] relative">
         <motion.div className="flex bg-white w-[575px] mt-8 rounded-lg px-8 pt-8 pb-9 flex-col">
           <div className="flex w-full justify-between items-end">
             <p className="text-2xl font-bold">Bridge</p>
@@ -472,6 +473,7 @@ const Home = () => {
           </div>
         </motion.div>
         <Footer />
+        <ToastPane />
       </div>
     </>
   );

@@ -26,7 +26,7 @@ module.exports = {
       "selected-gray": "#D0D7DE",
       "selected-light-gray": "#E5E7EB",
       "text-dark-gray": "#666666",
-      "secondary-gray": "#525252",
+      "secondary-gray": "#797979",
       "text-gray": "#9F9F9F",
       "text-darker-gray": "#737373",
       "text-heading-gray": "#4D4D4D",
@@ -50,7 +50,7 @@ module.exports = {
       "warning-gray": "#3B4145",
       "border-gray": "#E6E6E6",
       "warning-border": "#D4A72C",
-      "warning-bg": "#FFF8C5"
+      "warning-bg": "#FFF8C5",
     },
     fontFamily: {
       mona: ["Mona-Sans"],

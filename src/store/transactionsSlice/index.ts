@@ -6,6 +6,7 @@ import {
   waitForMessageReceived,
 } from "@layerzerolabs/scan-client";
 import { fetchTransactionsFromLocalStorage } from "../../utils/helpers";
+import { toggleLastTransactionToast } from "../toastSlice";
 
 export type TransactionType = {
   hash: string;
@@ -59,6 +60,7 @@ export const updateTransactions = createAsyncThunk(
   async (transaction: TransactionType, thunkAPI) => {
     return new Promise<any>(async (resolve, reject) => {
       thunkAPI.dispatch(updateTransactionStatus(transaction));
+      thunkAPI.dispatch(toggleLastTransactionToast(true));
       resolve({
         transaction: MessageStatus.INFLIGHT,
         hash: transaction,

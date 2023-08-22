@@ -9,6 +9,7 @@ import balanceReducer from "./balanceSlice";
 import contractReducer from "./contractSlice";
 import transactionReducer from "./transactionsSlice";
 import feeReducer from "./feeSlice";
+import toastReducer from "./toastSlice";
 
 const appReducer = combineReducers({
   chain: chainReducer,
@@ -16,6 +17,7 @@ const appReducer = combineReducers({
   contract: contractReducer,
   transactions: transactionReducer,
   fee: feeReducer,
+  toast: toastReducer,
 });
 
 export type AppState = CombinedState<{
@@ -24,6 +26,7 @@ export type AppState = CombinedState<{
   contract: ReturnType<typeof contractReducer>;
   transactions: ReturnType<typeof transactionReducer>;
   fee: ReturnType<typeof feeReducer>;
+  toast: ReturnType<typeof toastReducer>;
 }>;
 
 const rootReducer: Reducer = (state: AppState, action: AnyAction) => {
