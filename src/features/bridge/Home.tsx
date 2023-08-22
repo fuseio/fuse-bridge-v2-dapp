@@ -240,240 +240,272 @@ const Home = () => {
   return (
     <>
       <Transactions isOpen={isOpen} onToggle={setIsOpen} />
-      <div className="w-full bg-light-gray flex flex-col items-center min-h-[90vh] relative">
-        <motion.div className="flex bg-white w-[575px] mt-8 rounded-lg px-8 pt-8 pb-9 flex-col">
-          <div className="flex w-full justify-between items-end">
-            <p className="text-2xl font-bold">Bridge</p>
-            <img
-              src={history}
-              alt="history"
-              className="cursor-pointer h-9"
+      <div className="w-8/9 flex flex-col md:w-9/10 min-h-[90vh] relative">
+        <div className="w-full flex">
+          <div className="flex flex-col pt-14 w-2/3 pe-60">
+            <p className="font-black text-[44px]">Fuse Bridge</p>
+            <p className="text-text-heading-gray text-lg mt-4">
+              The Fuse Bridge allows you to move funds from different networks
+              and centralized exchanges to Fuse.
+            </p>
+            <ToastPane />
+          </div>
+          <div className="flex-col items-center flex pt-14">
+            <span
+              className="flex bg-white ms-auto px-2 items-center rounded-md cursor-pointer"
               onClick={() => {
                 setIsOpen(true);
               }}
-            />
-          </div>
-          <div className="flex mt-6 w-full bg-modal-bg rounded-md p-[2px]">
-            {filters.map((filter, index) => {
-              return (
-                <motion.p
-                  className={
-                    selected === index
-                      ? "text-primary font-semibold py-2 rounded-md cursor-pointer w-1/2 bg-white text-center"
-                      : "text-primary font-medium py-2 cursor-pointer w-1/2 text-center"
-                  }
-                  onClick={() => {
-                    setSelected(index);
-                    if (isExchange) return;
-                    if (index === 1) {
-                      if (withdrawSelectedChainSection === 1) {
-                        setIsDisabledChain(true);
-                        return;
-                      } else {
-                        setIsDisabledChain(false);
+            >
+              <img src={history} alt="history" className="h-9" />
+              <p className="font-medium ml-1">History</p>
+            </span>
+            <motion.div className="flex bg-white w-[575px] mt-3 rounded-lg px-8 pt-8 pb-9 flex-col">
+              <div className="flex w-full bg-modal-bg rounded-md p-[2px]">
+                {filters.map((filter, index) => {
+                  return (
+                    <motion.p
+                      className={
+                        selected === index
+                          ? "text-primary font-semibold py-2 rounded-md cursor-pointer w-1/2 bg-white text-center"
+                          : "text-primary font-medium py-2 cursor-pointer w-1/2 text-center"
                       }
-                      dispatch(
-                        setChain({
-                          chainId: 122,
-                          icon: chains[0].icon as string,
-                          lzChainId: 138,
-                          name: "Fuse",
-                          rpcUrl: "https://rpc.fuse.io",
-                          tokens: [],
-                          wrapped: appConfig.wrappedBridge.fuse.wrapped,
-                        })
-                      );
-                      dispatch(
-                        estimateWrappedFee({
-                          contractAddress: appConfig.wrappedBridge.fuse.wrapped,
-                          lzChainId:
-                            appConfig.wrappedBridge.chains[
-                              withdrawSelectedChainItem
-                            ].lzChainId,
-                          rpcUrl: "https://rpc.fuse.io",
-                        })
-                      );
-                    } else {
-                      if (depositSelectedChainSection === 1) {
-                        setIsDisabledChain(true);
-                        return;
-                      } else {
-                        setIsDisabledChain(false);
-                      }
-                      dispatch(
-                        setChain(
-                          appConfig.wrappedBridge.chains[
-                            depositSelectedChainItem
-                          ]
-                        )
-                      );
-                      dispatch(
-                        estimateOriginalFee({
-                          contractAddress:
-                            appConfig.wrappedBridge.chains[
-                              depositSelectedChainItem
-                            ].original,
-                          rpcUrl:
-                            appConfig.wrappedBridge.chains[
-                              depositSelectedChainItem
-                            ].rpcUrl,
-                        })
-                      );
-                    }
+                      onClick={() => {
+                        setSelected(index);
+                        if (isExchange) return;
+                        if (index === 1) {
+                          if (withdrawSelectedChainSection === 1) {
+                            setIsDisabledChain(true);
+                            return;
+                          } else {
+                            setIsDisabledChain(false);
+                          }
+                          dispatch(
+                            setChain({
+                              chainId: 122,
+                              icon: chains[0].icon as string,
+                              lzChainId: 138,
+                              name: "Fuse",
+                              rpcUrl: "https://rpc.fuse.io",
+                              tokens: [],
+                              wrapped: appConfig.wrappedBridge.fuse.wrapped,
+                            })
+                          );
+                          dispatch(
+                            estimateWrappedFee({
+                              contractAddress:
+                                appConfig.wrappedBridge.fuse.wrapped,
+                              lzChainId:
+                                appConfig.wrappedBridge.chains[
+                                  withdrawSelectedChainItem
+                                ].lzChainId,
+                              rpcUrl: "https://rpc.fuse.io",
+                            })
+                          );
+                        } else {
+                          if (depositSelectedChainSection === 1) {
+                            setIsDisabledChain(true);
+                            return;
+                          } else {
+                            setIsDisabledChain(false);
+                          }
+                          dispatch(
+                            setChain(
+                              appConfig.wrappedBridge.chains[
+                                depositSelectedChainItem
+                              ]
+                            )
+                          );
+                          dispatch(
+                            estimateOriginalFee({
+                              contractAddress:
+                                appConfig.wrappedBridge.chains[
+                                  depositSelectedChainItem
+                                ].original,
+                              rpcUrl:
+                                appConfig.wrappedBridge.chains[
+                                  depositSelectedChainItem
+                                ].rpcUrl,
+                            })
+                          );
+                        }
+                      }}
+                      key={index}
+                    >
+                      {filter}
+                    </motion.p>
+                  );
+                })}
+              </div>
+              {selected === 0 ? (
+                <Deposit
+                  selectedChainItem={depositSelectedChainItem}
+                  selectedChainSection={depositSelectedChainSection}
+                  setSelectedChainItem={setDepositSelectedChainItem}
+                  setSelectedChainSection={setDepositSelectedChainSection}
+                  selectedTokenItem={depositSelectedTokenItem}
+                  selectedTokenSection={depositSelectedTokenSection}
+                  setSelectedTokenItem={setDepositSelectedTokenItem}
+                  setSelectedTokenSection={setDepositSelectedTokenSection}
+                  onSwitch={(
+                    tokenSection,
+                    tokenItem,
+                    chainSection,
+                    chainItem
+                  ) => {
+                    setWithdrawSelectedChainSection(chainSection);
+                    setWithdrawSelectedChainItem(chainItem);
+                    setWithdrawSelectedTokenSection(tokenSection);
+                    setWithdrawSelectedTokenItem(tokenItem);
+                    setSelected(1);
                   }}
-                  key={index}
-                >
-                  {filter}
-                </motion.p>
-              );
-            })}
-          </div>
-          {selected === 0 ? (
-            <Deposit
-              selectedChainItem={depositSelectedChainItem}
-              selectedChainSection={depositSelectedChainSection}
-              setSelectedChainItem={setDepositSelectedChainItem}
-              setSelectedChainSection={setDepositSelectedChainSection}
-              selectedTokenItem={depositSelectedTokenItem}
-              selectedTokenSection={depositSelectedTokenSection}
-              setSelectedTokenItem={setDepositSelectedTokenItem}
-              setSelectedTokenSection={setDepositSelectedTokenSection}
-              onSwitch={(tokenSection, tokenItem, chainSection, chainItem) => {
-                setWithdrawSelectedChainSection(chainSection);
-                setWithdrawSelectedChainItem(chainItem);
-                setWithdrawSelectedTokenSection(tokenSection);
-                setWithdrawSelectedTokenItem(tokenItem);
-                setSelected(1);
-              }}
-              amount={amount}
-              setAmount={setAmount}
-              setDisplayButton={setDisplayButton}
-              isExchange={isExchange}
-              setIsExchange={setIsExchange}
-              isDisabledChain={isDisabledChain}
-              setIsDisabledChain={setIsDisabledChain}
-            />
-          ) : (
-            <Withdraw
-              selectedChainItem={withdrawSelectedChainItem}
-              selectedChainSection={withdrawSelectedChainSection}
-              setSelectedChainItem={setWithdrawSelectedChainItem}
-              setSelectedChainSection={setWithdrawSelectedChainSection}
-              selectedTokenItem={withdrawSelectedTokenItem}
-              selectedTokenSection={withdrawSelectedTokenSection}
-              setSelectedTokenItem={setWithdrawSelectedTokenItem}
-              setSelectedTokenSection={setWithdrawSelectedTokenSection}
-              onSwitch={(tokenSection, tokenItem, chainSection, chainItem) => {
-                setDepositSelectedChainSection(chainSection);
-                setDepositSelectedChainItem(chainItem);
-                setDepositSelectedTokenSection(tokenSection);
-                setDepositSelectedTokenItem(tokenItem);
-                setSelected(0);
-              }}
-              amount={amount}
-              setAmount={setAmount}
-              isDisabledChain={isDisabledChain}
-              setIsDisabledChain={setIsDisabledChain}
-              setDisplayButton={setDisplayButton}
-            />
-          )}
-          {!connectedChain && displayButton ? (
-            <ConnectWallet className="mt-6 py-4 " />
-          ) : (
-            displayButton && (
-              <Button
-                className="bg-fuse-black text-white px-4 mt-6 py-4 rounded-full font-medium md:text-sm "
-                onClick={async () => {
-                  if (selected === 1 && connectedChain?.id !== "0x7a") {
-                    await switchChain({
-                      chainId: "0x7a",
-                    });
-                  } else {
-                    if (!wallet) return;
-                    if (!amount) return;
-                    if (
-                      selected === 1 &&
-                      appConfig.wrappedBridge.chains[withdrawSelectedChainItem]
-                        .tokens[withdrawSelectedTokenItem].isNative
-                    ) {
-                      handleWithdraw();
-                    } else if (
-                      parseFloat(balanceSlice.approval) < parseFloat(amount)
-                    ) {
-                      handleIncreaseAllowance();
-                    } else if (selected === 0) {
-                      handleDeposit();
-                    } else if (selected === 1) {
-                      handleWithdraw();
-                    }
-                  }
-                }}
-                disabled={
-                  (selected === 1 && connectedChain?.id === "0x7a") ||
-                  selected === 0
-                    ? balanceSlice.isApprovalLoading ||
-                      contractSlice.isBridgeLoading ||
-                      contractSlice.isApprovalLoading ||
-                      balanceSlice.isBalanceLoading ||
-                      !amount ||
-                      parseFloat(amount) === 0 ||
-                      isNaN(parseFloat(amount))
-                    : false
-                }
-                text={
-                  contractSlice.isBridgeLoading ||
-                  contractSlice.isApprovalLoading
-                    ? "Loading..."
-                    : selected === 1 && connectedChain?.id !== "0x7a"
-                    ? "Switch To Fuse"
-                    : selected === 1 &&
-                      appConfig.wrappedBridge.chains[withdrawSelectedChainItem]
-                        .tokens[withdrawSelectedTokenItem].isNative
-                    ? "Bridge"
-                    : parseFloat(balanceSlice.approval) < parseFloat(amount)
-                    ? "Approve"
-                    : "Bridge"
-                }
-                disabledClassname="bg-fuse-black/20 text-black px-4 mt-6 py-4 rounded-full font-medium md:text-sm "
-              />
-            )
-          )}
-        </motion.div>
-        <motion.div className="flex bg-white w-[575px] mt-2 rounded-lg px-8 py-5 flex-col font-medium">
-          <div className="flex justify-between">
-            <span className="text-black/50">Bridge Fee</span>
-            <span>Free</span>
-          </div>
-          <div className="flex justify-between mt-2">
-            <span className="text-black/50">Gas Estimation</span>
-            {feeSlice.isGasFeeLoading ? (
-              <span className="px-14 rounded-md animate-pulse bg-fuse-black/10"></span>
-            ) : !(isExchange || isDisabledChain) ? (
-              <span>
-                {feeSlice.gasFee}{" "}
-                {
-                  getNativeCurrency(
-                    getChainKey(
+                  amount={amount}
+                  setAmount={setAmount}
+                  setDisplayButton={setDisplayButton}
+                  isExchange={isExchange}
+                  setIsExchange={setIsExchange}
+                  isDisabledChain={isDisabledChain}
+                  setIsDisabledChain={setIsDisabledChain}
+                />
+              ) : (
+                <Withdraw
+                  selectedChainItem={withdrawSelectedChainItem}
+                  selectedChainSection={withdrawSelectedChainSection}
+                  setSelectedChainItem={setWithdrawSelectedChainItem}
+                  setSelectedChainSection={setWithdrawSelectedChainSection}
+                  selectedTokenItem={withdrawSelectedTokenItem}
+                  selectedTokenSection={withdrawSelectedTokenSection}
+                  setSelectedTokenItem={setWithdrawSelectedTokenItem}
+                  setSelectedTokenSection={setWithdrawSelectedTokenSection}
+                  onSwitch={(
+                    tokenSection,
+                    tokenItem,
+                    chainSection,
+                    chainItem
+                  ) => {
+                    setDepositSelectedChainSection(chainSection);
+                    setDepositSelectedChainItem(chainItem);
+                    setDepositSelectedTokenSection(tokenSection);
+                    setDepositSelectedTokenItem(tokenItem);
+                    setSelected(0);
+                  }}
+                  amount={amount}
+                  setAmount={setAmount}
+                  isDisabledChain={isDisabledChain}
+                  setIsDisabledChain={setIsDisabledChain}
+                  setDisplayButton={setDisplayButton}
+                />
+              )}
+              {!connectedChain && displayButton ? (
+                <ConnectWallet className="mt-6 py-4 " />
+              ) : displayButton &&
+                selected === 1 &&
+                !appConfig.wrappedBridge.chains[withdrawSelectedChainItem]
+                  .tokens[withdrawSelectedTokenItem].isNative &&
+                parseFloat(amount) > parseFloat(balanceSlice.liquidity) ? (
+                <Button
+                  className="bg-[#FFEBE9] text-[#FD0F0F] px-4 mt-6 py-4 rounded-full font-medium md:text-sm "
+                  disabled
+                  text="No Liquidity"
+                />
+              ) : (
+                displayButton && (
+                  <Button
+                    className="bg-fuse-black text-white px-4 mt-6 py-4 rounded-full font-medium md:text-sm "
+                    onClick={async () => {
+                      if (selected === 1 && connectedChain?.id !== "0x7a") {
+                        await switchChain({
+                          chainId: "0x7a",
+                        });
+                      } else {
+                        if (!wallet) return;
+                        if (!amount) return;
+                        if (
+                          selected === 1 &&
+                          appConfig.wrappedBridge.chains[
+                            withdrawSelectedChainItem
+                          ].tokens[withdrawSelectedTokenItem].isNative
+                        ) {
+                          handleWithdraw();
+                        } else if (
+                          parseFloat(balanceSlice.approval) < parseFloat(amount)
+                        ) {
+                          handleIncreaseAllowance();
+                        } else if (selected === 0) {
+                          handleDeposit();
+                        } else if (selected === 1) {
+                          handleWithdraw();
+                        }
+                      }
+                    }}
+                    disabled={
+                      (selected === 1 && connectedChain?.id === "0x7a") ||
                       selected === 0
-                        ? appConfig.wrappedBridge.chains[
-                            depositSelectedChainItem
-                          ].lzChainId
-                        : 138
-                    )
-                  ).symbol
-                }
-              </span>
-            ) : (
-              <></>
-            )}
+                        ? balanceSlice.isApprovalLoading ||
+                          contractSlice.isBridgeLoading ||
+                          contractSlice.isApprovalLoading ||
+                          balanceSlice.isBalanceLoading ||
+                          !amount ||
+                          parseFloat(amount) === 0 ||
+                          isNaN(parseFloat(amount))
+                        : false
+                    }
+                    text={
+                      contractSlice.isBridgeLoading ||
+                      contractSlice.isApprovalLoading
+                        ? "Loading..."
+                        : selected === 1 && connectedChain?.id !== "0x7a"
+                        ? "Switch To Fuse"
+                        : selected === 1 &&
+                          appConfig.wrappedBridge.chains[
+                            withdrawSelectedChainItem
+                          ].tokens[withdrawSelectedTokenItem].isNative
+                        ? "Bridge"
+                        : parseFloat(balanceSlice.approval) < parseFloat(amount)
+                        ? "Approve"
+                        : "Bridge"
+                    }
+                    disabledClassname="bg-fuse-black/20 text-black px-4 mt-6 py-4 rounded-full font-medium md:text-sm "
+                  />
+                )
+              )}
+            </motion.div>
+            <motion.div className="flex bg-white w-[575px] mt-2 rounded-lg px-8 py-5 flex-col font-medium">
+              <div className="flex justify-between">
+                <span className="text-black/50">Bridge Fee</span>
+                <span>Free</span>
+              </div>
+              <div className="flex justify-between mt-2">
+                <span className="text-black/50">Gas Estimation</span>
+                {feeSlice.isGasFeeLoading ? (
+                  <span className="px-14 rounded-md animate-pulse bg-fuse-black/10"></span>
+                ) : !(isExchange || isDisabledChain) ? (
+                  <span>
+                    {feeSlice.gasFee}{" "}
+                    {
+                      getNativeCurrency(
+                        getChainKey(
+                          selected === 0
+                            ? appConfig.wrappedBridge.chains[
+                                depositSelectedChainItem
+                              ].lzChainId
+                            : 138
+                        )
+                      ).symbol
+                    }
+                  </span>
+                ) : (
+                  <></>
+                )}
+              </div>
+              <div className="flex justify-between mt-2">
+                <span className="text-black/50">Daily Limits</span>
+                <span>0.5 Min - 25,000,000 max</span>
+              </div>
+            </motion.div>
           </div>
-          <div className="flex justify-between mt-2">
-            <span className="text-black/50">Daily Limits</span>
-            <span>0.5 Min - 25,000,000 max</span>
-          </div>
-        </motion.div>
+        </div>
         <Footer />
-        <ToastPane />
       </div>
     </>
   );

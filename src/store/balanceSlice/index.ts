@@ -7,11 +7,13 @@ import { ChainStateType } from "../chainSlice";
 export interface BalanceStateType {
   lzChainId: number;
   chainId: number;
+  liquidity: string;
   address: string;
   balance: string;
   approval: string;
   isBalanceLoading: boolean;
   isApprovalLoading: boolean;
+  isLiquidityLoading: boolean;
   isError: boolean;
 }
 
@@ -19,9 +21,11 @@ const INIT_STATE: BalanceStateType = {
   address: "",
   balance: "0",
   approval: "0",
+  liquidity: "0",
   chainId: 0,
   isApprovalLoading: false,
   isBalanceLoading: false,
+  isLiquidityLoading: false,
   lzChainId: 0,
   isError: false,
 };
@@ -103,6 +107,36 @@ export const fetchApproval = createAsyncThunk(
   }
 );
 
+export const fetchLiquidity = createAsyncThunk(
+  "BALANCE/FETCH_LIQUIDITY",
+  async (
+    {
+      contractAddress,
+      bridge,
+      decimals = 18,
+      rpcUrl,
+    }: {
+      contractAddress: string;
+      bridge: string;
+      decimals: number;
+      rpcUrl: string;
+    },
+    thunkAPI
+  ) => {
+    return new Promise<any>(async (resolve, reject) => {
+      getERC20Balance(contractAddress, bridge, rpcUrl)
+        .then((balance) => {
+          const bal = ethers.utils.formatUnits(balance, decimals);
+          resolve(bal);
+        })
+        .catch((err) => {
+          console.log(err);
+          reject(err);
+        });
+    });
+  }
+);
+
 const balanceSlice = createSlice({
   name: "BALANCE_STATE",
   initialState: INIT_STATE,
@@ -128,6 +162,17 @@ const balanceSlice = createSlice({
     },
     [fetchApproval.rejected.type]: (state, action) => {
       state.isApprovalLoading = false;
+      state.isError = true;
+    },
+    [fetchLiquidity.pending.type]: (state, action) => {
+      state.isLiquidityLoading = true;
+    },
+    [fetchLiquidity.fulfilled.type]: (state, action) => {
+      state.liquidity = action.payload;
+      state.isLiquidityLoading = false;
+    },
+    [fetchLiquidity.rejected.type]: (state, action) => {
+      state.isLiquidityLoading = false;
       state.isError = true;
     },
   },

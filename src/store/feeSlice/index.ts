@@ -1,8 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { AppState } from "../rootReducer";
-import { getERC20Allowance, getERC20Balance } from "../../utils/erc20";
 import { ethers } from "ethers";
-import { ChainStateType } from "../chainSlice";
 import { estimateOriginalNativeFee } from "../../utils/originalBridge";
 import { estimateWrappedNativeFee } from "../../utils/wrappedBridge";
 

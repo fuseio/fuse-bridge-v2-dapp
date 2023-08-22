@@ -4,7 +4,11 @@ import { appConfig } from "../../constants/config";
 import Dropdown from "../commons/Dropdown";
 import switchImg from "../../assets/switch.svg";
 import { useSetChain, useConnectWallet } from "@web3-onboard/react";
-import { selectBalanceSlice, fetchBalance } from "../../store/balanceSlice";
+import {
+  selectBalanceSlice,
+  fetchBalance,
+  fetchLiquidity,
+} from "../../store/balanceSlice";
 import { useAppDispatch, useAppSelector } from "../../store/store";
 import { selectChainSlice, setChain } from "../../store/chainSlice";
 import alert from "../../assets/alert.svg";
@@ -13,6 +17,7 @@ import sFuse from "../../assets/sFuse.svg";
 import { estimateWrappedFee } from "../../store/feeSlice";
 import { ethers } from "ethers";
 import { Balances } from "@web3-onboard/core/dist/types";
+import { toggleLiquidityToast } from "../../store/toastSlice";
 
 type WithdrawProps = {
   selectedChainSection: number;
@@ -68,6 +73,29 @@ const Withdraw = ({
       );
     }
   }, [wallet]);
+
+  useEffect(() => {
+    if (
+      !appConfig.wrappedBridge.chains[selectedChainItem].tokens[
+        selectedTokenItem
+      ].isNative
+    ) {
+      dispatch(
+        fetchLiquidity({
+          bridge: appConfig.wrappedBridge.chains[selectedChainItem].original,
+          contractAddress:
+            appConfig.wrappedBridge.chains[selectedChainItem].tokens[
+              selectedTokenItem
+            ].address,
+          decimals:
+            appConfig.wrappedBridge.chains[selectedChainItem].tokens[
+              selectedTokenItem
+            ].decimals,
+          rpcUrl: appConfig.wrappedBridge.chains[selectedChainItem].rpcUrl,
+        })
+      );
+    }
+  }, [selectedTokenItem, selectedChainItem]);
   useEffect(() => {
     if (wallet && selectedChainSection === 0)
       dispatch(
@@ -86,6 +114,27 @@ const Withdraw = ({
     wallet?.accounts[0].address,
     chainSlice.chainId,
   ]);
+  useEffect(() => {
+    if (
+      !appConfig.wrappedBridge.chains[selectedChainItem].tokens[
+        selectedTokenItem
+      ].isNative &&
+      !balanceSlice.isLiquidityLoading &&
+      parseFloat(amount) > parseFloat(balanceSlice.liquidity)
+    ) {
+      dispatch(toggleLiquidityToast(true));
+    } else if (
+      parseFloat(amount) === 0 ||
+      !amount ||
+      (!appConfig.wrappedBridge.chains[selectedChainItem].tokens[
+        selectedTokenItem
+      ].isNative &&
+        !balanceSlice.isLiquidityLoading &&
+        parseFloat(amount) <= parseFloat(balanceSlice.liquidity))
+    ) {
+      dispatch(toggleLiquidityToast(false));
+    }
+  }, [balanceSlice.liquidity, amount]);
   useEffect(() => {
     if (chainSlice.chainId === 0) {
       dispatch(
@@ -146,12 +195,6 @@ const Withdraw = ({
                 selectedItem={selectedTokenItem}
                 className="rounded-e-md rounded-s-none border-s-0 w-1/3"
                 onClick={(section, item) => {
-                  if (
-                    appConfig.wrappedBridge.chains[selectedChainItem].tokens[
-                      item
-                    ].isNative
-                  ) {
-                  }
                   setSelectedTokenSection(section);
                   setSelectedTokenItem(item);
                 }}
