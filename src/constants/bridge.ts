@@ -2,7 +2,7 @@ export const bridgeConfig = {
   version: 2,
   fuse: {
     chainId: 138,
-    wrapped: "0xD1Ac21964B2f8e4AFD153e2EBD1A7c1cbC906232",
+    wrapped: "0x081dF5af5d022D4A4a4520D4D0D336B8432fDBBb",
   },
   original: [
     {
@@ -10,7 +10,7 @@ export const bridgeConfig = {
       chainId: 109,
     },
     {
-      address: "0x4FC9bDf473169f7e166e754B597BF16ea100f34E",
+      address: "0x081dF5af5d022D4A4a4520D4D0D336B8432fDBBb",
       chainId: 145,
     },
     {
@@ -67,7 +67,7 @@ export const bridgeConfig = {
         name: "USD Coin",
         isBridged: true,
         isNative: false,
-        address: "0xACc70d3F4E7BA788eaC341940a059BA0F64B3F70",
+        address: "0x14fAf69ab82Fe97419892a3B5a785B7208898fEC",
       },
       {
         chainId: 109,

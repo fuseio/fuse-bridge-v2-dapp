@@ -29,6 +29,8 @@ import {
 import { getNativeCurrency } from "@layerzerolabs/ui-core";
 import { getChainKey } from "@layerzerolabs/lz-sdk";
 import ToastPane from "../commons/ToastPane";
+import Pill from "../commons/Pill";
+import Disclaimer from "../commons/Disclaimer";
 
 const Home = () => {
   const [{ connectedChain, chains }, switchChain] = useSetChain();
@@ -243,11 +245,19 @@ const Home = () => {
       <div className="w-8/9 flex flex-col md:w-9/10 min-h-[90vh] relative">
         <div className="w-full flex">
           <div className="flex flex-col pt-14 w-2/3 pe-60">
-            <p className="font-black text-[44px]">Fuse Bridge</p>
+            <span className="flex items-center">
+              <p className="font-black text-[44px]">Fuse Bridge</p>
+              <Pill
+                text="Beta"
+                type="success"
+                className="ml-3 text-base font-medium"
+              />
+            </span>
             <p className="text-text-heading-gray text-lg mt-4">
               The Fuse Bridge allows you to move funds from different networks
               and centralized exchanges to Fuse.
             </p>
+            <Disclaimer />
             <ToastPane />
           </div>
           <div className="flex-col items-center flex pt-14">

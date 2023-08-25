@@ -38,7 +38,7 @@ module.exports = {
       black: "#000000",
       warning: "#FFF3DD",
       error: "#FFDDDD",
-      success: "#E0FFDD",
+      success: "#B4F9BA",
       inactive: "#EBEBEB",
       "warning-dark": "#A86D00",
       "error-dark": "#750000",
