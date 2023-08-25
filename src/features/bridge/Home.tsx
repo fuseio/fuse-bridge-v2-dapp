@@ -418,12 +418,20 @@ const Home = () => {
                   disabled
                   text="No Liquidity"
                 />
-              ) : displayButton &&
-                parseFloat(amount) > parseFloat(balanceSlice.balance) ? (
+              ) : (displayButton &&
+                  parseFloat(amount) > parseFloat(balanceSlice.balance)) ||
+                parseFloat(amount) > 10000 ||
+                parseFloat(amount) < 0.5 ? (
                 <Button
                   className="bg-[#FFEBE9] text-[#FD0F0F] px-4 mt-6 py-4 rounded-full font-medium md:text-sm "
                   disabled
-                  text="Insufficient Balance"
+                  text={
+                    parseFloat(amount) > parseFloat(balanceSlice.balance)
+                      ? "Insufficient Balance"
+                      : parseFloat(amount) > 10000
+                      ? "Exceeds Daily Limit"
+                      : "Minimum 0.5"
+                  }
                 />
               ) : (
                 displayButton && (
