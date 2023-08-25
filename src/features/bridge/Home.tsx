@@ -418,6 +418,13 @@ const Home = () => {
                   disabled
                   text="No Liquidity"
                 />
+              ) : displayButton &&
+                parseFloat(amount) > parseFloat(balanceSlice.balance) ? (
+                <Button
+                  className="bg-[#FFEBE9] text-[#FD0F0F] px-4 mt-6 py-4 rounded-full font-medium md:text-sm "
+                  disabled
+                  text="Insufficient Balance"
+                />
               ) : (
                 displayButton && (
                   <Button
