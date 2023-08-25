@@ -525,7 +525,7 @@ const Home = () => {
               </div>
               <div className="flex justify-between mt-2">
                 <span className="text-black/50">Daily Limits</span>
-                <span>0.5 Min - 25,000,000 max</span>
+                <span>0.5 Min - 10,000 max</span>
               </div>
             </motion.div>
           </div>
