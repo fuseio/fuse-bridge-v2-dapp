@@ -2,59 +2,59 @@ export const bridgeConfig = {
   version: 2,
   fuse: {
     chainId: 138,
-    wrapped: "0x081dF5af5d022D4A4a4520D4D0D336B8432fDBBb",
+    wrapped: "0x353af4878d7452e974538706273887F7ED90Da47",
   },
   original: [
     {
-      address: "0xf13E38a2712d0d8B9F2cc6273b477c2E226aBaf2",
+      address: "0x8f5D6332eD11338D2dA4fAAC6675e9A6757BeC8b",
       chainId: 109,
     },
     {
-      address: "0x081dF5af5d022D4A4a4520D4D0D336B8432fDBBb",
+      address: "0xb0F9cE8598c623Ff42e52388F9b452B7CDc409a1",
       chainId: 145,
     },
     {
-      address: "0xC228745fa51493953EC541cd8a1A4E701dF59198",
+      address: "0x081dF5af5d022D4A4a4520D4D0D336B8432fDBBb",
       chainId: 111,
     },
     {
-      address: "0x4433cb67B36769C9B7e3370a07d833686e533Ed2",
+      address: "0x081dF5af5d022D4A4a4520D4D0D336B8432fDBBb",
       chainId: 110,
     },
   ],
   wrapped: [
     {
-      address: "0xDC37922417CD39eC47656dc4D4D1F77Bf092b8C4",
+      address: "0xe453d6649643F1F460C371dC3D1da98F7922fe51",
       chainId: 109,
     },
     {
-      address: "0xc4250151baA72aAF19E5Ae16DaDC1aC138786D2D",
+      address: "0x4014115fB4816Bc8343d8e69d2708Fa738dCaa15",
       chainId: 145,
     },
     {
-      address: "0x7cD0A46CdF7a47A0d62A3Cf5Bda959dc95dE0C20",
+      address: "0xEEd9154F63f6F0044E6b00dDdEFD895b5B4ED580",
       chainId: 111,
     },
     {
-      address: "0x60e0c697b119ab5306cb748Fced80D7B5065e796",
+      address: "0xe453d6649643F1F460C371dC3D1da98F7922fe51",
       chainId: 110,
     },
   ],
   originalFuse: [
     {
-      address: "0x332Dad0edca11b4557D81Ebc7b36718dc6C26B9d",
+      address: "0x36207130CF22d8C54842569A32a0Cd5D711f3580",
       chainId: 109,
     },
     {
-      address: "0xfd7dd23a97d08DF2c6Ce548D96B932c87D1aB42F",
+      address: "0xc465107230c21f154627e017b6727A3C18984B02",
       chainId: 145,
     },
     {
-      address: "0x78b4B46F94c1544FcD81B8f4C5f13557134d1D89",
+      address: "0xeC3FD32cd5389FbC581427A648d6dc1bc5cfFE3B",
       chainId: 111,
     },
     {
-      address: "0xc30Aa40e311D58863700BD2584073a6aB4f807cB",
+      address: "0x56dF61E9f39C75e2d84C05753557bEBB9841Eb5B",
       chainId: 110,
     },
   ],
@@ -67,7 +67,7 @@ export const bridgeConfig = {
         name: "USD Coin",
         isBridged: true,
         isNative: false,
-        address: "0x14fAf69ab82Fe97419892a3B5a785B7208898fEC",
+        address: "0x28C3d1cD466Ba22f6cae51b1a4692a831696391A",
       },
       {
         chainId: 109,
@@ -123,7 +123,7 @@ export const bridgeConfig = {
         name: "FUSE",
         isBridged: true,
         isNative: true,
-        address: "0x6D17B36deE78bcc1cba11f98390C89baFf7e5aB4",
+        address: "0x6b021b3f68491974bE6D4009fEe61a4e3C708fD6",
       },
       {
         chainId: 145,
@@ -132,7 +132,7 @@ export const bridgeConfig = {
         name: "FUSE",
         isBridged: true,
         isNative: true,
-        address: "0x3973e9cAE693A95CB5D78E8875d042fD19942D9b",
+        address: "0xD589F00Fa2Eb83367f732AB3CDA92eE0940389cF",
       },
       {
         chainId: 111,
@@ -141,7 +141,7 @@ export const bridgeConfig = {
         name: "FUSE",
         isBridged: true,
         isNative: true,
-        address: "0xBE97d90A525eCd5e6a0102483C5817D5799F9cB3",
+        address: "0xe453d6649643F1F460C371dC3D1da98F7922fe51",
       },
       {
         chainId: 110,
@@ -150,7 +150,7 @@ export const bridgeConfig = {
         name: "FUSE",
         isBridged: true,
         isNative: true,
-        address: "0x491D56121c2A212407B5A8348ad7905EE1aE9b60",
+        address: "0x6b021b3f68491974bE6D4009fEe61a4e3C708fD6",
       },
     ],
     [
@@ -161,7 +161,7 @@ export const bridgeConfig = {
         name: "Wrapped Ether",
         isBridged: true,
         isNative: false,
-        address: "0xa3afe0DB494C2ae4B1Eed5D5AA03C1c884fd2369",
+        address: "0x5622F6dC93e08a8b717B149677930C38d5d50682",
       },
       {
         chainId: 109,

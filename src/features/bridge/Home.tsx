@@ -427,7 +427,17 @@ const Home = () => {
                   disabled
                   text={
                     parseFloat(amount) > parseFloat(balanceSlice.balance)
-                      ? "Insufficient Balance"
+                      ? `Insufficient ${
+                          appConfig.wrappedBridge.chains[
+                            selected
+                              ? withdrawSelectedChainItem
+                              : depositSelectedChainItem
+                          ].tokens[
+                            selected
+                              ? withdrawSelectedTokenItem
+                              : depositSelectedTokenItem
+                          ].symbol
+                        } Balance`
                       : parseFloat(amount) > 10000
                       ? "Exceeds Daily Limit"
                       : "Minimum 0.5"
