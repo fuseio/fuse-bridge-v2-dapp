@@ -1,14 +1,20 @@
 import React from "react";
 import lzlogo from "../../assets/lzlogo.png";
+import ironblocks from "../../assets/ironblocks.svg";
 
 const Footer = () => {
   return (
     <footer className="w-full mt-auto py-6 flex justify-start">
-      <div className="w-2/3"></div>
-      <div className="flex justify-center items-center w-[575px]">
-        <span className="font-medium text-lg">Powered by</span>
+      <div className="flex justify-start items-center">
+        <span className="font-medium text-sm">Powered by</span>
         <a href="https://layerzero.network/" target="_blank" rel="noreferrer">
-          <img src={lzlogo} alt="logo" className="ml-2 h-10" />
+          <img src={lzlogo} alt="logo" className="ml-2 h-6" />
+        </a>
+      </div>
+      <div className="flex justify-start items-center ml-6">
+        <span className="font-medium text-sm">Monitoring by</span>
+        <a href="https://www.ironblocks.com/" target="_blank" rel="noreferrer">
+          <img src={ironblocks} alt="logo" className="ml-2 h-4" />
         </a>
       </div>
     </footer>
