@@ -79,3 +79,7 @@
   background: #5a5858;
   border-radius: 5px;
 }
+
+.main{
+  min-height: calc(100vh - 80px);
+}

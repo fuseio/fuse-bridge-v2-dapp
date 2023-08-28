@@ -83,6 +83,7 @@ export const web3Onboard = init({
   accountCenter: {
     desktop: {
       enabled: true,
+      minimal: false,
     },
     mobile: {
       enabled: true,
