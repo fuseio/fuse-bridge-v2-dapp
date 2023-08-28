@@ -6,14 +6,17 @@ import NavButton from "./NavButton";
 const menuItems = [
   {
     title: "Console",
+    link: "#",
     selected: false
   },
   {
     title: "Staking",
+    link: "https://staking.fuse.io",
     selected: false
   },
   {
     title: " Bridge",
+    link: "#",
     selected: true
   },
 ]
@@ -22,7 +25,7 @@ const Topbar = () => {
 
   return (
     <nav className="w-full sticky top-0 bg-light-gray/60 backdrop-blur-xl flex justify-center py-6 z-10 h-[10vh]">
-      <div className="flex justify-between h-full items-center w-8/9 md:w-9/10" >
+      <div className="flex justify-between h-full items-center w-8/9 md:w-9/10 max-w-7xl" >
         <span>
           <a href="/">
             <img src={fuseLogo} alt="fuse logo" className="h-8 z-50" />
