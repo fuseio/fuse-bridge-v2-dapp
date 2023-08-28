@@ -72,7 +72,7 @@ const Withdraw = ({
         )
       );
     }
-  }, [wallet]);
+  }, [wallet, connectedChain, wallet?.accounts[0].balance]);
 
   useEffect(() => {
     if (

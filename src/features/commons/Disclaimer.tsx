@@ -27,12 +27,12 @@ const Disclaimer = () => {
           <p className="mt-4">
             You are advised to use caution and not to rely in any way on the
             constant correct functioning or performance of the products and/or
-            accompanying products and services relating to this beta verson.fuse
+            accompanying products and services relating to this beta version. Fuse
             does not give any warranties, whether express or implied as to the
             suitability or usability of this product, software, and/or its
-            content in the beta version. fuse will not be liable for any loss,
-            wehter direct or indirect, special or consequenntial, suffered by
-            any party as a result of their use of the beta vestion, its content,
+            content in the beta version. Fuse will not be liable for any loss,
+            wehter direct or indirect, special or consequential, suffered by
+            any party as a result of their use of the beta version, its content,
             and functionalities.
           </p>
           <p className="mt-4">
