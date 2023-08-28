@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { AppState } from "../rootReducer";
-import { increaseAllowance } from "../../utils/erc20";
+import { approveSpend } from "../../utils/erc20";
 import { fetchApproval, fetchBalance } from "../balanceSlice";
 import { bridgeNative, bridgeOriginal } from "../../utils/originalBridge";
 import {
@@ -42,7 +42,7 @@ export const increaseERC20Allowance = createAsyncThunk(
     thunkAPI
   ) => {
     return new Promise<any>(async (resolve, reject) => {
-      increaseAllowance(contractAddress, bridge, amount, decimals)
+      approveSpend(contractAddress, bridge, amount, decimals)
         .then((txHash) => {
           thunkAPI.dispatch(
             fetchApproval({

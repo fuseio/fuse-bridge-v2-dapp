@@ -37,14 +37,14 @@ export const getERC20Allowance = async (
   return allowance;
 };
 
-export const increaseAllowance = async (
+export const approveSpend = async (
   address: string,
   spender: string,
   amount: string,
   decimals: number = 18
 ) => {
   const contract = getERC20Contract(address, web3OnboardProvider);
-  const tx = await contract.increaseAllowance(
+  const tx = await contract.approve(
     spender,
     ethers.utils.parseUnits(amount, decimals)
   );
