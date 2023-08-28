@@ -1,11 +1,11 @@
 import { ChainConfigLike } from "./types";
-import matic from "../assets/matic.png";
+import matic from "../assets/matic.svg";
 import eth from "../assets/eth.png";
 import bnb from "../assets/bnb.png";
-import gnosis from "../assets/gnosis.png";
+import gnosis from "../assets/gnosis.svg";
 import celo from "../assets/celo.png";
-import arbi from "../assets/arbi.png";
-import optimism from "../assets/optimism.png";
+import arbi from "../assets/arbi.svg";
+import optimism from "../assets/optimism.svg";
 import voltage from "../assets/voltage.png";
 
 export const chains: ChainConfigLike[] = [
