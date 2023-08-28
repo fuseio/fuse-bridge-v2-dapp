@@ -45,7 +45,7 @@ const otherChains = chainConfig.chains.map((chain) => {
     token: chain.chainName,
     label: chain.chainName,
     rpcUrl: chain.rpc,
-    icon: chain.icon,
+    icon: chain.logo,
   };
 });
 
