@@ -242,7 +242,7 @@ const Home = () => {
   return (
     <>
       <Transactions isOpen={isOpen} onToggle={setIsOpen} />
-      <div className="w-8/9 flex flex-col md:w-9/10 min-h-[90vh] relative max-w-7xl">
+      <div className="w-8/9 flex flex-col md:w-9/10 main relative max-w-7xl">
         <div className="w-full flex">
           <div className="flex flex-col pt-14 w-2/3 me-[100px]">
             <span className="flex items-center">
