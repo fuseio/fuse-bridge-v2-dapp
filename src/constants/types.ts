@@ -6,6 +6,7 @@ export interface ChainConfigLike {
   icon: string;
   rpc: string;
   chainId: number;
+  logo: string;
 }
 
 export interface DisabledChainConfigLike {

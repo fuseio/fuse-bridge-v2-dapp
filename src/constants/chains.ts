@@ -1,11 +1,15 @@
 import { ChainConfigLike } from "./types";
-import matic from "../assets/matic.svg";
+import matic from "../assets/matic.png";
 import eth from "../assets/eth.png";
 import bnb from "../assets/bnb.png";
-import gnosis from "../assets/gnosis.svg";
+import gnosis from "../assets/gnosis.png";
 import celo from "../assets/celo.png";
-import arbi from "../assets/arbi.svg";
-import optimism from "../assets/optimism.svg";
+import arbi from "../assets/arbi.png";
+import optimism from "../assets/optimism.png";
+import maticLogo from "../assets/matic";
+import gnosisLogo from "../assets/gnosis";
+import arbiLogo from "../assets/arbi";
+import optimismLogo from "../assets/optimism";
 import voltage from "../assets/voltage.png";
 
 export const chains: ChainConfigLike[] = [
@@ -37,6 +41,7 @@ export const chains: ChainConfigLike[] = [
     icon: matic,
     rpc: "https://rpc-mainnet.maticvigil.com",
     chainId: 137,
+    logo: maticLogo,
   },
   {
     chainName: "Gnosis",
@@ -44,6 +49,7 @@ export const chains: ChainConfigLike[] = [
     icon: gnosis,
     rpc: "https://rpc.gnosischain.com/",
     chainId: 100,
+    logo: gnosisLogo,
   },
   // {
   //     chainName: "Celo",
@@ -51,17 +57,19 @@ export const chains: ChainConfigLike[] = [
   //     icon: celo
   // },
   {
-      chainName: "Arbitrum",
-      lzChainId: 110,
-      icon: arbi,
-      chainId: 42161,
-      rpc: "https://arb1.arbitrum.io/rpc",
+    chainName: "Arbitrum",
+    lzChainId: 110,
+    icon: arbi,
+    chainId: 42161,
+    rpc: "https://arb1.arbitrum.io/rpc",
+    logo: arbiLogo,
   },
   {
-      chainName: "Optimism",
-      lzChainId: 111,
-      icon: optimism,
-      rpc: "https://mainnet.optimism.io",
-      chainId: 10,
+    chainName: "Optimism",
+    lzChainId: 111,
+    icon: optimism,
+    rpc: "https://mainnet.optimism.io",
+    chainId: 10,
+    logo: optimismLogo,
   },
 ];
