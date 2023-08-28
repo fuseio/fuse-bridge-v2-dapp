@@ -24,11 +24,11 @@ const Topbar = () => {
   const [isOpen, setOpen] = useState<boolean>(false)
 
   return (
-    <nav className="w-full sticky top-0 bg-light-gray/60 backdrop-blur-xl flex justify-center py-6 z-10 h-[10vh]">
+    <nav className="w-full h-20 sticky top-0 bg-light-gray/60 backdrop-blur-xl flex justify-center py-7 z-40 md:py-0 md:h-[68px]">
       <div className="flex justify-between h-full items-center w-8/9 md:w-9/10 max-w-7xl" >
         <span>
           <a href="/">
-            <img src={fuseLogo} alt="fuse logo" className="h-8 z-50" />
+            <img src={fuseLogo} alt="fuse logo" className="h-10 md:h-6 z-50" />
           </a>
         </span>
         <NavMenu menuItems={menuItems} isOpen={isOpen} />
