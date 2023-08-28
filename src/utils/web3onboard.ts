@@ -1,6 +1,5 @@
 import { init } from "@web3-onboard/react";
-import fuseLogo from "../assets/fuselogo.svg";
-import whiteFuseLogo from "../assets/fuse-logo-white.svg";
+import fuseConsoleLogo from '../assets/fuse-console-logo.svg'
 import fuseIcon from "../assets/fuse.png";
 import fuseToken from "../assets/tokenLogo";
 import coinbaseWalletModule from "@web3-onboard/coinbase";
@@ -11,6 +10,7 @@ import walletConnectModule from "@web3-onboard/walletconnect";
 import transactionPreviewModule from "@web3-onboard/transaction-preview";
 import injectedModule from "@web3-onboard/injected-wallets";
 import { chainConfig } from "../constants/config";
+import { ThemingMap } from '@web3-onboard/core/dist/types'
 
 const transactionPreview = transactionPreviewModule({
   requireTransactionApproval: true,
@@ -54,14 +54,21 @@ const chains = [fuse, ...otherChains];
 const wallets = [
   injectedModule(),
   walletConnect,
-  torus,
   coinbaseWalletSdk,
   ledger,
   trezor,
+  torus,
 ];
 
+const customTheme: ThemingMap = {
+  '--w3o-background-color': 'rgba(255, 255, 255, 1)',
+  '--w3o-foreground-color': 'linear-gradient(180deg, #E0FFDD 0%, rgba(242, 242, 242, 0) 100%)',
+  '--w3o-text-color': 'var(--primary-text-color)',
+  '--w3o-border-radius': '8px'
+}
+
 export const web3Onboard = init({
-  theme: "dark",
+  theme: customTheme,
   transactionPreview,
   apiKey: import.meta.env.VITE_BLOCKNATIVE_API_KEY as string,
   wallets,
@@ -69,25 +76,26 @@ export const web3Onboard = init({
   appMetadata: {
     name: "Fuse Bridge",
     icon: fuseIcon,
-    logo: whiteFuseLogo,
+    logo: fuseConsoleLogo,
     description:
       "The Fuse Bridge allows you to move funds from different networks and centralized exchanges to Fuse.",
   },
   accountCenter: {
     desktop: {
       enabled: true,
-      minimal: false,
-      position: "topRight",
     },
     mobile: {
       enabled: true,
-    },
+    }
   },
   connect: {
     iDontHaveAWalletLink: "https://fuse.io/ecosystem",
     disableUDResolution: true,
     autoConnectLastWallet: true,
   },
+  containerElements: {
+    accountCenter: '#onboard-container'
+  }
 });
 
 export const updateAllBalances = async () => {
