@@ -90,6 +90,13 @@ const Home = () => {
                 depositSelectedTokenItem
               ].decimals,
             address: wallet?.accounts[0].address as string,
+            type: 0,
+            network:
+              appConfig.wrappedBridge.chains[depositSelectedChainItem].name,
+            token:
+              appConfig.wrappedBridge.chains[depositSelectedChainItem].tokens[
+                depositSelectedTokenItem
+              ].symbol,
           })
         );
       else if (res && selected === 1)
@@ -104,6 +111,11 @@ const Home = () => {
               appConfig.wrappedBridge.fuse.tokens[withdrawSelectedTokenItem]
                 .decimals,
             address: wallet?.accounts[0].address as string,
+            type: 1,
+            network: "Fuse",
+            token:
+              appConfig.wrappedBridge.fuse.tokens[withdrawSelectedTokenItem]
+                .symbol,
           })
         );
     });
@@ -420,9 +432,8 @@ const Home = () => {
                 />
               ) : (displayButton &&
                   parseFloat(amount) > parseFloat(balanceSlice.balance)) ||
-                parseFloat(amount) > 10000 
+                parseFloat(amount) > 10000 ? (
                 // || parseFloat(amount) < 0.5
-                 ? (
                 <Button
                   className="bg-[#FFEBE9] text-[#FD0F0F] px-4 mt-6 py-4 rounded-full font-medium md:text-sm "
                   disabled

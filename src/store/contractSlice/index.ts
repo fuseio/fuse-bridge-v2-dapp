@@ -10,6 +10,7 @@ import {
 import { insertTransactionToLocalStorage } from "../../utils/helpers";
 import { updateTransactions } from "../transactionsSlice";
 import { updateAllBalances } from "../../utils/web3onboard";
+import * as amplitude from "@amplitude/analytics-browser";
 
 export interface ContractStateType {
   isBridgeLoading: boolean;
@@ -32,12 +33,18 @@ export const increaseERC20Allowance = createAsyncThunk(
       bridge,
       decimals = 18,
       address,
+      type,
+      token,
+      network,
     }: {
       amount: string;
       contractAddress: string;
       bridge: string;
       decimals: number;
       address: string;
+      type: number;
+      token: string;
+      network: string;
     },
     thunkAPI
   ) => {
@@ -53,6 +60,18 @@ export const increaseERC20Allowance = createAsyncThunk(
             })
           );
           updateAllBalances();
+          if (type === 0)
+            amplitude.track("Deposit: Amount Approved", {
+              amount: amount,
+              network: network,
+              token: token,
+            });
+          else if (type === 1)
+            amplitude.track("Withdraw: Amount Approved", {
+              amount: amount,
+              network: network,
+              token: token,
+            });
           resolve(txHash);
         })
         .catch((err) => {
