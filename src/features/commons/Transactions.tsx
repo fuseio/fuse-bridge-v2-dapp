@@ -2,8 +2,12 @@ import React, { useEffect } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import cross from "../../assets/cross.svg";
 import Transaction from "./Transaction";
-import { useAppSelector } from "../../store/store";
-import { selectTransactionsSlice } from "../../store/transactionsSlice";
+import { useAppDispatch, useAppSelector } from "../../store/store";
+import {
+  fetchBridgeTransactions,
+  selectTransactionsSlice,
+} from "../../store/transactionsSlice";
+import { useConnectWallet } from "@web3-onboard/react";
 
 interface TransactionProps {
   delegators?: Array<Array<string>> | undefined;
@@ -17,6 +21,8 @@ const Transactions = ({
   onToggle,
   isLoading = false,
 }: TransactionProps): JSX.Element => {
+  const [{ wallet }] = useConnectWallet();
+  const dispatch = useAppDispatch();
   useEffect(() => {
     window.addEventListener("click", (e) => {
       if ((e.target as HTMLElement).id === "modal-bg") {
@@ -25,6 +31,12 @@ const Transactions = ({
     });
   }, [onToggle]);
   const transactionsSlice = useAppSelector(selectTransactionsSlice);
+  useEffect(() => {
+    if (wallet?.accounts[0].address && isOpen) {
+      dispatch(fetchBridgeTransactions(wallet?.accounts[0].address));
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [wallet?.accounts[0].address, isOpen]);
   return (
     <AnimatePresence>
       {isOpen && (
