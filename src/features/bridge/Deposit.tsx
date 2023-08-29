@@ -98,7 +98,7 @@ const Deposit = ({
   return (
     <>
       <div className="flex bg-modal-bg rounded-md p-4 mt-3 w-full flex-col">
-        <span className="font-medium mb-2">From Network</span>
+        <span className="font-medium mb-2 text-xs">From Network</span>
         <Dropdown
           items={[
             {
@@ -162,12 +162,12 @@ const Deposit = ({
         />
         {!(isExchange || isDisabledChain) && (
           <>
-            <span className="font-medium mt-2">Amount</span>
+            <span className="font-medium mt-2 text-xs">Amount</span>
             <div className="flex w-full items-center mt-2">
               <div className="bg-white p-4 rounded-s-md border-[1px] border-border-gray w-2/3">
                 <input
                   type="text"
-                  className="w-full bg-transparent focus:outline-none"
+                  className="w-full bg-transparent focus:outline-none text-sm"
                   placeholder="0.00"
                   value={amount}
                   onChange={(e) => {
@@ -199,7 +199,7 @@ const Deposit = ({
                 }}
               />
             </div>
-            <span className="mt-3 text-sm font-medium">
+            <span className="mt-3 text-xs font-medium">
               Balance:{" "}
               {balanceSlice.isBalanceLoading ||
               balanceSlice.isApprovalLoading ? (
@@ -213,7 +213,7 @@ const Deposit = ({
       </div>
       {isExchange ? (
         <>
-          <div className="px-2 py-4 mt-4 mb-2 bg-warning-bg rounded-md border border-warning-border flex">
+          <div className="px-2 py-4 mt-4 mb-2 bg-warning-bg rounded-md border border-warning-border flex text-sm">
             <div className="flex p-2 w-[15%] items-start">
               <img src={alert} alt="warning" className="h-5" />
             </div>
@@ -246,8 +246,8 @@ const Deposit = ({
                   >
                     <img src={bridge.icon} alt="icon" />
                     <div className="flex flex-col ml-3">
-                      <p className="font-semibold text-lg">{bridge.name}</p>
-                      <p className="font-medium text-[#898888]">
+                      <p className="font-semibold text-base">{bridge.name}</p>
+                      <p className="font-medium text-[#898888] text-sm">
                         {bridge.website}
                       </p>
                     </div>
@@ -260,7 +260,7 @@ const Deposit = ({
         </>
       ) : isDisabledChain ? (
         <>
-          <div className="px-2 py-4 mt-4 mb-2 bg-warning-bg rounded-md border border-warning-border flex">
+          <div className="px-2 py-4 mt-4 mb-2 bg-warning-bg rounded-md border border-warning-border flex text-sm">
             <div className="flex p-2 w-[10%] items-start">
               <img src={alert} alt="warning" className="h-5" />
             </div>
@@ -297,13 +297,13 @@ const Deposit = ({
                 alt="icon"
               />
               <div className="flex flex-col ml-3">
-                <p className="font-semibold text-lg">
+                <p className="font-semibold text-base">
                   {
                     appConfig.wrappedBridge.disabledChains[selectedChainItem]
                       .appName
                   }
                 </p>
-                <p className="font-medium text-[#898888]">
+                <p className="font-medium text-[#898888] text-sm">
                   {
                     appConfig.wrappedBridge.disabledChains[selectedChainItem]
                       .appURL
@@ -343,7 +343,7 @@ const Deposit = ({
             />
           </div>
           <div className="flex bg-modal-bg rounded-md px-4 py-[10px] mt-3 w-full flex-col">
-            <span className="font-semibold text-lg">
+            <span className="font-semibold text-base">
               To
               <img
                 src={sFuse}
@@ -352,7 +352,7 @@ const Deposit = ({
               />
               Fuse Network
             </span>
-            <span className="font-medium mt-1">
+            <span className="font-medium mt-1 text-sm">
               You will receive{" "}
               {amount && !isNaN(parseFloat(amount)) ? parseFloat(amount) : 0}{" "}
               {
