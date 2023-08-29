@@ -15,7 +15,7 @@ const Transaction = ({
 }) => {
   return (
     <div
-      className="flex justify-between px-10 py-5 bg-transaction-bg w-full rounded-md mt-3 border-border-gray border-solid border font-medium cursor-pointer"
+      className="flex justify-between px-10 py-5 bg-transaction-bg w-full rounded-md mt-3 border-border-gray border-solid border font-medium cursor-pointer text-sm"
       onClick={() => {
         window.open(
           getScanLink(transactionHashes.srcChainId, transactionHashes.hash),
@@ -27,13 +27,13 @@ const Transaction = ({
         <span>
           {getNetworkByChainKey(getChainKey(transactionHashes.srcChainId)).name}
         </span>
-        <img src={right} alt="right" />
+        <img src={right} alt="right" className="h-3" />
         <span>
           {getNetworkByChainKey(getChainKey(transactionHashes.dstChainId)).name}
         </span>
       </div>
-      <span>{transactionHashes.amount}</span>
-      <span>{new Date(transactionHashes.timestamp).toLocaleDateString()}</span>
+      <span className="w-[15%] flex justify-center text-right">{transactionHashes.amount}</span>
+      <span className="w-[15%] flex justify-center" >{new Date(transactionHashes.timestamp).toLocaleDateString()}</span>
       <Pill
         text={
           transaction === MessageStatus.DELIVERED
