@@ -8,6 +8,7 @@ import {
   selectBalanceSlice,
   fetchBalance,
   fetchLiquidity,
+  setNativeBalanceThunk,
 } from "../../store/balanceSlice";
 import { useAppDispatch, useAppSelector } from "../../store/store";
 import { selectChainSlice, setChain } from "../../store/chainSlice";
@@ -61,14 +62,12 @@ const Withdraw = ({
   const dispatch = useAppDispatch();
   const balanceSlice = useAppSelector(selectBalanceSlice);
   const chainSlice = useAppSelector(selectChainSlice);
-  const [nativeBalance, setNativeBalance] = React.useState<string>("0");
+  const [nativeBalance, setNativeBalance] = React.useState<number>(0);
   useEffect(() => {
     if (wallet?.accounts[0].balance) {
       setNativeBalance(
-        new Intl.NumberFormat().format(
-          // @ts-ignore
-          (wallet?.accounts[0].balance as Balances)["Fuse"]
-        )
+        // @ts-ignore
+        (wallet?.accounts[0].balance as Balances)["Fuse"]
       );
     }
   }, [wallet, connectedChain, wallet?.accounts[0].balance]);
@@ -96,22 +95,26 @@ const Withdraw = ({
     }
   }, [selectedTokenItem, selectedChainItem]);
   useEffect(() => {
-    if (wallet && selectedChainSection === 0)
-      dispatch(
-        fetchBalance({
-          address: wallet.accounts[0].address,
-          contractAddress:
-            appConfig.wrappedBridge.fuse.tokens[selectedTokenItem].address,
-          decimals:
-            appConfig.wrappedBridge.fuse.tokens[selectedTokenItem].decimals,
-          bridge: appConfig.wrappedBridge.fuse.wrapped,
-        })
-      );
+    if (wallet && selectedChainSection === 0) {
+      appConfig.wrappedBridge.fuse.tokens[selectedTokenItem].address === ""
+        ? dispatch(setNativeBalanceThunk(nativeBalance.toString()))
+        : dispatch(
+            fetchBalance({
+              address: wallet.accounts[0].address,
+              contractAddress:
+                appConfig.wrappedBridge.fuse.tokens[selectedTokenItem].address,
+              decimals:
+                appConfig.wrappedBridge.fuse.tokens[selectedTokenItem].decimals,
+              bridge: appConfig.wrappedBridge.fuse.wrapped,
+            })
+          );
+    }
   }, [
     selectedTokenItem,
     selectedTokenSection,
     wallet?.accounts[0].address,
     chainSlice.chainId,
+    nativeBalance,
   ]);
   useEffect(() => {
     if (
@@ -211,7 +214,7 @@ const Withdraw = ({
               ) : appConfig.wrappedBridge.chains[selectedChainItem].tokens[
                   selectedTokenItem
                 ].isNative && connectedChain?.id === "0x7a" ? (
-                nativeBalance
+                new Intl.NumberFormat().format(nativeBalance)
               ) : (
                 balanceSlice.balance
               )}
