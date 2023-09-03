@@ -97,6 +97,10 @@ const Home = () => {
               appConfig.wrappedBridge.chains[depositSelectedChainItem].tokens[
                 depositSelectedTokenItem
               ].symbol,
+            tokenId:
+              appConfig.wrappedBridge.chains[depositSelectedChainItem].tokens[
+                depositSelectedTokenItem
+              ].coinGeckoId,
           })
         );
       else if (res && selected === 1)
@@ -116,6 +120,9 @@ const Home = () => {
             token:
               appConfig.wrappedBridge.fuse.tokens[withdrawSelectedTokenItem]
                 .symbol,
+            tokenId:
+              appConfig.wrappedBridge.fuse.tokens[withdrawSelectedTokenItem]
+                .coinGeckoId,
           })
         );
     });
