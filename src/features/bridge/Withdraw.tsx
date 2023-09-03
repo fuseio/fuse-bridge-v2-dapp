@@ -18,6 +18,7 @@ import sFuse from "../../assets/sFuse.svg";
 import { estimateWrappedFee } from "../../store/feeSlice";
 import { Balances } from "@web3-onboard/core/dist/types";
 import { toggleLiquidityToast } from "../../store/toastSlice";
+import * as amplitude from "@amplitude/analytics-browser";
 
 type WithdrawProps = {
   selectedChainSection: number;
@@ -331,6 +332,13 @@ const Withdraw = ({
             target="_blank"
             rel="noreferrer"
             className="cursor-pointer"
+            onClick={() => {
+              amplitude.track("External Provider", {
+                provider:
+                  appConfig.wrappedBridge.disabledChains[selectedChainItem]
+                    .appName,
+              });
+            }}
           >
             <div className="flex mt-2 bg-modal-bg py-4 px-5 rounded-md items-center cursor-pointer">
               <img

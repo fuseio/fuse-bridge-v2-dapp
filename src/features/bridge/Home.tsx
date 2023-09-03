@@ -168,6 +168,9 @@ const Home = () => {
                   depositSelectedTokenItem
                 ].symbol,
               chainId: 138,
+              network:
+                appConfig.wrappedBridge.chains[depositSelectedChainItem].name,
+              tokenId: "fuse-network-token",
             })
           );
         } else if (
@@ -198,6 +201,12 @@ const Home = () => {
                   depositSelectedTokenItem
                 ].symbol,
               dstChainId: 138,
+              network:
+                appConfig.wrappedBridge.chains[depositSelectedChainItem].name,
+              tokenId:
+                appConfig.wrappedBridge.chains[depositSelectedChainItem].tokens[
+                  depositSelectedTokenItem
+                ].coinGeckoId,
             })
           );
       }
@@ -232,6 +241,9 @@ const Home = () => {
                   .lzChainId,
               srcChainId: 138,
               symbol: "FUSE",
+              network:
+                appConfig.wrappedBridge.chains[withdrawSelectedChainItem].name,
+              tokenId: "fuse-network-token",
             })
           );
         } else
@@ -253,6 +265,11 @@ const Home = () => {
                 appConfig.wrappedBridge.fuse.tokens[withdrawSelectedTokenItem]
                   .symbol,
               srcChainId: 138,
+              network:
+                appConfig.wrappedBridge.chains[withdrawSelectedChainItem].name,
+              tokenId:
+                appConfig.wrappedBridge.fuse.tokens[withdrawSelectedTokenItem]
+                  .coinGeckoId,
             })
           );
       }
