@@ -90,6 +90,17 @@ const Home = () => {
                 depositSelectedTokenItem
               ].decimals,
             address: wallet?.accounts[0].address as string,
+            type: 0,
+            network:
+              appConfig.wrappedBridge.chains[depositSelectedChainItem].name,
+            token:
+              appConfig.wrappedBridge.chains[depositSelectedChainItem].tokens[
+                depositSelectedTokenItem
+              ].symbol,
+            tokenId:
+              appConfig.wrappedBridge.chains[depositSelectedChainItem].tokens[
+                depositSelectedTokenItem
+              ].coinGeckoId,
           })
         );
       else if (res && selected === 1)
@@ -104,6 +115,14 @@ const Home = () => {
               appConfig.wrappedBridge.fuse.tokens[withdrawSelectedTokenItem]
                 .decimals,
             address: wallet?.accounts[0].address as string,
+            type: 1,
+            network: "Fuse",
+            token:
+              appConfig.wrappedBridge.fuse.tokens[withdrawSelectedTokenItem]
+                .symbol,
+            tokenId:
+              appConfig.wrappedBridge.fuse.tokens[withdrawSelectedTokenItem]
+                .coinGeckoId,
           })
         );
     });

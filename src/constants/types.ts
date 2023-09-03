@@ -44,6 +44,7 @@ export interface CoinConfigLike {
   symbol: string;
   decimals: number;
   icon: string;
+  coinGeckoId: string;
 }
 
 export interface ExchangeConfigLike {
@@ -107,6 +108,7 @@ interface WrappedBridgeConfig {
       name: string;
       address: string;
       icon: string;
+      coinGeckoId: string;
     }[];
   };
   disabledChains: DisabledChainConfigLike[];
@@ -127,6 +129,7 @@ interface WrappedBridgeConfig {
       icon: string;
       isNative: boolean;
       isBridged: boolean;
+      coinGeckoId: string;
     }[];
   }[];
 }
@@ -146,6 +149,7 @@ export const createAppConfig = (
     name: string;
     address: string;
     icon: string;
+    coinGeckoId: string;
   }[] = [];
   if (bridgeConfig.tokens.length > 0) {
     tokenConfig.coins.forEach((coin) => {
@@ -156,6 +160,7 @@ export const createAppConfig = (
         wrappedTokens.push({
           ...token,
           icon: coin.icon,
+          coinGeckoId: coin.coinGeckoId,
         });
       }
     });
@@ -178,6 +183,7 @@ export const createAppConfig = (
           icon: string;
           isNative: boolean;
           isBridged: boolean;
+          coinGeckoId: string;
         }[] = [];
         if (bridgeConfig.tokens.length > 0) {
           tokenConfig.coins.forEach((coin) => {
@@ -193,6 +199,7 @@ export const createAppConfig = (
                 icon: coin.icon,
                 isNative: token.isNative,
                 isBridged: token.isBridged,
+                coinGeckoId: coin.coinGeckoId,
               });
             }
           });

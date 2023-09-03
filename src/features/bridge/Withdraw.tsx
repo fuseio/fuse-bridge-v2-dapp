@@ -96,7 +96,8 @@ const Withdraw = ({
   }, [selectedTokenItem, selectedChainItem]);
   useEffect(() => {
     if (wallet && selectedChainSection === 0) {
-      appConfig.wrappedBridge.fuse.tokens[selectedTokenItem].address === ""
+      appConfig.wrappedBridge.fuse.tokens[selectedTokenItem].address === "" &&
+      connectedChain?.id === "0x7a"
         ? dispatch(setNativeBalanceThunk(nativeBalance.toString()))
         : dispatch(
             fetchBalance({
