@@ -7,7 +7,7 @@ import NoLiquidityToast from "./NoLiquidityToast";
 const ToastPane = () => {
   const toastSlice = useAppSelector(selectToastSlice);
   return (
-    <div className="flex flex-col pt-8 justify-start items-center w-full mt-auto">
+    <div className="flex flex-col pt-8 justify-start items-center w-full">
       {toastSlice.isLiquidityToastOpen && <NoLiquidityToast />}
       {toastSlice.isLastTransactionToastOpen && <LastTransactionToast />}
     </div>

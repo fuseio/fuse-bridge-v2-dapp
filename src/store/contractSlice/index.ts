@@ -66,7 +66,7 @@ export const increaseERC20Allowance = createAsyncThunk(
           if (type === 0)
             fetchTokenPrice(tokenId).then((price) => {
               amplitude.track("Deposit: Amount Approved", {
-                amount: amount,
+                amount: parseFloat(amount),
                 network: network,
                 token: token,
                 amountUSD: price * parseFloat(amount),
@@ -75,7 +75,7 @@ export const increaseERC20Allowance = createAsyncThunk(
           else if (type === 1)
             fetchTokenPrice(tokenId).then((price) => {
               amplitude.track("Withdraw: Amount Approved", {
-                amount: amount,
+                amount: parseFloat(amount),
                 network: network,
                 token: token,
                 amountUSD: price * parseFloat(amount),
@@ -102,6 +102,8 @@ export const bridgeOriginalTokens = createAsyncThunk(
       srcChainId,
       symbol,
       dstChainId,
+      tokenId,
+      network,
     }: {
       amount: string;
       contractAddress: string;
@@ -111,6 +113,8 @@ export const bridgeOriginalTokens = createAsyncThunk(
       srcChainId: number;
       symbol: string;
       dstChainId: number;
+      tokenId: string;
+      network: string;
     },
     thunkAPI
   ) => {
@@ -150,6 +154,14 @@ export const bridgeOriginalTokens = createAsyncThunk(
               dstChainId,
             })
           );
+          fetchTokenPrice(tokenId).then((price) => {
+            amplitude.track("Deposit: Successful Bridge", {
+              amount: parseFloat(amount),
+              network: network,
+              token: symbol,
+              amountUSD: price * parseFloat(amount),
+            });
+          });
           updateAllBalances();
           resolve(txHash);
         })
@@ -172,6 +184,8 @@ export const bridgeNativeTokens = createAsyncThunk(
       srcChainId,
       symbol,
       dstChainId,
+      tokenId,
+      network,
     }: {
       amount: string;
       bridge: string;
@@ -180,6 +194,8 @@ export const bridgeNativeTokens = createAsyncThunk(
       srcChainId: number;
       symbol: string;
       dstChainId: number;
+      tokenId: string;
+      network: string;
     },
     thunkAPI
   ) => {
@@ -205,6 +221,14 @@ export const bridgeNativeTokens = createAsyncThunk(
             })
           );
           updateAllBalances();
+          fetchTokenPrice(tokenId).then((price) => {
+            amplitude.track("Withdraw: Successful Bridge", {
+              amount: parseFloat(amount),
+              network: network,
+              token: symbol,
+              amountUSD: price * parseFloat(amount),
+            });
+          });
           resolve(txHash);
         })
         .catch((err) => {
@@ -227,6 +251,8 @@ export const bridgeWrappedTokens = createAsyncThunk(
       chainId,
       symbol,
       srcChainId,
+      tokenId,
+      network,
     }: {
       amount: string;
       contractAddress: string;
@@ -236,6 +262,8 @@ export const bridgeWrappedTokens = createAsyncThunk(
       chainId: number;
       symbol: string;
       srcChainId: number;
+      tokenId: string;
+      network: string;
     },
     thunkAPI
   ) => {
@@ -268,6 +296,14 @@ export const bridgeWrappedTokens = createAsyncThunk(
               dstChainId: chainId,
             })
           );
+          fetchTokenPrice(tokenId).then((price) => {
+            amplitude.track("Withdraw: Successful Bridge", {
+              amount: parseFloat(amount),
+              network: network,
+              token: symbol,
+              amountUSD: price * parseFloat(amount),
+            });
+          });
           updateAllBalances();
           resolve(txHash);
         })
@@ -290,6 +326,8 @@ export const bridgeAndUnwrap = createAsyncThunk(
       chainId,
       symbol,
       srcChainId,
+      tokenId,
+      network,
     }: {
       amount: string;
       contractAddress: string;
@@ -299,6 +337,8 @@ export const bridgeAndUnwrap = createAsyncThunk(
       chainId: number;
       symbol: string;
       srcChainId: number;
+      tokenId: string;
+      network: string;
     },
     thunkAPI
   ) => {
@@ -338,6 +378,14 @@ export const bridgeAndUnwrap = createAsyncThunk(
               dstChainId: chainId,
             })
           );
+          fetchTokenPrice(tokenId).then((price) => {
+            amplitude.track("Deposit: Successful Bridge", {
+              amount: parseFloat(amount),
+              network: network,
+              token: symbol,
+              amountUSD: price * parseFloat(amount),
+            });
+          });
           updateAllBalances();
           resolve(txHash);
         })
