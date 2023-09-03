@@ -10,7 +10,7 @@ const Disclaimer = () => {
         className="flex items-center cursor-pointer"
         onClick={() => setShow(!show)}
       >
-        <p className="text-lg font-semibold">Legal Disclaimer</p>
+        <p className="text-base font-semibold">Legal Disclaimer</p>
         <img
           src={right}
           alt="right"
@@ -18,28 +18,33 @@ const Disclaimer = () => {
         />
       </div>
       {show && (
-        <div className="mt-3">
+        <div className="mt-3 text-sm">
           <p>
-            The products is in beta form and may therefore contain defects. a
-            primary purpose of this beta release is to obtain feedback on
+            The product is in beta form and may therefore contain defects.
+            A primary purpose of this beta release is to obtain feedback on
             software and product performance and the identification of defects.
           </p>
           <p className="mt-4">
             You are advised to use caution and not to rely in any way on the
             constant correct functioning or performance of the products and/or
-            accompanying products and services relating to this beta version. Fuse
-            does not give any warranties, whether express or implied as to the
+            accompanying products and services relating to this beta version.
+          </p>
+          <p className="mt-4">
+            Fuse does not give any express or implied warranties regarding the
             suitability or usability of this product, software, and/or its
             content in the beta version. Fuse will not be liable for any loss,
-            wehter direct or indirect, special or consequential, suffered by
-            any party as a result of their use of the beta version, its content,
+            whether direct or indirect, special or consequential, suffered by
+            any party due to their use of the beta version, its content,
             and functionalities.
           </p>
           <p className="mt-4">
-            Should you encounter any bugs, glitches, lack of functionality or
-            other problems on the beta website, please email us on: &nbsp;
-            <a href="mailto:hello@fuse.io" className="underline text-lightBlue">
-              hello@fuse.io
+            Should you encounter any bugs, glitches, lack of functionality,
+            or other problems on the beta website, please email us at: &nbsp;
+            <a
+              href="mailto:bridge@fuse.io?subject=Fuse Bridge (Beta) feedback"
+              className="underline text-lightBlue"
+            >
+              bridge@fuse.io
             </a>
           </p>
         </div>

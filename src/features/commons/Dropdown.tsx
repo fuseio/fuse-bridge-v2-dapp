@@ -56,7 +56,7 @@ const Dropdown = ({
   return (
     <div
       className={
-        "flex bg-white p-3 rounded-md cursor-pointer items-center border-border-gray border-[1px] relative " +
+        "flex bg-white p-3 rounded-md cursor-pointer items-center border-border-gray border-[1px] relative text-sm " +
         className
       }
       ref={ref}

@@ -4,7 +4,7 @@ import ironblocks from "../../assets/ironblocks.svg";
 
 const Footer = () => {
   return (
-    <footer className="w-full mt-auto py-6 flex justify-start">
+    <footer className="w-full py-6 flex justify-center mt-3">
       <div className="flex justify-start items-center">
         <span className="font-medium text-sm">Powered by</span>
         <a href="https://layerzero.network/" target="_blank" rel="noreferrer">

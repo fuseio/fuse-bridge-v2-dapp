@@ -8,6 +8,7 @@ import {
   selectBalanceSlice,
   fetchBalance,
   fetchLiquidity,
+  setNativeBalanceThunk,
 } from "../../store/balanceSlice";
 import { useAppDispatch, useAppSelector } from "../../store/store";
 import { selectChainSlice, setChain } from "../../store/chainSlice";
@@ -15,7 +16,6 @@ import alert from "../../assets/alert.svg";
 import visit from "../../assets/visit.svg";
 import sFuse from "../../assets/sFuse.svg";
 import { estimateWrappedFee } from "../../store/feeSlice";
-import { ethers } from "ethers";
 import { Balances } from "@web3-onboard/core/dist/types";
 import { toggleLiquidityToast } from "../../store/toastSlice";
 
@@ -62,14 +62,12 @@ const Withdraw = ({
   const dispatch = useAppDispatch();
   const balanceSlice = useAppSelector(selectBalanceSlice);
   const chainSlice = useAppSelector(selectChainSlice);
-  const [nativeBalance, setNativeBalance] = React.useState<string>("0");
+  const [nativeBalance, setNativeBalance] = React.useState<number>(0);
   useEffect(() => {
     if (wallet?.accounts[0].balance) {
       setNativeBalance(
-        new Intl.NumberFormat().format(
-          // @ts-ignore
-          (wallet?.accounts[0].balance as Balances)["Fuse"]
-        )
+        // @ts-ignore
+        (wallet?.accounts[0].balance as Balances)["Fuse"]
       );
     }
   }, [wallet, connectedChain, wallet?.accounts[0].balance]);
@@ -97,22 +95,27 @@ const Withdraw = ({
     }
   }, [selectedTokenItem, selectedChainItem]);
   useEffect(() => {
-    if (wallet && selectedChainSection === 0)
-      dispatch(
-        fetchBalance({
-          address: wallet.accounts[0].address,
-          contractAddress:
-            appConfig.wrappedBridge.fuse.tokens[selectedTokenItem].address,
-          decimals:
-            appConfig.wrappedBridge.fuse.tokens[selectedTokenItem].decimals,
-          bridge: appConfig.wrappedBridge.fuse.wrapped,
-        })
-      );
+    if (wallet && selectedChainSection === 0) {
+      appConfig.wrappedBridge.fuse.tokens[selectedTokenItem].address === "" &&
+      connectedChain?.id === "0x7a"
+        ? dispatch(setNativeBalanceThunk(nativeBalance.toString()))
+        : dispatch(
+            fetchBalance({
+              address: wallet.accounts[0].address,
+              contractAddress:
+                appConfig.wrappedBridge.fuse.tokens[selectedTokenItem].address,
+              decimals:
+                appConfig.wrappedBridge.fuse.tokens[selectedTokenItem].decimals,
+              bridge: appConfig.wrappedBridge.fuse.wrapped,
+            })
+          );
+    }
   }, [
     selectedTokenItem,
     selectedTokenSection,
     wallet?.accounts[0].address,
     chainSlice.chainId,
+    nativeBalance,
   ]);
   useEffect(() => {
     if (
@@ -155,20 +158,20 @@ const Withdraw = ({
       {!isDisabledChain && (
         <>
           <div className="flex bg-modal-bg rounded-md p-4 mt-3 w-full flex-col">
-            <span className="font-semibold text-lg">
+            <span className="font-medium text-xs">
               From
               <img
                 src={sFuse}
                 alt="sFuse"
-                className="inline-block ml-2 mr-2 h-7"
+                className="inline-block ml-[6px] mr-[6px] h-5"
               />
               Fuse Network
             </span>
-            <div className="flex w-full items-center mt-3">
+            <div className="flex w-full items-center mt-2">
               <div className="bg-white w-2/3 p-4 rounded-s-md border-[1px] border-border-gray">
                 <input
                   type="text"
-                  className="w-full bg-transparent focus:outline-none"
+                  className="w-full bg-transparent focus:outline-none text-sm"
                   placeholder="0.00"
                   value={amount}
                   onChange={(e) => {
@@ -200,7 +203,7 @@ const Withdraw = ({
                 }}
               />
             </div>
-            <span className="mt-3 text-sm font-medium">
+            <span className="mt-3 text-xs font-medium">
               Balance:{" "}
               {balanceSlice.isBalanceLoading ||
               balanceSlice.isApprovalLoading ||
@@ -212,7 +215,7 @@ const Withdraw = ({
               ) : appConfig.wrappedBridge.chains[selectedChainItem].tokens[
                   selectedTokenItem
                 ].isNative && connectedChain?.id === "0x7a" ? (
-                nativeBalance
+                new Intl.NumberFormat().format(nativeBalance)
               ) : (
                 balanceSlice.balance
               )}
@@ -239,7 +242,7 @@ const Withdraw = ({
         </>
       )}
       <div className="flex bg-modal-bg rounded-md p-4 mt-3 w-full flex-col">
-        <span className="font-medium mb-2">To Network</span>
+        <span className="font-medium mb-2 text-xs ">To Network</span>
         <Dropdown
           items={[
             {
@@ -284,7 +287,7 @@ const Withdraw = ({
             }
           }}
         />
-        <span className="text-black/50 font-medium mt-3">
+        <span className="text-black/50 font-medium mt-3 text-sm">
           You will receive:{" "}
           <span className="text-black font-medium">
             {" "}
@@ -305,7 +308,7 @@ const Withdraw = ({
             <div className="flex p-2 w-[10%] items-start">
               <img src={alert} alt="warning" className="h-5" />
             </div>
-            <div className="flex flex-col font-medium">
+            <div className="flex flex-col font-medium text-sm">
               <p>
                 To move tokens from Fuse to{" "}
                 {
@@ -338,13 +341,13 @@ const Withdraw = ({
                 alt="icon"
               />
               <div className="flex flex-col ml-3">
-                <p className="font-semibold text-lg">
+                <p className="font-semibold text-base">
                   {
                     appConfig.wrappedBridge.disabledChains[selectedChainItem]
                       .appName
                   }
                 </p>
-                <p className="font-medium text-[#898888]">
+                <p className="font-medium text-[#898888] text-sm">
                   {
                     appConfig.wrappedBridge.disabledChains[selectedChainItem]
                       .appURL

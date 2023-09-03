@@ -70,6 +70,15 @@ export const fetchBalance = createAsyncThunk(
   }
 );
 
+export const setNativeBalanceThunk = createAsyncThunk(
+  "BALANCE/FETCH_BALANCE",
+  async (balance: string, thunkAPI) => {
+    return new Promise<any>(async (resolve, reject) => {
+      resolve(balance);
+    });
+  }
+);
+
 export const fetchApproval = createAsyncThunk(
   "BALANCE/FETCH_APPROVAL",
   async (
@@ -174,6 +183,10 @@ const balanceSlice = createSlice({
     [fetchLiquidity.rejected.type]: (state, action) => {
       state.isLiquidityLoading = false;
       state.isError = true;
+    },
+    [setNativeBalanceThunk.fulfilled.type]: (state, action) => {
+      state.balance = action.payload;
+      state.isBalanceLoading = false;
     },
   },
 });
