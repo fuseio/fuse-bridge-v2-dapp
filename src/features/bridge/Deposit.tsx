@@ -11,6 +11,7 @@ import alert from "../../assets/alert.svg";
 import visit from "../../assets/visit.svg";
 import sFuse from "../../assets/sFuse.svg";
 import { estimateOriginalFee } from "../../store/feeSlice";
+import * as amplitude from "@amplitude/analytics-browser";
 
 type DepositProps = {
   selectedChainSection: number;
@@ -239,6 +240,11 @@ const Deposit = ({
                   rel="noreferrer"
                   className="cursor-pointer"
                   key={i}
+                  onClick={() => {
+                    amplitude.track("External Provider", {
+                      provider: bridge.name,
+                    });
+                  }}
                 >
                   <div
                     className="flex mt-2 bg-modal-bg py-4 px-5 rounded-md items-center cursor-pointer"
@@ -287,6 +293,13 @@ const Deposit = ({
             target="_blank"
             rel="noreferrer"
             className="cursor-pointer"
+            onClick={() => {
+              amplitude.track("External Provider", {
+                provider:
+                  appConfig.wrappedBridge.disabledChains[selectedChainItem]
+                    .appName,
+              });
+            }}
           >
             <div className="flex mt-2 bg-modal-bg py-4 px-5 rounded-md items-center cursor-pointer">
               <img
