@@ -57,6 +57,7 @@ const Home = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isExchange, setIsExchange] = useState(false);
   const [isDisabledChain, setIsDisabledChain] = useState(false);
+  const [pendingPromise, setPendingPromise] = React.useState<any>();
   useEffect(() => {
     if (wallet?.accounts[0].address) {
       dispatch(fetchBridgeTransactions(wallet?.accounts[0].address));
@@ -411,6 +412,8 @@ const Home = () => {
                 setIsExchange={setIsExchange}
                 isDisabledChain={isDisabledChain}
                 setIsDisabledChain={setIsDisabledChain}
+                pendingPromise={pendingPromise}
+                setPendingPromise={setPendingPromise}
               />
             ) : (
               <Withdraw
@@ -439,6 +442,8 @@ const Home = () => {
                 isDisabledChain={isDisabledChain}
                 setIsDisabledChain={setIsDisabledChain}
                 setDisplayButton={setDisplayButton}
+                pendingPromise={pendingPromise}
+                setPendingPromise={setPendingPromise}
               />
             )}
             {!connectedChain && displayButton ? (
