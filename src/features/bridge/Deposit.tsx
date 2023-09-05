@@ -35,6 +35,8 @@ type DepositProps = {
   setIsExchange: (isExchange: boolean) => void;
   isDisabledChain: boolean;
   setIsDisabledChain: (isDisabledChain: boolean) => void;
+  pendingPromise: any;
+  setPendingPromise: (pendingPromise: any) => void;
 };
 
 const Deposit = ({
@@ -54,6 +56,8 @@ const Deposit = ({
   setIsExchange,
   isDisabledChain,
   setIsDisabledChain,
+  pendingPromise,
+  setPendingPromise,
 }: DepositProps) => {
   const [{ chains }] = useSetChain();
   const [{ wallet }] = useConnectWallet();
@@ -62,7 +66,10 @@ const Deposit = ({
   const chainSlice = useAppSelector(selectChainSlice);
   useEffect(() => {
     if (wallet && selectedChainSection === 0) {
-      dispatch(
+      if (pendingPromise) {
+        pendingPromise.abort();
+      }
+      const promise = dispatch(
         fetchBalance({
           address: wallet?.accounts[0].address as string,
           contractAddress:
@@ -76,6 +83,7 @@ const Deposit = ({
           bridge: appConfig.wrappedBridge.chains[selectedChainItem].original,
         })
       );
+      setPendingPromise(promise);
     }
   }, [
     selectedTokenItem,

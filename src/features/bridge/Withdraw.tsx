@@ -40,6 +40,8 @@ type WithdrawProps = {
   isDisabledChain: boolean;
   setIsDisabledChain: (isDisabledChain: boolean) => void;
   setDisplayButton: (displayButton: boolean) => void;
+  pendingPromise: any;
+  setPendingPromise: (pendingPromise: any) => void;
 };
 
 const Withdraw = ({
@@ -57,6 +59,8 @@ const Withdraw = ({
   isDisabledChain,
   setIsDisabledChain,
   setDisplayButton,
+  pendingPromise,
+  setPendingPromise,
 }: WithdrawProps) => {
   const [{ chains, connectedChain }] = useSetChain();
   const [{ wallet }] = useConnectWallet();
@@ -97,7 +101,10 @@ const Withdraw = ({
   }, [selectedTokenItem, selectedChainItem]);
   useEffect(() => {
     if (wallet && selectedChainSection === 0) {
-      appConfig.wrappedBridge.fuse.tokens[selectedTokenItem].address === "" &&
+      if (pendingPromise) {
+        pendingPromise.abort();
+      }
+      const promise = appConfig.wrappedBridge.fuse.tokens[selectedTokenItem].address === "" &&
       connectedChain?.id === "0x7a"
         ? dispatch(setNativeBalanceThunk(nativeBalance.toString()))
         : dispatch(
@@ -110,6 +117,7 @@ const Withdraw = ({
               bridge: appConfig.wrappedBridge.fuse.wrapped,
             })
           );
+      setPendingPromise(promise);
     }
   }, [
     selectedTokenItem,
