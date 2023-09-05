@@ -65,7 +65,11 @@ const Home = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [wallet?.accounts[0].address]);
   const feeSlice = useAppSelector(selectFeeSlice);
-
+  useEffect(() => {
+    if (!contractSlice.isBridgeLoading) {
+      setAmount("");
+    }
+  }, [contractSlice.isBridgeLoading]);
   const handleIncreaseAllowance = () => {
     switchChain({
       chainId:
