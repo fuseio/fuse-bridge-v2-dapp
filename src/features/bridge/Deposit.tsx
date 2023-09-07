@@ -12,6 +12,7 @@ import visit from "../../assets/visit.svg";
 import sFuse from "../../assets/sFuse.svg";
 import { estimateOriginalFee } from "../../store/feeSlice";
 import * as amplitude from "@amplitude/analytics-browser";
+import metamask from "../../assets/metamask.svg";
 
 type DepositProps = {
   selectedChainSection: number;
@@ -363,25 +364,57 @@ const Deposit = ({
               }}
             />
           </div>
-          <div className="flex bg-modal-bg rounded-md px-4 py-[10px] mt-3 w-full flex-col">
-            <span className="font-semibold text-base">
-              To
-              <img
-                src={sFuse}
-                alt="sFuse"
-                className="inline-block ml-2 mr-2 h-7"
-              />
-              Fuse Network
-            </span>
-            <span className="font-medium mt-1 text-sm">
-              You will receive{" "}
-              {amount && !isNaN(parseFloat(amount)) ? parseFloat(amount) : 0}{" "}
-              {
-                appConfig.wrappedBridge.chains[selectedChainItem].tokens[
-                  selectedTokenItem
-                ].symbol
-              }
-            </span>
+          <div className="flex bg-modal-bg rounded-md px-4 py-[10px] mt-3 w-full justify-between items-center">
+            <div className="flex flex-col">
+              <span className="font-semibold text-base">
+                To
+                <img
+                  src={sFuse}
+                  alt="sFuse"
+                  className="inline-block ml-2 mr-2 h-7"
+                />
+                Fuse Network
+              </span>
+              <span className="font-medium mt-1 text-sm">
+                You will receive{" "}
+                {amount && !isNaN(parseFloat(amount)) ? parseFloat(amount) : 0}{" "}
+                {
+                  appConfig.wrappedBridge.chains[selectedChainItem].tokens[
+                    selectedTokenItem
+                  ].symbol
+                }
+              </span>
+            </div>
+            {appConfig.wrappedBridge.fuse.tokens[selectedTokenItem].address !==
+              "" && (
+              <div
+                className="flex px-[10px] py-2 bg-white rounded-lg cursor-pointer text-xs font-medium items-center"
+                onClick={() => {
+                  // @ts-ignore
+                  window.ethereum.request({
+                    method: "wallet_watchAsset",
+                    params: {
+                      type: "ERC20",
+                      options: {
+                        address:
+                          appConfig.wrappedBridge.fuse.tokens[selectedTokenItem]
+                            .address,
+                        symbol:
+                          appConfig.wrappedBridge.fuse.tokens[selectedTokenItem]
+                            .symbol,
+                        decimals:
+                          appConfig.wrappedBridge.fuse.tokens[selectedTokenItem]
+                            .decimals,
+                        chainId: 138,
+                      },
+                    },
+                  });
+                }}
+              >
+                <img src={metamask} alt="metamask" className="h-5 mr-1" />
+                Add Token
+              </div>
+            )}
           </div>
         </>
       )}
