@@ -38,11 +38,13 @@ export const fetchBalance = createAsyncThunk(
       address,
       bridge,
       decimals = 18,
+      rpc,
     }: {
       contractAddress: string;
       address: string;
       bridge: string;
       decimals: number;
+      rpc?: string;
     },
     thunkAPI
   ) => {
@@ -50,7 +52,8 @@ export const fetchBalance = createAsyncThunk(
       const state = thunkAPI.getState();
       // @ts-ignore
       const chain: ChainStateType = state.chain;
-      getERC20Balance(contractAddress, address, chain.rpcUrl as string)
+      if (!rpc) rpc = chain.rpcUrl as string;
+      getERC20Balance(contractAddress, address, rpc)
         .then((balance) => {
           const bal = ethers.utils.formatUnits(balance, decimals);
           thunkAPI.dispatch(

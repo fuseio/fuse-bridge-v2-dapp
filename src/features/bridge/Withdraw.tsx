@@ -119,6 +119,7 @@ const Withdraw = ({
                   appConfig.wrappedBridge.fuse.tokens[selectedTokenItem]
                     .decimals,
                 bridge: appConfig.wrappedBridge.fuse.wrapped,
+                rpc: "https://rpc.fuse.io",
               })
             );
       setPendingPromise(promise);
