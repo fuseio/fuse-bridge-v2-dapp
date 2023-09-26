@@ -44,61 +44,65 @@ const faqAnswers = [
   <p>
     By depositing USDC or WETH into the Fuse network, you receive new tokens
     that are different from the old ones. Therefore, to see them in your wallet,
-    you need to add them. You can use the "Add Token" button or add them manually
-    using the contract address.<br />
+    you need to add them. You can use the "Add Token" button or add them
+    manually using the contract address.
+    <br />
     USDC V2 contract address:{" "}
     <a
       href="https://explorer.fuse.io/token/0x28C3d1cD466Ba22f6cae51b1a4692a831696391A/token-transfers"
       className="underline"
     >
       0x28c3d1cd466ba22f6cae51b1a4692a831696391a
-    </a><br />
+    </a>
+    <br />
     WETH V2 contract address:{" "}
     <a
       href="https://explorer.fuse.io/token/0x5622F6dC93e08a8b717B149677930C38d5d50682/token-transfers"
       className="underline"
     >
       0x5622f6dc93e08a8b717b149677930c38d5d50682
-    </a><br />
-    After that, you can swap these tokens for standard USDC and WETH on Fuse on the Voltage Finance dapp:{" "}
-    <a
-      href="https://app.voltage.finance/#/swap"
-      className="underline"
-    >
+    </a>
+    <br />
+    After that, you can swap these tokens for standard USDC and WETH on Fuse on
+    the Voltage Finance dapp:{" "}
+    <a href="https://app.voltage.finance/#/swap" className="underline">
       https://app.voltage.finance/#/swap
     </a>
   </p>,
   <p>
-    The Fuse Bridge uses other tokens USDC V2 and WETH V2. Don't worry,
-    their value is identical to standard USDC and WETH on the Fuse network.<br />
+    The Fuse Bridge uses other tokens USDC V2 and WETH V2. Don't worry, their
+    value is identical to standard USDC and WETH on the Fuse network.
+    <br />
     So first you need to swap your USDC/WETH tokens for USDC V2/WETH V2 on the{" "}
-    <a
-      href="https://app.voltage.finance/#/swap"
-      className="underline"
-    >
+    <a href="https://app.voltage.finance/#/swap" className="underline">
       Voltage Finance dapp
     </a>{" "}
-    and then bridge tokens from Fuse to another network.<br />
-    On another network, you will receive a regular USDC/WETH token that you can use immediately.
+    and then bridge tokens from Fuse to another network.
+    <br />
+    On another network, you will receive a regular USDC/WETH token that you can
+    use immediately.
   </p>,
   <p>
-    You don't see it because you either added the wrong token or haven't yet added
-    the official FUSE token to the list of tokens in your wallet. You can use the
-    "Add Token" button or add them manually using the contract address.<br />
+    You don't see it because you either added the wrong token or haven't yet
+    added the official FUSE token to the list of tokens in your wallet. You can
+    use the "Add Token" button or add them manually using the contract address.
+    <br />
     Polygon:{" "}
     <a
       href="https://polygonscan.com/token/0x6b021b3f68491974be6d4009fee61a4e3c708fd6"
       className="underline"
     >
       0x6b021b3f68491974bE6D4009fEe61a4e3C708fD6
-    </a><br />
+    </a>
+    <br />
     Arbitrum:{" "}
     <a
       href="https://arbiscan.io/token/0x6b021b3f68491974be6d4009fee61a4e3c708fd6"
       className="underline"
     >
       0x6b021b3f68491974be6d4009fee61a4e3c708fd6
-    </a><br />
+    </a>
+    <br />
     Optimism:{" "}
     <a
       href="https://optimistic.etherscan.io/token/0xe453d6649643f1f460c371dc3d1da98f7922fe51"
@@ -108,24 +112,27 @@ const faqAnswers = [
     </a>
   </p>,
   <p>
-    Don't worry, both tokens are valid, but one of them is deprecated
-    and no longer used in the bridge.<br />
+    Don't worry, both tokens are valid, but one of them is deprecated and no
+    longer used in the bridge.
+    <br />
     Deprecated FUSE token on Polygon:{" "}
     <a
       href="https://polygonscan.com/token/0xF915fDDa4c882731C0456a4214548Cd13A822886"
       className="underline"
     >
       0xF915fDDa4c882731C0456a4214548Cd13A822886
-    </a><br />
+    </a>
+    <br />
     New FUSE token on Polygon:{" "}
     <a
       href="https://polygonscan.com/token/0x6b021b3f68491974be6d4009fee61a4e3c708fd6"
       className="underline"
     >
       0x6b021b3f68491974bE6D4009fEe61a4e3C708fD6
-    </a><br />
-    Just swap the deprecated tokens for new ones. This can be done directly in MetaMask,
-    for instance, or in any other dapp.
+    </a>
+    <br />
+    Just swap the deprecated tokens for new ones. This can be done directly in
+    MetaMask, for instance, or in any other dapp.
   </p>,
 ];
 
@@ -172,9 +179,9 @@ const Home = () => {
       chainId:
         selected === 0
           ? "0x" +
-          appConfig.wrappedBridge.chains[
-            depositSelectedChainItem
-          ].chainId.toString(16)
+            appConfig.wrappedBridge.chains[
+              depositSelectedChainItem
+            ].chainId.toString(16)
           : "0x7A",
     }).then((res) => {
       if (res && selected === 0)
@@ -392,8 +399,8 @@ const Home = () => {
               />
             </span>
             <p className="text-text-heading-gray text-base mt-4">
-              The Fuse Bridge allows you to move funds from different networks and
-              centralized exchanges to Fuse.
+              The Fuse Bridge allows you to move funds from different networks
+              and centralized exchanges to Fuse.
             </p>
             <Disclaimer />
             <ToastPane />
@@ -460,7 +467,7 @@ const Home = () => {
                           dispatch(
                             setChain(
                               appConfig.wrappedBridge.chains[
-                              depositSelectedChainItem
+                                depositSelectedChainItem
                               ]
                             )
                           );
@@ -552,10 +559,10 @@ const Home = () => {
                 <ConnectWallet className="mt-6 py-4 " />
               ) : displayButton &&
                 selected === 1 &&
-                !appConfig.wrappedBridge.chains[withdrawSelectedChainItem].tokens[
-                  withdrawSelectedTokenItem
-                ].isNative &&
-                parseFloat(amount) > parseFloat(balanceSlice.liquidity) ? (
+                !appConfig.wrappedBridge.chains[withdrawSelectedChainItem]
+                  .tokens[withdrawSelectedTokenItem].isNative &&
+                parseFloat(amount) > parseFloat(balanceSlice.liquidity) &&
+                parseFloat(amount) <= parseFloat(balanceSlice.balance) ? (
                 <Button
                   className="bg-[#FFEBE9] text-[#FD0F0F] px-4 mt-6 py-4 rounded-full font-medium md:text-sm "
                   disabled
@@ -570,19 +577,20 @@ const Home = () => {
                   disabled
                   text={
                     parseFloat(amount) > parseFloat(balanceSlice.balance)
-                      ? `Insufficient ${appConfig.wrappedBridge.chains[
-                        selected
-                          ? withdrawSelectedChainItem
-                          : depositSelectedChainItem
-                      ].tokens[
-                        selected
-                          ? withdrawSelectedTokenItem
-                          : depositSelectedTokenItem
-                      ].symbol
-                      } Balance`
+                      ? `Insufficient ${
+                          appConfig.wrappedBridge.chains[
+                            selected
+                              ? withdrawSelectedChainItem
+                              : depositSelectedChainItem
+                          ].tokens[
+                            selected
+                              ? withdrawSelectedTokenItem
+                              : depositSelectedTokenItem
+                          ].symbol
+                        } Balance`
                       : parseFloat(amount) > 10000
-                        ? "Exceeds Daily Limit"
-                        : "Minimum 0.5"
+                      ? "Exceeds Daily Limit"
+                      : "Minimum 0.5"
                   }
                 />
               ) : (
@@ -617,30 +625,30 @@ const Home = () => {
                     }}
                     disabled={
                       (selected === 1 && connectedChain?.id === "0x7a") ||
-                        selected === 0
+                      selected === 0
                         ? balanceSlice.isApprovalLoading ||
-                        contractSlice.isBridgeLoading ||
-                        contractSlice.isApprovalLoading ||
-                        balanceSlice.isBalanceLoading ||
-                        !amount ||
-                        parseFloat(amount) === 0 ||
-                        isNaN(parseFloat(amount))
+                          contractSlice.isBridgeLoading ||
+                          contractSlice.isApprovalLoading ||
+                          balanceSlice.isBalanceLoading ||
+                          !amount ||
+                          parseFloat(amount) === 0 ||
+                          isNaN(parseFloat(amount))
                         : false
                     }
                     text={
                       contractSlice.isBridgeLoading ||
-                        contractSlice.isApprovalLoading
+                      contractSlice.isApprovalLoading
                         ? "Loading..."
                         : selected === 1 && connectedChain?.id !== "0x7a"
-                          ? "Switch To Fuse"
-                          : selected === 1 &&
-                            appConfig.wrappedBridge.chains[
-                              withdrawSelectedChainItem
-                            ].tokens[withdrawSelectedTokenItem].isNative
-                            ? "Bridge"
-                            : parseFloat(balanceSlice.approval) < parseFloat(amount)
-                              ? "Approve"
-                              : "Bridge"
+                        ? "Switch To Fuse"
+                        : selected === 1 &&
+                          appConfig.wrappedBridge.chains[
+                            withdrawSelectedChainItem
+                          ].tokens[withdrawSelectedTokenItem].isNative
+                        ? "Bridge"
+                        : parseFloat(balanceSlice.approval) < parseFloat(amount)
+                        ? "Approve"
+                        : "Bridge"
                     }
                     disabledClassname="bg-fuse-black/20 text-black px-4 mt-6 py-4 rounded-full font-medium md:text-sm "
                   />
@@ -664,8 +672,8 @@ const Home = () => {
                         getChainKey(
                           selected === 0
                             ? appConfig.wrappedBridge.chains[
-                              depositSelectedChainItem
-                            ].lzChainId
+                                depositSelectedChainItem
+                              ].lzChainId
                             : 138
                         )
                       ).symbol
