@@ -137,9 +137,19 @@ const Withdraw = ({
         selectedTokenItem
       ].isNative &&
       !balanceSlice.isLiquidityLoading &&
-      parseFloat(amount) > parseFloat(balanceSlice.liquidity)
+      parseFloat(amount) > parseFloat(balanceSlice.liquidity) &&
+      parseFloat(amount) <= parseFloat(balanceSlice.balance)
     ) {
       dispatch(toggleLiquidityToast(true));
+      amplitude.track("Withdraw: Insufficient Liquidity", {
+        amount: parseFloat(amount),
+        network: appConfig.wrappedBridge.chains[selectedChainItem].name,
+        token:
+          appConfig.wrappedBridge.chains[selectedChainItem].tokens[
+            selectedTokenItem
+          ].symbol,
+        available_liquidity: parseFloat(balanceSlice.liquidity),
+      });
     } else if (
       parseFloat(amount) === 0 ||
       !amount ||
