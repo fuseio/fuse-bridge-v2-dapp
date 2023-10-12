@@ -36,7 +36,7 @@ import FAQ from "../commons/FAQ";
 const faqs = [
   "I have USDC or WETH on the Fuse network and want to bridge it to another network. But the Bridge shows me a balance of 0.",
   "I deposited USDC or WETH into the Fuse network, but I don't see the tokens in my wallet.",
-  "What are OP, ARB, and MATIC token addresses on Fuse?",
+  "What are Fuse token addresses on Polygon, Optimism and Arbitrum?",
   "What tokens can be transferred using the Fuse Token Bridge?",
   "Between which networks can the tokens be transferred?",
   "Is there a guide available on how to use the Fuse Token Bridge?",
